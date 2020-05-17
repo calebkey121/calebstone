@@ -1,71 +1,72 @@
 from Card import Ally
 
-# The main way to organize allies in the game board
+# The main way to organize allies in the game army
 # assumes only one type of ally
 class Army:
     def __init__(self):
         self._maxSlots = 7
-        self._boardSize = 0
-        self._board = []
+        self._armySize = 0
+        self._army = []
 
     def maxSlots(self, maxSlots=None):
         if maxSlots:
             self._maxSlots = maxSlots
         return self._maxSlots
 
-    def boardSize(self, boardSize=None):
-        if boardSize:
-            self._boardSize = boardSize
-        return self._boardSize
+    def armySize(self, armySize=None):
+        if armySize:
+            self._armySize = armySize
+        return self._armySize
 
-    def setBoardSize(self):
-        self._boardSize = len(self._board)
+    def setArmySize(self):
+        self._armySize = len(self._army)
 
-    def getBoard(self):
-        return self._board
+    def getArmy(self):
+        return self._army
 
     def addAlly(self, ally):
-        if self.boardSize() <= self.maxSlots():
-            self._board.append(ally)
-            self.setBoardSize()
+        if self.armySize() <= self.maxSlots():
+            self._army.append(ally)
+            self.setArmySize()
         else:
-            print('Board is full')
+            print('Army is full')
 
+    #This clears your Army of dead Allies
     def tollTheDead(self):
-        for i in self._board:
+        for i in self._army:
             if i.health() <= 0:
-                self._board.remove(i)
+                self._army.remove(i)
 
-    # find the index of a specific ally on the board
+    # find the index of a specific ally on the army
     def findAlly(self, ally):
         if isinstance(ally, Ally):
-            for i in self._board:
+            for i in self._army:
                 if i == ally:
                     return i
             print('That ally is not in battle')
         print('That is not an ally')
 
-    # gain access to an index on the board
+    # gain access to an index on the army
     def findIndex(self, index):
         if index < 0 & index > 7:
             print('Index is out of range')
-        elif self._board[index] == None:
+        elif self._army[index] == None:
             print('There is no ally here')
-        return(self._board[index])
+        return(self._army[index])
 
     def printArmy(self):
-        if self.boardSize() > 0:
-            for i, j in enumerate(self._board):
+        if self.armySize() > 0:
+            for i, j in enumerate(self._army):
                 print(f'~_{i+1}{j}')
         else:
-            print('Your board is empty!')
+            print('Your army is empty!')
 
     def __repr__(self):
-        if self._board != []:
-            for c, slot_c in enumerate(self._board):
+        if self._army != []:
+            for c, slot_c in enumerate(self._army):
                 print(f'{c}: {slot_c}', end='', flush=True)
         else:
-            return 'The Board is Empty'
+            return 'The Army is Empty'
         return '__________________________'
 
 def main():

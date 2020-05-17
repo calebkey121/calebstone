@@ -32,7 +32,7 @@ class TurnManager:
 
     # Find out want the player wants to do and call correct function based on that choice
     # ********************TO IMPLEMENT*************************ADD H OPTION - HAND INFORMATION***************
-    # ********************TO IMPLEMENT*************************ADD B OPTION - BOARD INFORMATION***************
+    # ********************TO IMPLEMENT*************************ADD B OPTION - Army INFORMATION***************
     # ********************TO IMPLEMENT*************************ADD E OPTION - ENEMY INFORMATION***************
     # ********************TO IMPLEMENT*************************ADD H OPTION - HERO INFORMATION***************
     def turnChoice(self):
@@ -52,15 +52,15 @@ class TurnManager:
 
     # Player wants to Attack with a friendly ally
     def choiceAttack(self):
-        if self._hero.getBoardSize() != 0:
+        if self._hero.getArmySize() != 0:
             attacker = tools.get_input('|Attack with|', self._hero.availableTargets())
-            print('|Attacking with:|\n', '~_', attacker)
+            print('|Attacking with:|\n', '~_', attacker.name())
             defender = tools.get_input('|Attack who|', self._enemy.availableTargets())
             print('|Attacking:|\n~_', defender)
 
             self._return = False
         else:
-            print('Your Board is empty! Choose something else..\n')
+            print('Your Army is empty! Choose something else..\n')
             self._return = True
 
     # Player wants to play a card
@@ -92,7 +92,7 @@ class TurnManager:
 
     def choiceOther(self):
         while self._return:
-            answers = ('end your turn', 'help', 'board info', 'go back')
+            answers = ('end your turn', 'help', 'Army info', 'go back')
             turnChoice = tools.get_input('|Enter your option|', answers)
             if turnChoice == answers[0]:
                 self.endTurn(True)
@@ -129,14 +129,14 @@ class TurnManager:
 ~__{self._hero}
 ~__{self._enemy}
 ''')
-        print(f'|{self._hero.heroName()}\'s board|')
-        for i in self._hero.callToArms().getBoard():
+        print(f'|{self._hero.heroName()}\'s Army|')
+        for i in self._hero.callToArms().getArmy():
             print(i)
-        print(f'|{self._hero.heroName()}\'s board|')
-        print(f'|{self._enemy.heroName()}\'s board|')
-        for i in self._enemy.callToArms().getBoard():
+        print(f'|{self._hero.heroName()}\'s Army|')
+        print(f'|{self._enemy.heroName()}\'s Army|')
+        for i in self._enemy.callToArms().getArmy():
             print(i)
-        print(f'|{self._enemy.heroName()}\'s board|')
+        print(f'|{self._enemy.heroName()}\'s Army|')
 
 
 def main():

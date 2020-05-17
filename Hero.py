@@ -7,15 +7,15 @@ class Hero:
     def __init__(self, **kwargs):
         # Heros are the player and hold all the variables that the player will have in game
         # In the future, I want the heros to be unique, here the just have the following:
-        # :: Name, Health, Gold, Deck(of cards), Hand(of cards), and related variables
-        self._heroName = kwargs['hero'] if 'hero' in kwargs else 'Finn'
+        # :: Name, Healthh, Gold, Deck(of cards), Hand(of cards), and related variables
+        self._name = kwargs['hero'] if 'hero' in kwargs else 'Finn'
         self._deckList = kwargs['deckList'] if 'deckList' in kwargs else Deck()
         self._army = kwargs['army'] if 'army' in kwargs else Army()
-        self._heroHealth = 30
+        self._health = 30
+        self._attack = 0
         self._gold = 0
         self._hand = []
         self._maxHandSize = 10
-        self._heroAttack = 0
 
     # Hero's Army Functions
     def callToArms(self, ally=None):
@@ -23,13 +23,13 @@ class Hero:
             self._army.addAlly(ally)
         return self._army
 
-    def heroAttack(self, attack=None):
+    def attack(self, attack=None):
         if attack:
-            self._heroAttack = attack
-        return self._heroAttack
+            self._attack = attack
+        return self._attack
 
-    def getBoardSize(self):
-        return self.callToArms().boardSize()
+    def getArmySize(self):
+        return self.callToArms().armySize()
 
     def printArmy(self):
         self.callToArms().printArmy()
@@ -72,27 +72,27 @@ class Hero:
             self._gold = income
         return self._gold
 
-    def heroName(self, name=None):
+    def name(self, name=None):
         if name:
-            self._heroName = name
-        return self._heroName
+            self._name = name
+        return self._name
     
-    def heroHealth(self, heroHealth=None):
-        if heroHealth:
-            self._heroHealth = heroHealth
-        return self._heroHealth
+    def health(self, health=None):
+        if health:
+            self._health = health
+        return self._health
 
     def lowerHealth(self, attackVal):
-        self._heroHealth -= attackVal
+        self._health -= attackVal
 
     # Card Draw
     def drawCard(self):
         if len(self._hand) <  self.maxHandSize():
             draw = self._deckList.drawCard(self._hand)
-            print(self.heroName() + ' drew ' + draw.name())
+            print(self.name() + ' drew ' + draw.name())
         else:
             print('Your hand is too full!')
-            print(self._heroName + ' burned:\n~_', self._deckList.burnCard())
+            print(self._name + ' burned:\n~_', self._deckList.burnCard())
 
     def drawCards(self, number):
         for i in range(number):
@@ -123,7 +123,7 @@ class Hero:
     # Representation - Weird String is me trying to make the output look cool
     def availableTargets(self):
         availableTargets = []
-        for i in self.callToArms()._board:
+        for i in self.callToArms()._army:
             availableTargets.append(i)
         availableTargets.append(self)
         return availableTargets
@@ -131,9 +131,9 @@ class Hero:
 
 
     def __repr__(self):
-        return f'''_{self.heroName()}___~
-Attack: {self.heroAttack()}
-Health: {self.heroHealth()}
+        return f'''_{self.name()}___~
+Attack: {self.attack()}
+Healthh: {self.health()}
 ~___________~
 '''
 
