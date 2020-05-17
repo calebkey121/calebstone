@@ -1,5 +1,6 @@
-import TurnManager as turn
-import Hero as hero
+import TurnManager as Turn
+import Hero as Hero
+
 
 class GameManager:
     def __init__(self, player1, player2):
@@ -13,8 +14,8 @@ class GameManager:
         return self._roundCounter
 
     def game(self):
-        player1Turn = turn.TurnManager(self._player1, self._player2)
-        player2Turn = turn.TurnManager(self._player2, self._player1)
+        player1Turn = Turn.TurnManager(self._player1, self._player2)
+        player2Turn = Turn.TurnManager(self._player2, self._player1)
 
         # player1goesFirst = True if player1 wins coin toss
         player1goesFirst = player1Turn.startOfGame()
@@ -32,14 +33,16 @@ class GameManager:
                 player1Turn.fullTurn(self.roundCounter())
             self._roundCounter += 1
 
+
 def main():
-    caleb = hero.Hero(hero='caleb')
+    caleb = Hero.Hero(hero='caleb')
     caleb.deckList('DeckLists/CalebDeckList.txt')
-    dio = hero.Hero(hero='dio')
+    dio = Hero.Hero(hero='dio')
     dio.deckList('DeckLists/DioDeckList.txt')
     
     game = GameManager(caleb, dio)
     game.game()
+
 
 if __name__ == "__main__":
     main()

@@ -3,6 +3,8 @@ from Deck import Deck
 from Card import Ally
 
 # This represents the player - Human or AI
+
+
 class Hero:
     def __init__(self, **kwargs):
         # Heros are the player and hold all the variables that the player will have in game
@@ -128,14 +130,13 @@ class Hero:
         availableTargets.append(self)
         return availableTargets
 
-
-
     def __repr__(self):
         return f'''_{self.heroName()}___~
 Attack: {self.heroAttack()}
 Health: {self.heroHealth()}
 ~___________~
 '''
+
 
 def main():
     pass

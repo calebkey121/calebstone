@@ -1,5 +1,6 @@
 from Card import Ally
 
+
 # The main way to organize allies in the game board
 # assumes only one type of ally
 class Army:
@@ -68,6 +69,7 @@ class Army:
             return 'The Board is Empty'
         return '__________________________'
 
+
 def main():
     # This is to demonstrate how the army class interacts with Allies
     # Here, we create an army of size 3
@@ -97,7 +99,6 @@ def main():
     print(army)
     print('Finished Printing New Army...')
 
-    
 
 if __name__ == "__main__":
     main()

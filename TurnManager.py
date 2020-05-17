@@ -1,5 +1,6 @@
-import Hero as hero
-import Tools as tools
+import Hero as Hero
+import Tools as Tools
+
 
 class TurnManager:
     def __init__(self, hero, enemy):
@@ -12,7 +13,7 @@ class TurnManager:
         # coin toss:
         # True -> hero first
         # False -> enemy first
-        heroFirst = tools.coinToss()
+        heroFirst = Tools.coinToss()
         if heroFirst:
             self._hero.drawCards(4)
             self._enemy.drawCards(5)
@@ -42,7 +43,7 @@ class TurnManager:
         self._return = True
         while self._return:
             answers = ('attack', 'play card', 'something else')
-            turnChoice = tools.get_input('|Enter your option|', answers)
+            turnChoice = Tools.get_input('|Enter your option|', answers)
             if turnChoice == answers[0]:
                 self.choiceAttack()
             elif turnChoice == answers[1]:
@@ -53,9 +54,9 @@ class TurnManager:
     # Player wants to Attack with a friendly ally
     def choiceAttack(self):
         if self._hero.getBoardSize() != 0:
-            attacker = tools.get_input('|Attack with|', self._hero.availableTargets())
+            attacker = Tools.get_input('|Attack with|', self._hero.availableTargets())
             print('|Attacking with:|\n', '~_', attacker)
-            defender = tools.get_input('|Attack who|', self._enemy.availableTargets())
+            defender = Tools.get_input('|Attack who|', self._enemy.availableTargets())
             print('|Attacking:|\n~_', defender)
 
             self._return = False
@@ -72,7 +73,7 @@ class TurnManager:
                 
                 # Great! Now we can play a card
                 # I want to play this card! Retrieve it from you hand
-                playThisCard = tools.get_input('Play which card:', self._hero._hand)
+                playThisCard = Tools.get_input('Play which card:', self._hero._hand)
                 # Is this chosen card playable?
                 if self._hero.playableCard(playThisCard) == False:
                     print('That card costs too much gold\n')
@@ -93,7 +94,7 @@ class TurnManager:
     def choiceOther(self):
         while self._return:
             answers = ('end your turn', 'help', 'board info', 'go back')
-            turnChoice = tools.get_input('|Enter your option|', answers)
+            turnChoice = Tools.get_input('|Enter your option|', answers)
             if turnChoice == answers[0]:
                 self.endTurn(True)
                 self._return = False
@@ -113,7 +114,6 @@ class TurnManager:
             # else:
             #     print('What?\n')
             #     return2
-
 
     def endTurn(self, boola=None):
         if boola:
@@ -140,18 +140,17 @@ class TurnManager:
 
 
 def main():
-    caleb = hero.Hero(hero='caleb')
+    caleb = Hero.Hero(hero='caleb')
     caleb.gold(10)
     caleb.deckList('DeckLists/CalebDeckList.txt')
     caleb.drawCards(5)
-    dio = hero.Hero(hero='dio')
+    dio = Hero.Hero(hero='dio')
     dio.gold(10)
     dio.deckList('DeckLists/DioDeckList.txt')
-    
 
     turn = TurnManager(caleb, dio)
     turn.fullTurn(10)
 
+
 if __name__ == "__main__":
     main()
-            

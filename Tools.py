@@ -1,5 +1,6 @@
 import random
 
+
 def get_input(prompt, acceptable_answers):
     print(prompt)
     for c, ans_c in enumerate(acceptable_answers):
@@ -26,6 +27,7 @@ def get_input(prompt, acceptable_answers):
         return get_input(prompt, acceptable_answers)
 
     return res
+
 
 # heads is true
 def coinToss():

@@ -1,4 +1,3 @@
-
 class Card:
     def __init__(self, **kwargs):
         self._cost = kwargs['cost'] if 'cost' in kwargs else -1
@@ -63,9 +62,11 @@ Health: {self.health()}
 ~___________~
 '''
 
+
 def main():
     calebCard = Ally(cost=5, name='Caleb', attack=5, health=5)
     print(calebCard)
+
 
 if __name__ == '__main__':
     main()

@@ -1,6 +1,7 @@
 from Card import Ally
 import random
 
+
 class Deck:
     def __init__(self):
         self._deckList = []
@@ -63,18 +64,14 @@ class Deck:
         self.removeCard(draw)
         return draw
 
-
     def __repr__(self):
         print('____________________')
         print(f'Current Deck Size: {self.getCurrentNumCards()}')
         for i in self._deckList:
             print(i)
         return('____________________')
-        
-    
-    
-    
-    
+
+
 def main():
     # This is to demonstrate how this deck class interacts with 
     # an input txt file, class cards and ally, and how it presents its data
@@ -102,6 +99,7 @@ def main():
     print('Printing New Deck...')
     print(calebDeck)
     print('Finished Printing New Deck...')
-    
+
+
 if __name__ == "__main__":
     main()
