@@ -27,7 +27,7 @@ class TurnManager:
         # set hero's gold to round number
         self._hero.gold(gold)
         self._endTurn = False
-        self._hero.drawCard()
+        self._hero.draw_card()
         while self.endTurn() == False:
             self.turnChoice()
 

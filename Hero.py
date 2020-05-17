@@ -66,7 +66,7 @@ class Hero:
     # Variable Changing
     def deckList(self, deckList=None):
         if deckList:
-            self._deckList.importTxt(deckList)
+            self._deckList.import_txt(deckList)
         return self._deckList
 
     def gold(self, income=None):
@@ -90,11 +90,11 @@ class Hero:
     # Card Draw
     def drawCard(self):
         if len(self._hand) <  self.maxHandSize():
-            draw = self._deckList.drawCard(self._hand)
+            draw = self._deckList.draw_card(self._hand)
             print(self.heroName() + ' drew ' + draw.name())
         else:
             print('Your hand is too full!')
-            print(self._heroName + ' burned:\n~_', self._deckList.burnCard())
+            print(self._heroName + ' burned:\n~_', self._deckList.burn_card())
 
     def drawCards(self, number):
         for i in range(number):
