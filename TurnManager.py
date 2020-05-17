@@ -13,7 +13,7 @@ class TurnManager:
         # coin toss:
         # True -> hero first
         # False -> enemy first
-        heroFirst = Tools.coinToss()
+        heroFirst = Tools.coin_toss()
         if heroFirst:
             self._hero.draw_cards(4)
             self._enemy.draw_cards(5)
