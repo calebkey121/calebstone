@@ -21,7 +21,7 @@ class GameManager:
         player_1_goes_first = player_1_turn.startOfGame()
         self.round_counter(1)
 
-        while self._player1.heroHealth() > 0 and self._player2.heroHealth() > 0:
+        while self._player1.hero_health() > 0 and self._player2.hero_health() > 0:
             if player_1_goes_first:
                 # Take your turns - player 1 then player 2
                 # pass in round number to set gold for that turn
@@ -36,9 +36,9 @@ class GameManager:
 
 def main():
     caleb = Hero.Hero(hero='caleb')
-    caleb.deckList('DeckLists/CalebDeckList.txt')
+    caleb.deck_list('DeckLists/CalebDeckList.txt')
     dio = Hero.Hero(hero='dio')
-    dio.deckList('DeckLists/DioDeckList.txt')
+    dio.deck_list('DeckLists/DioDeckList.txt')
     
     game = GameManager(caleb, dio)
     game.game()

@@ -20,53 +20,53 @@ class Hero:
         self._heroAttack = 0
 
     # Hero's Army Functions
-    def callToArms(self, ally=None):
+    def call_to_arms(self, ally=None):
         if ally:
             self._army.add_ally(ally)
         return self._army
 
-    def heroAttack(self, attack=None):
+    def hero_attack(self, attack=None):
         if attack:
             self._heroAttack = attack
         return self._heroAttack
 
-    def getBoardSize(self):
-        return self.callToArms().board_size()
+    def get_board_size(self):
+        return self.call_to_arms().board_size()
 
-    def printArmy(self):
-        self.callToArms().print_army()
+    def print_army(self):
+        self.call_to_arms().print_army()
 
     # Hand Functions
-    def maxHandSize(self, newSize=None):
-        if newSize:
-            self._maxHandSize = newSize
+    def max_hand_size(self, new_size=None):
+        if new_size:
+            self._maxHandSize = new_size
         return self._maxHandSize
 
-    def currentHandSize(self):
+    def current_hand_size(self):
         return len(self._hand)
 
-    def printHand(self):
+    def print_hand(self):
         for i, j in enumerate(self._hand):
             print(f'~_{i}{j}')
 
-    def removeFromHand(self, card):
+    def remove_from_hand(self, card):
         for i in self._hand:
             if i == card:
                 self._hand.remove(i)
 
-    def getFromHand(self, position):
+    def get_from_hand(self, position):
         return self._hand[position]
 
-    def anyCards(self):
+    def any_cards(self):
         if len(self._hand) > 0:
             return True
         else:
             return False
 
     # Variable Changing
-    def deckList(self, deckList=None):
-        if deckList:
-            self._deckList.import_txt(deckList)
+    def deck_list(self, deck_list=None):
+        if deck_list:
+            self._deckList.import_txt(deck_list)
         return self._deckList
 
     def gold(self, income=None):
@@ -74,41 +74,41 @@ class Hero:
             self._gold = income
         return self._gold
 
-    def heroName(self, name=None):
+    def hero_name(self, name=None):
         if name:
             self._heroName = name
         return self._heroName
     
-    def heroHealth(self, heroHealth=None):
-        if heroHealth:
-            self._heroHealth = heroHealth
+    def hero_health(self, hero_health=None):
+        if hero_health:
+            self._heroHealth = hero_health
         return self._heroHealth
 
-    def lowerHealth(self, attackVal):
-        self._heroHealth -= attackVal
+    def lower_health(self, attack_val):
+        self._heroHealth -= attack_val
 
     # Card Draw
-    def drawCard(self):
-        if len(self._hand) <  self.maxHandSize():
+    def draw_card(self):
+        if len(self._hand) < self.max_hand_size():
             draw = self._deckList.draw_card(self._hand)
-            print(self.heroName() + ' drew ' + draw.name())
+            print(self.hero_name() + ' drew ' + draw.name())
         else:
             print('Your hand is too full!')
             print(self._heroName + ' burned:\n~_', self._deckList.burn_card())
 
-    def drawCards(self, number):
+    def draw_cards(self, number):
         for i in range(number):
-            self.drawCard()
+            self.draw_card()
 
     # Playing Cards!!!
-    def playAlly(self, card):
-        self.callToArms().add_ally(card)
+    def play_ally(self, card):
+        self.call_to_arms().add_ally(card)
         self._gold -= card.cost()
-        self.removeFromHand(card)
+        self.remove_from_hand(card)
 
     # Gold Management
     # Are there any playable cards in my hand?
-    def playableCards(self):
+    def playable_cards(self):
         playable = False
         for i in self._hand:
             if i.cost() <= self._gold:
@@ -116,24 +116,24 @@ class Hero:
         return playable
 
     # Is this card playable?
-    def playableCard(self, card):
+    def playable_card(self, card):
         playable = False
         if card.cost() <= self.gold():
             playable = True
         return playable
 
     # Representation - Weird String is me trying to make the output look cool
-    def availableTargets(self):
-        availableTargets = []
-        for i in self.callToArms()._board:
-            availableTargets.append(i)
-        availableTargets.append(self)
-        return availableTargets
+    def available_targets(self):
+        available_targets = []
+        for i in self.call_to_arms()._board:
+            available_targets.append(i)
+        available_targets.append(self)
+        return available_targets
 
     def __repr__(self):
-        return f'''_{self.heroName()}___~
-Attack: {self.heroAttack()}
-Health: {self.heroHealth()}
+        return f'''_{self.hero_name()}___~
+Attack: {self.hero_attack()}
+Health: {self.hero_health()}
 ~___________~
 '''
 
