@@ -18,19 +18,19 @@ class GameManager:
         player_2_turn = Turn.TurnManager(self._player2, self._player1)
 
         # player_1_goes_first = True if player1 wins coin toss
-        player_1_goes_first = player_1_turn.startOfGame()
+        player_1_goes_first = player_1_turn.start_of_game()
         self.round_counter(1)
 
         while self._player1.hero_health() > 0 and self._player2.hero_health() > 0:
             if player_1_goes_first:
                 # Take your turns - player 1 then player 2
                 # pass in round number to set gold for that turn
-                player_1_turn.fullTurn(self.round_counter())
-                player_2_turn.fullTurn(self.round_counter())
+                player_1_turn.full_turn(self.round_counter())
+                player_2_turn.full_turn(self.round_counter())
             else:
                 # Take your turns - player 2 then player 1
-                player_2_turn.fullTurn(self.round_counter())
-                player_1_turn.fullTurn(self.round_counter())
+                player_2_turn.full_turn(self.round_counter())
+                player_1_turn.full_turn(self.round_counter())
             self._roundCounter += 1
 
 
