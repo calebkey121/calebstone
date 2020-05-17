@@ -1,5 +1,6 @@
-import Hero as hero
-import Tools as tools
+import Hero as Hero
+import Tools as Tools
+
 
 class TurnManager:
     def __init__(self, hero, enemy):
@@ -8,54 +9,54 @@ class TurnManager:
         self._return = True
         self._endTurn = False
 
-    def startOfGame(self):
+    def start_of_game(self):
         # coin toss:
         # True -> hero first
         # False -> enemy first
-        heroFirst = tools.coinToss()
-        if heroFirst:
-            self._hero.drawCards(4)
-            self._enemy.drawCards(5)
+        hero_first = Tools.coin_toss()
+        if hero_first:
+            self._hero.draw_cards(4)
+            self._enemy.draw_cards(5)
             return True
         else:
-            self._enemy.drawCards(4)
-            self._hero.drawCards(5)
+            self._enemy.draw_cards(4)
+            self._hero.draw_cards(5)
             return False
 
-    def fullTurn(self, gold):
+    def full_turn(self, gold):
         # set hero's gold to round number
         self._hero.gold(gold)
         self._endTurn = False
-        self._hero.drawCard()
-        while self.endTurn() == False:
-            self.turnChoice()
+        self._hero.draw_card()
+        while not self.end_turn():
+            self.turn_choice()
 
     # Find out want the player wants to do and call correct function based on that choice
     # ********************TO IMPLEMENT*************************ADD H OPTION - HAND INFORMATION***************
     # ********************TO IMPLEMENT*************************ADD B OPTION - BOARD INFORMATION***************
     # ********************TO IMPLEMENT*************************ADD E OPTION - ENEMY INFORMATION***************
     # ********************TO IMPLEMENT*************************ADD H OPTION - HERO INFORMATION***************
-    def turnChoice(self):
-        print('\nIt\'s ' + self._hero.heroName() + '\'s turn!\n')
+    def turn_choice(self):
+        print('\nIt\'s ' + self._hero.hero_name() + '\'s turn!\n')
         # While the player makes a doable choice i.e. This will loop uptil the player makes
         #                                              a choice that can actually be done
         self._return = True
         while self._return:
             answers = ('attack', 'play card', 'something else')
-            turnChoice = tools.get_input('|Enter your option|', answers)
-            if turnChoice == answers[0]:
-                self.choiceAttack()
-            elif turnChoice == answers[1]:
-                self.choicePlayCard()
-            elif turnChoice == answers[2]:
-                self.choiceOther()
+            turn_choice = Tools.get_input('|Enter your option|', answers)
+            if turn_choice == answers[0]:
+                self.choice_attack()
+            elif turn_choice == answers[1]:
+                self.choice_play_card()
+            elif turn_choice == answers[2]:
+                self.choice_other()
 
     # Player wants to Attack with a friendly ally
-    def choiceAttack(self):
-        if self._hero.getBoardSize() != 0:
-            attacker = tools.get_input('|Attack with|', self._hero.availableTargets())
+    def choice_attack(self):
+        if self._hero.get_board_size() != 0:
+            attacker = Tools.get_input('|Attack with|', self._hero.available_targets())
             print('|Attacking with:|\n', '~_', attacker)
-            defender = tools.get_input('|Attack who|', self._enemy.availableTargets())
+            defender = Tools.get_input('|Attack who|', self._enemy.available_targets())
             print('|Attacking:|\n~_', defender)
 
             self._return = False
@@ -64,23 +65,23 @@ class TurnManager:
             self._return = True
 
     # Player wants to play a card
-    def choicePlayCard(self):
+    def choice_play_card(self):
         # Does the player have enough Gold to play any of their cards
-        if self._hero.anyCards() == True:
+        if self._hero.any_cards():
             # Does the hero have any cards
-            if self._hero.playableCards() == True:
+            if self._hero.playable_cards():
                 
                 # Great! Now we can play a card
                 # I want to play this card! Retrieve it from you hand
-                playThisCard = tools.get_input('Play which card:', self._hero._hand)
+                play_this_card = Tools.get_input('Play which card:', self._hero._hand)
                 # Is this chosen card playable?
-                if self._hero.playableCard(playThisCard) == False:
+                if not self._hero.playable_card(play_this_card):
                     print('That card costs too much gold\n')
                     return
-                self._hero.playAlly(playThisCard)
-                print(playThisCard.name(), 'Get out there!\n')
+                self._hero.play_ally(play_this_card)
+                print(play_this_card.name(), 'Get out there!\n')
                 print('This is your army looks like now:')
-                self._hero.printArmy()
+                self._hero.print_army()
                 self._return = False
             # If you are over here, then you are not able to play a Card for some reason or other
             else:
@@ -90,68 +91,67 @@ class TurnManager:
             print('Your Hand is empty! Choose something else..\n')
             self._return = True
 
-    def choiceOther(self):
+    def choice_other(self):
         while self._return:
             answers = ('end your turn', 'help', 'board info', 'go back')
-            turnChoice = tools.get_input('|Enter your option|', answers)
-            if turnChoice == answers[0]:
-                self.endTurn(True)
+            turn_choice = Tools.get_input('|Enter your option|', answers)
+            if turn_choice == answers[0]:
+                self.end_turn(True)
                 self._return = False
                 return
-            elif turnChoice == answers[1]:
-                self.getHelp()
+            elif turn_choice == answers[1]:
+                self.get_help()
                 return
-            elif turnChoice == answers[2]:
-                self.printState()
+            elif turn_choice == answers[2]:
+                self.print_state()
                 return
-            elif turnChoice == answers[3]:
+            elif turn_choice == answers[3]:
                 return
-            # elif turnChoice == 'a':
+            # elif turn_choice == 'a':
             #     self.choiceAttack()
-            # elif turnChoice == 'p':
+            # elif turn_choice == 'p':
             #     self.choicePlayCard()
             # else:
             #     print('What?\n')
             #     return2
 
-
-    def endTurn(self, boola=None):
+    def end_turn(self, boola=None):
         if boola:
             self._endTurn = boola
         return self._endTurn
 
     # To be implemented later
-    def getHelp(self):
+    @staticmethod
+    def get_help():
         print('Never give up!\n')
 
-    def printState(self):
+    def print_state(self):
         print(f'''
 ~__{self._hero}
 ~__{self._enemy}
 ''')
-        print(f'|{self._hero.heroName()}\'s board|')
-        for i in self._hero.callToArms().getBoard():
+        print(f'|{self._hero.hero_name()}\'s board|')
+        for i in self._hero.call_to_arms().get_board():
             print(i)
-        print(f'|{self._hero.heroName()}\'s board|')
-        print(f'|{self._enemy.heroName()}\'s board|')
-        for i in self._enemy.callToArms().getBoard():
+        print(f'|{self._hero.hero_name()}\'s board|')
+        print(f'|{self._enemy.hero_name()}\'s board|')
+        for i in self._enemy.call_to_arms().get_board():
             print(i)
-        print(f'|{self._enemy.heroName()}\'s board|')
+        print(f'|{self._enemy.hero_name()}\'s board|')
 
 
 def main():
-    caleb = hero.Hero(hero='caleb')
+    caleb = Hero.Hero(hero='caleb')
     caleb.gold(10)
-    caleb.deckList('CalebDeckList.txt')
-    caleb.drawCards(5)
-    dio = hero.Hero(hero='dio')
+    caleb.deck_list('DeckLists/CalebDeckList.txt')
+    caleb.draw_cards(5)
+    dio = Hero.Hero(hero='dio')
     dio.gold(10)
-    dio.deckList('DioDeckList.txt')
-    
+    dio.deck_list('DeckLists/DioDeckList.txt')
 
     turn = TurnManager(caleb, dio)
-    turn.fullTurn(10)
+    turn.full_turn(10)
+
 
 if __name__ == "__main__":
     main()
-            
