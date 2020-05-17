@@ -37,21 +37,21 @@ class Ally(Card):
             self._health = h
         return self._health
 
-    def lowerHealth(self, attackVal):
-        self._health -= attackVal
+    def lower_health(self, attack_val):
+        self._health -= attack_val
 
-    def readyUp(self):
+    def ready_up(self):
         self._ready = True
 
-    def readyDown(self):
+    def ready_down(self):
         self._ready = False
 
-    def attackEnemy(self, enemy):
+    def attack_enemy(self, enemy):
         if self._ready:
             if self.attack() >= 0:
-                enemy.lowerHealth(self.attack())
+                enemy.lower_health(self.attack())
             if enemy.attack() >= 0:
-                self.lowerHealth(enemy.attack())
+                self.lower_health(enemy.attack())
 
     # Representation - Weird String is me trying to make the output look cool
     def __repr__(self):
@@ -64,8 +64,8 @@ Health: {self.health()}
 
 
 def main():
-    calebCard = Ally(cost=5, name='Caleb', attack=5, health=5)
-    print(calebCard)
+    caleb_card = Ally(cost=5, name='Caleb', attack=5, health=5)
+    print(caleb_card)
 
 
 if __name__ == '__main__':
