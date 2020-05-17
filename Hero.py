@@ -22,7 +22,7 @@ class Hero:
     # Hero's Army Functions
     def callToArms(self, ally=None):
         if ally:
-            self._army.addAlly(ally)
+            self._army.add_ally(ally)
         return self._army
 
     def heroAttack(self, attack=None):
@@ -31,10 +31,10 @@ class Hero:
         return self._heroAttack
 
     def getBoardSize(self):
-        return self.callToArms().boardSize()
+        return self.callToArms().board_size()
 
     def printArmy(self):
-        self.callToArms().printArmy()
+        self.callToArms().print_army()
 
     # Hand Functions
     def maxHandSize(self, newSize=None):
@@ -102,7 +102,7 @@ class Hero:
 
     # Playing Cards!!!
     def playAlly(self, card):
-        self.callToArms().addAlly(card)
+        self.callToArms().add_ally(card)
         self._gold -= card.cost()
         self.removeFromHand(card)
 

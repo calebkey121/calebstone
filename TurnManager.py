@@ -81,7 +81,7 @@ class TurnManager:
                 self._hero.playAlly(playThisCard)
                 print(playThisCard.name(), 'Get out there!\n')
                 print('This is your army looks like now:')
-                self._hero.printArmy()
+                self._hero.print_army()
                 self._return = False
             # If you are over here, then you are not able to play a Card for some reason or other
             else:
@@ -130,11 +130,11 @@ class TurnManager:
 ~__{self._enemy}
 ''')
         print(f'|{self._hero.heroName()}\'s board|')
-        for i in self._hero.callToArms().getBoard():
+        for i in self._hero.callToArms().get_board():
             print(i)
         print(f'|{self._hero.heroName()}\'s board|')
         print(f'|{self._enemy.heroName()}\'s board|')
-        for i in self._enemy.callToArms().getBoard():
+        for i in self._enemy.callToArms().get_board():
             print(i)
         print(f'|{self._enemy.heroName()}\'s board|')
 
