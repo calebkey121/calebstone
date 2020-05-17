@@ -45,7 +45,7 @@ class Deck:
         self.set_num_cards()
 
     # Sets deck list
-    # could simply add 1, but to be safe set to len(decklist)
+    # could simply add 1, but to be safe set to len(deck_list)
     def set_num_cards(self):
         self._currentNumCards = len(self._deckList)
 
