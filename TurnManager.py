@@ -142,11 +142,11 @@ class TurnManager:
 def main():
     caleb = hero.Hero(hero='caleb')
     caleb.gold(10)
-    caleb.deckList('CalebDeckList.txt')
+    caleb.deckList('DeckLists/CalebDeckList.txt')
     caleb.drawCards(5)
     dio = hero.Hero(hero='dio')
     dio.gold(10)
-    dio.deckList('DioDeckList.txt')
+    dio.deckList('DeckLists/DioDeckList.txt')
     
 
     turn = TurnManager(caleb, dio)

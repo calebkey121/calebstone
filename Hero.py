@@ -138,11 +138,7 @@ Health: {self.heroHealth()}
 '''
 
 def main():
-    finn = Hero()
-    finn.deckList('Decklist.txt')
-    finn.drawCards(5)
-    print(finn)
-    finn.printHand()
+    pass
 
 
 if __name__ == "__main__":

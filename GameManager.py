@@ -34,9 +34,9 @@ class GameManager:
 
 def main():
     caleb = hero.Hero(hero='caleb')
-    caleb.deckList('CalebDeckList.txt')
+    caleb.deckList('DeckLists/CalebDeckList.txt')
     dio = hero.Hero(hero='dio')
-    dio.deckList('DioDeckList.txt')
+    dio.deckList('DeckLists/DioDeckList.txt')
     
     game = GameManager(caleb, dio)
     game.game()
