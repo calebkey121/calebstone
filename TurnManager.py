@@ -122,7 +122,7 @@ class TurnManager:
 
     # To be implemented later
     @staticmethod
-    def get_help(self):
+    def get_help():
         print('Never give up!\n')
 
     def print_state(self):
