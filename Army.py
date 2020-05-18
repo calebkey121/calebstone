@@ -57,7 +57,7 @@ class Army:
     def print_army(self):
         if self.army_size() > 0:
             for i, j in enumerate(self._army):
-                print(f'~_{i+1}{j}')
+                print(f'{i+1}: {j}')
         else:
             print('Your army is empty!')
 
@@ -70,33 +70,34 @@ class Army:
         return '__________________________'
 
 def main():
-    # This is to demonstrate how the army class interacts with Allies
-    # Here, we create an army of size 3
-    army = Army()
-    caleb = Ally(name='Caleb', cost=1, attack=3, health=2)
-    luka = Ally(name='Luka', cost=3, attack=3, health=3)
-    nathan = Ally(name='Nathan', cost=5, attack=5, health=5)
-    army.add_ally(caleb)
-    army.add_ally(luka)
-    army.add_ally(nathan)
+    pass
+    # # This is to demonstrate how the army class interacts with Allies
+    # # Here, we create an army of size 3
+    # army = Army()
+    # caleb = Ally(name='Caleb', cost=1, attack=3, health=2)
+    # luka = Ally(name='Luka', cost=3, attack=3, health=3)
+    # nathan = Ally(name='Nathan', cost=5, attack=5, health=5)
+    # army.add_ally(caleb)
+    # army.add_ally(luka)
+    # army.add_ally(nathan)
 
-    print('Printing Army...')
-    print(army)
-    print('Finished Printing Army...')
+    # print('Printing Army...')
+    # print(army)
+    # print('Finished Printing Army...')
 
-    # Then we simulate damage by directly setting the health of a couple allies
-    print('\nSet Health')
-    army.find_ally(nathan).health(1)
-    army.find_ally(luka).health(0)
+    # # Then we simulate damage by directly setting the health of a couple allies
+    # print('\nSet Health')
+    # army.find_ally(nathan).health(1)
+    # army.find_ally(luka).health(0)
 
-    # If a ally has 0 health, like luka right now, then they are removed
-    print('Toll the Dead\n')
-    army.toll_the_dead()
+    # # If a ally has 0 health, like luka right now, then they are removed
+    # print('Toll the Dead\n')
+    # army.toll_the_dead()
 
-    # Results showns
-    print('Printing New Army...')
-    print(army)
-    print('Finished Printing New Army...')
+    # # Results showns
+    # print('Printing New Army...')
+    # print(army)
+    # print('Finished Printing New Army...')
 
     
 

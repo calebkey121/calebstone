@@ -1,4 +1,5 @@
 from Card import Ally
+import os
 import random
 
 class Deck:
@@ -11,7 +12,10 @@ class Deck:
     # In text file, use '#' for comment 
     # Format: NAME, COST, ATTACK, HEALTH
     def import_txt(self, file):
-        with open(file) as f:
+        script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+        rel_path = "DeckLists/" + file
+        abs_file_path = os.path.join(script_dir, rel_path)
+        with open(abs_file_path) as f:
             for line in f:
                 # Each line of the incoming txt file should be an ALLY formatted as:
                 # NAME, ATTACK, HEALTH

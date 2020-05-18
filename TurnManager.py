@@ -13,12 +13,12 @@ class TurnManager:
         # False -> enemy first
         heroFirst = tools.coin_toss()
         if heroFirst:
-            self._hero.draw_cards(4)
-            self._enemy.draw_cards(5)
+            self._hero.draw_cards(3)
+            self._enemy.draw_cards(4)
             return True
         else:
-            self._enemy.draw_cards(4)
-            self._hero.draw_cards(5)
+            self._enemy.draw_cards(3)
+            self._hero.draw_cards(4)
             return False
 
     def full_turn(self, roundNumber):
@@ -40,10 +40,6 @@ class TurnManager:
             i.ready_up()
 
     # Find out want the player wants to do and call correct function based on that choice
-    # ********************TO IMPLEMENT*************************ADD H OPTION - HAND INFORMATION***************
-    # ********************TO IMPLEMENT*************************ADD B OPTION - Army INFORMATION***************
-    # ********************TO IMPLEMENT*************************ADD E OPTION - ENEMY INFORMATION***************
-    # ********************TO IMPLEMENT*************************ADD H OPTION - HERO INFORMATION***************
     def turn_choice(self):
         # While the player makes a doable choice i.e. This will loop uptil the player makes
         #                                              a choice that can actually be done
@@ -55,6 +51,23 @@ class TurnManager:
             self.choice_play_card()
         elif turnChoice == answers[2]:
             self.choice_other()
+
+    def choice_other(self):
+        answers = ('end your turn', 'help', 'Game State',  'check hand', 'check gold', 'go back')
+        turnChoice = tools.get_input('|Enter your option|', answers)
+        if turnChoice == answers[0]:
+            self.end_turn(True)
+            return
+        elif turnChoice == answers[1]:
+            self.get_help()
+        elif turnChoice == answers[2]:
+            self.print_state()
+        elif turnChoice == answers[3]:
+            self.check_hand()
+        elif turnChoice == answers[4]:
+            self.print_gold()
+        elif turnChoice == answers[5]:
+            return
 
     # Player wants to Attack with a friendly ally
     def choice_attack(self):
@@ -77,49 +90,40 @@ class TurnManager:
         print('|Attacking:|', defender.name(), '\n')
         print('|Attacking with:|', attacker.name(), '\n')
         attacker.attack_enemy(defender)
+        if self._hero.health() <= 0 or self._enemy.health() <= 0:
+            self.end_turn(True)
+            return
+        self._hero.call_to_arms().toll_the_dead()
+        self._enemy.call_to_arms().toll_the_dead()
         self.print_state()
 
     # Player wants to play a card
     def choice_play_card(self):
-        # Does the player have enough Gold to play any of their cards
+        # Does the hero have any cards
         if self._hero.any_cards() == True:
-            # Does the hero have any cards
-            if self._hero.playable_cards() == True:
-                
-                # Great! Now we can play a card
-                # I want to play this card! Retrieve it from you hand
-                playThisCard = tools.get_input('Play which card:', self._hero._hand)
-                # Is this chosen card playable?
-                if self._hero.playable_card(playThisCard) == False:
-                    print('That card costs too much gold\n')
-                    return
-                self._hero.play_ally(playThisCard)
-                playThisCard.ready_down()
-                print(playThisCard.name(), 'Get out there!\n')
-                print('This is your army looks like now:')
-                self._hero.print_army()
-                print('')
-            # If you are over here, then you are not able to play a Card for some reason or other
-            else:
-                print('You don\'t have enough gold to play any of your cards! Choose something else..\n')
+            # Great! Now we can play a card
+            # I want to play this card! Retrieve it from you hand
+            hand = []
+            for i in self._hero._hand:
+                hand.append(i)
+            hand.append('Go Back')
+            self.print_gold()
+            playThisCard = tools.get_input('Play which card:', hand)
+            if playThisCard == 'Go Back':
+                return
+            # Is this chosen card playable?
+            if self._hero.playable_card(playThisCard) == False:
+                print('That card costs too much gold\n')
+                return
+            self._hero.play_ally(playThisCard)
+            playThisCard.ready_down()
+            print(playThisCard.name(), 'Get out there!\n')
+            print('This is your army looks like now:')
+            self._hero.call_to_arms.print_army()
+            print('')
+        # If you are over here, then you are not able to play a Card for some reason or other
         else:
             print('Your Hand is empty! Choose something else..\n')
-
-    def choice_other(self):
-        answers = ('end your turn', 'help', 'Game State', 'go back')
-        turnChoice = tools.get_input('|Enter your option|', answers)
-        if turnChoice == answers[0]:
-            self.end_turn(True)
-            return
-        elif turnChoice == answers[1]:
-            self.get_help()
-            return
-        elif turnChoice == answers[2]:
-            self.print_state()
-            return
-        elif turnChoice == answers[3]:
-            return
-
 
     def end_turn(self, boola=None):
         if boola:
@@ -132,6 +136,11 @@ class TurnManager:
 
     def print_gold(self):
         print(f'You have {self._hero.gold()} gold')
+
+    def check_hand(self):
+        self.print_gold()
+        self._hero.print_hand()
+        print('')
 
     def print_state(self):
         print(f'\t{self._hero}       |\t{self._enemy}\n')

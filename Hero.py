@@ -32,9 +32,6 @@ class Hero:
     def get_army_size(self):
         return self.call_to_arms().army_size()
 
-    def print_army(self):
-        self.call_to_arms().print_army()
-
     # Hand Functions
     def max_hand_size(self, newSize=None):
         if newSize:
@@ -46,7 +43,7 @@ class Hero:
 
     def print_hand(self):
         for i, j in enumerate(self._hand):
-            print(f'{i}{j}')
+            print(f'{i+1}: {j}')
 
     def remove_from_hand(self, card):
         for i in self._hand:
@@ -134,9 +131,9 @@ class Hero:
     # Representation - Weird String is me trying to make the output look cool
     def available_targets(self):
         availableTargets = []
+        availableTargets.append(self)
         for i in self.call_to_arms()._army:
             availableTargets.append(i)
-        availableTargets.append(self)
         return availableTargets
 
     def ready_up(self):
