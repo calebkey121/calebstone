@@ -23,7 +23,11 @@ class TurnManager:
 
     def full_turn(self, roundNumber):
         print('\nIt\'s ' + self._hero.name() + '\'s turn!')
-        self.print_state()
+        self._hero.draw_card()
+        # check is fatigue killed the hero
+        if self._hero.health() <= 0 or self._enemy.health() <= 0:
+            self.end_turn(True)
+            return
 
         # set hero's gold to round number
         if roundNumber < 10:
@@ -31,9 +35,8 @@ class TurnManager:
         else:
             self._hero.gold(10)
         self.print_gold()
-
+        self.print_state()
         self._endTurn = False
-        self._hero.draw_card()
         while self.end_turn() == False:
             self.turn_choice()
         for i in self._hero.available_targets():
@@ -43,6 +46,7 @@ class TurnManager:
     def turn_choice(self):
         # While the player makes a doable choice i.e. This will loop uptil the player makes
         #                                              a choice that can actually be done
+        print('')
         answers = ('attack', 'play card', 'something else')
         turnChoice = tools.get_input('|Enter your option|', answers)
         if turnChoice == answers[0]:
@@ -52,30 +56,37 @@ class TurnManager:
         elif turnChoice == answers[2]:
             self.choice_other()
 
+    # Give Player other options
     def choice_other(self):
         answers = ('end your turn', 'help', 'Game State',  'check hand', 'check gold', 'go back')
-        turnChoice = tools.get_input('|Enter your option|', answers)
-        if turnChoice == answers[0]:
-            self.end_turn(True)
-            return
-        elif turnChoice == answers[1]:
-            self.get_help()
-        elif turnChoice == answers[2]:
-            self.print_state()
-        elif turnChoice == answers[3]:
-            self.check_hand()
-        elif turnChoice == answers[4]:
-            self.print_gold()
-        elif turnChoice == answers[5]:
-            return
+        returnOther = True
+        while returnOther:
+            turnChoice = tools.get_input('|Enter your option|', answers)
+            if turnChoice == answers[0]:
+                self.end_turn(True)
+                return
+            elif turnChoice == answers[1]:
+                self.get_help()
+            elif turnChoice == answers[2]:
+                self.print_state()
+            elif turnChoice == answers[3]:
+                self.check_hand()
+            elif turnChoice == answers[4]:
+                self.print_gold()
+            elif turnChoice == answers[5]:
+                return
 
     # Player wants to Attack with a friendly ally
     def choice_attack(self):
         tryAgain = True
-        availableAttackers = self._hero.available_targets()
-        availableDefenders = self._enemy.available_targets()
+        availableAttackers = []
+        availableDefenders = []
         availableAttackers.append('Go Back')
         availableDefenders.append('Go Back')
+        for i in self._hero.available_targets():
+            availableAttackers.append(i)
+        for i in self._enemy.available_targets():
+            availableDefenders.append(i)
         while tryAgain:
             attacker = tools.get_input('|Attack with|', availableAttackers)
             if attacker == 'Go Back':
@@ -104,9 +115,9 @@ class TurnManager:
             # Great! Now we can play a card
             # I want to play this card! Retrieve it from you hand
             hand = []
+            hand.append('Go Back')
             for i in self._hero._hand:
                 hand.append(i)
-            hand.append('Go Back')
             self.print_gold()
             playThisCard = tools.get_input('Play which card:', hand)
             if playThisCard == 'Go Back':
@@ -119,12 +130,13 @@ class TurnManager:
             playThisCard.ready_down()
             print(playThisCard.name(), 'Get out there!\n')
             print('This is your army looks like now:')
-            self._hero.call_to_arms.print_army()
+            self._hero.call_to_arms().print_army()
             print('')
         # If you are over here, then you are not able to play a Card for some reason or other
         else:
             print('Your Hand is empty! Choose something else..\n')
 
+    # End the current turn
     def end_turn(self, boola=None):
         if boola:
             self._endTurn = boola
@@ -142,19 +154,31 @@ class TurnManager:
         self._hero.print_hand()
         print('')
 
+# Doesn't work when lengths are not equal to each other
     def print_state(self):
         print(f'\t{self._hero}       |\t{self._enemy}\n')
-        for i, j in zip(self._hero.call_to_arms().get_army(), self._enemy.call_to_arms().get_army()):
-            print(f'{i}|{j}\n')
 
-        # print(f'|{self._hero.name()}\'s Army|')
-        # for i in self._hero.call_to_arms().getArmy():
-        #     print(i)
-        # print(f'|{self._hero.name()}\'s Army|')
-        # print(f'|{self._enemy.name()}\'s Army|')
-        # for i in self._enemy.call_to_arms().getArmy():
-        #     print(i)
-        # print(f'|{self._enemy.name()}\'s Army|\n')
+        # This gets the armies together to output in an intelligible way
+        # I am least proud of these lines of code but hey they work
+        board = []
+        ziped = zip(self._hero.call_to_arms().get_army(), self._enemy.call_to_arms().get_army())
+        for i in ziped:
+            board = board.append(i)
+        heroArmySize = self._hero.call_to_arms().army_size()
+        enemyArmySize = self._enemy.call_to_arms().army_size()
+        i = min(heroArmySize, enemyArmySize)
+        if heroArmySize == enemyArmySize:
+            pass
+        elif heroArmySize < enemyArmySize:
+            while i < enemyArmySize:
+                board.append(('\t\t\t\t\t\t\t ', self._enemy.call_to_arms().get_ally_at(i)))
+                i += 1
+        elif heroArmySize > enemyArmySize:
+            while i < heroArmySize:
+                board.append((self._hero.call_to_arms().get_ally_at(i), '\t'))
+                i += 1
+        for i, j in board:
+            print(f'{i}|{j}')
 
 
 def main():

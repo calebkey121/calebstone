@@ -12,7 +12,7 @@ class Hero:
         self._deckList = kwargs['deckList'] if 'deckList' in kwargs else Deck()
         self._army = kwargs['army'] if 'army' in kwargs else Army()
         self._health = 30
-        self._attack = 0
+        self._attack = 29
         self._ready = True
         self._gold = 0
         self._hand = []
@@ -96,11 +96,22 @@ class Hero:
     # Card Draw
     def draw_card(self):
         if len(self._hand) < self.max_hand_size():
-            draw = self._deckList.draw_card(self._hand)
-            print(self.name() + ' drew ' + draw.name() + '\n')
+            # CASE: Out of Cards!! Take damage equal to the amount of cards that you have overdrawn
+            if self.deck_list().get_current_num_cards() <= 0:
+                damage = self._deckList.draw_card(self._hand)
+                print(f'Fatigue: {-damage} damage delt to your hero')
+                self._health += damage
+            else:
+                draw = self._deckList.draw_card(self._hand)
+                print(self.name() + ' drew ' + draw.name() + '\n')
         else:
-            print('Your hand is too full!')
-            print(self._name + ' burned:', self._deckList.burn_card())
+            if self.deck_list().get_current_num_cards() > 0:
+                print('Your hand is too full!')
+                print(self._name + ' burned:', self._deckList.burn_card())
+            else:
+                damage = self._deckList.draw_card(self._hand)
+                print(f'Fatigue: {-damage} damage delt to your hero')
+                self._health += damage
 
     def draw_cards(self, number):
         for i in range(number):

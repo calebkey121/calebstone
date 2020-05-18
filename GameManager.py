@@ -20,24 +20,33 @@ class GameManager:
         player1goesFirst = player1Turn.start_of_game()
         self.round_counter(1)
 
-        condition = self._player1.health() > 0 and self._player2.health() > 0
-        while condition:
+        while self.check_for_winner() == False:
             print(f'Round {self.round_counter()}:')
             if player1goesFirst:
                 # Take your turns - player 1 then player 2
                 # pass in round number to set gold for that turn
                 player1Turn.full_turn(self.round_counter())
-                if not condition:
+                if self.check_for_winner():
                     break
                 player2Turn.full_turn(self.round_counter())
+                if self.check_for_winner():
+                    break
             else:
                 # Take your turns - player 2 then player 1
                 player2Turn.full_turn(self.round_counter())
-                if not condition:
+                if self.check_for_winner():
                     break
                 player1Turn.full_turn(self.round_counter())
+                if self.check_for_winner():
+                    break
             self._roundCounter += 1
         self.print_winner()
+
+    def check_for_winner(self):
+        if self._player1.health() <= 0 or self._player2.health() <= 0:
+            return True
+        else:
+            return False
 
     def print_winner(self):
         player1Lose = self._player1.health() <= 0

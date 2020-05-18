@@ -46,20 +46,19 @@ class Army:
             print('That ally is not in battle')
         print('That is not an ally')
 
-    # gain access to an index on the army
-    def find_index(self, index):
-        if index < 0 & index > 7:
-            print('Index is out of range')
-        elif self._army[index] == None:
-            print('There is no ally here')
-        return(self._army[index])
-
     def print_army(self):
         if self.army_size() > 0:
             for i, j in enumerate(self._army):
                 print(f'{i+1}: {j}')
         else:
             print('Your army is empty!')
+
+    def get_ally_at(self, index):
+        try:
+            return self._army[index]
+        except IndexError as e:
+            print(e)
+
 
     def __repr__(self):
         if self._army != []:

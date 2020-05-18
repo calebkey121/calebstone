@@ -54,8 +54,10 @@ class Deck:
 
     # Picks random card from deck and appends to hand - returns that card
     def draw_card(self, hand):
-        if len(self._deckList) <= 0:
+        if self.get_current_num_cards() <= 0:
             print('Your Deck is empty!!!')
+            self._currentNumCards -= 1
+            return self.get_current_num_cards()
         else:
             draw = random.choice(self._deckList)
             hand.append(draw)
