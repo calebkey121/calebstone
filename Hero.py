@@ -19,9 +19,9 @@ class Hero:
         self._maxHandSize = 10
 
     # Hero's Army Functions
-    def callToArms(self, ally=None):
+    def call_to_arms(self, ally=None):
         if ally:
-            self._army.addAlly(ally)
+            self._army.add_ally(ally)
         return self._army
 
     def attack(self, attack=None):
@@ -29,53 +29,53 @@ class Hero:
             self._attack = attack
         return self._attack
 
-    def getArmySize(self):
-        return self.callToArms().armySize()
+    def get_army_size(self):
+        return self.call_to_arms().army_size()
 
-    def printArmy(self):
-        self.callToArms().printArmy()
+    def print_army(self):
+        self.call_to_arms().print_army()
 
     # Hand Functions
-    def maxHandSize(self, newSize=None):
+    def max_hand_size(self, newSize=None):
         if newSize:
             self._maxHandSize = newSize
         return self._maxHandSize
 
-    def currentHandSize(self):
+    def current_hand_size(self):
         return len(self._hand)
 
-    def printHand(self):
+    def print_hand(self):
         for i, j in enumerate(self._hand):
             print(f'{i}{j}')
 
-    def removeFromHand(self, card):
+    def remove_from_hand(self, card):
         for i in self._hand:
             if i == card:
                 self._hand.remove(i)
 
-    def attackEnemy(self, enemy):
+    def attack_enemy(self, enemy):
         if self._ready:
             if self.attack() >= 0:
-                enemy.lowerHealth(self.attack())
+                enemy.lower_health(self.attack())
             if enemy.attack() >= 0:
-                self.lowerHealth(enemy.attack())
-            self.readyDown()
+                self.lower_health(enemy.attack())
+            self.ready_down()
         else:
             print(f'{self.name()} is not ready!')
 
-    def getFromHand(self, position):
+    def get_from_hand(self, position):
         return self._hand[position]
 
-    def anyCards(self):
+    def any_cards(self):
         if len(self._hand) > 0:
             return True
         else:
             return False
 
     # Variable Changing
-    def deckList(self, deckList=None):
+    def deck_list(self, deckList=None):
         if deckList:
-            self._deckList.importTxt(deckList)
+            self._deckList.import_txt(deckList)
         return self._deckList
 
     def gold(self, income=None):
@@ -93,31 +93,31 @@ class Hero:
             self._health = health
         return self._health
 
-    def lowerHealth(self, attackVal):
+    def lower_health(self, attackVal):
         self._health -= attackVal
 
     # Card Draw
-    def drawCard(self):
-        if len(self._hand) <  self.maxHandSize():
-            draw = self._deckList.drawCard(self._hand)
+    def draw_card(self):
+        if len(self._hand) < self.max_hand_size():
+            draw = self._deckList.draw_card(self._hand)
             print(self.name() + ' drew ' + draw.name() + '\n')
         else:
             print('Your hand is too full!')
-            print(self._name + ' burned:', self._deckList.burnCard())
+            print(self._name + ' burned:', self._deckList.burn_card())
 
-    def drawCards(self, number):
+    def draw_cards(self, number):
         for i in range(number):
-            self.drawCard()
+            self.draw_card()
 
     # Playing Cards!!!
-    def playAlly(self, card):
-        self.callToArms().addAlly(card)
+    def play_ally(self, card):
+        self.call_to_arms().add_ally(card)
         self._gold -= card.cost()
-        self.removeFromHand(card)
+        self.remove_from_hand(card)
 
     # Gold Management
     # Are there any playable cards in my hand?
-    def playableCards(self):
+    def playable_cards(self):
         playable = False
         for i in self._hand:
             if i.cost() <= self._gold:
@@ -125,27 +125,27 @@ class Hero:
         return playable
 
     # Is this card playable?
-    def playableCard(self, card):
+    def playable_card(self, card):
         playable = False
         if card.cost() <= self.gold():
             playable = True
         return playable
 
     # Representation - Weird String is me trying to make the output look cool
-    def availableTargets(self):
+    def available_targets(self):
         availableTargets = []
-        for i in self.callToArms()._army:
+        for i in self.call_to_arms()._army:
             availableTargets.append(i)
         availableTargets.append(self)
         return availableTargets
 
-    def readyUp(self):
+    def ready_up(self):
         self._ready = True
 
-    def readyDown(self):
+    def ready_down(self):
         self._ready = False
 
-    def isReady(self):
+    def is_ready(self):
         return self._ready
 
     def __repr__(self):

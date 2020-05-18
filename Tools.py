@@ -28,7 +28,7 @@ def get_input(prompt, acceptable_answers):
     return res
 
 # heads is true
-def coinToss():
+def coin_toss():
     flip = random.randint(0, 1)
     if (flip == 0):
         return True

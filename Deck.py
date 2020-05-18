@@ -10,7 +10,7 @@ class Deck:
     # Reading cards from a text file ***ALLIES ONLY***
     # In text file, use '#' for comment 
     # Format: NAME, COST, ATTACK, HEALTH
-    def importTxt(self, file):
+    def import_txt(self, file):
         with open(file) as f:
             for line in f:
                 # Each line of the incoming txt file should be an ALLY formatted as:
@@ -28,45 +28,45 @@ class Deck:
                 # txt file is read
 
                 newAlly = Ally(name=inputCard[0], cost=int(inputCard[1]), attack=int(inputCard[2]), health=int(inputCard[3]))
-                self.addCard(newAlly)
+                self.add_card(newAlly)
                 
     # adds card to deck
-    def addCard(self, card):
+    def add_card(self, card):
         self._deckList.append(card)
-        self.setNumCards()
+        self.set_num_cards()
 
     # remove card from deck
-    def removeCard(self, card):
+    def remove_card(self, card):
         self._deckList.remove(card)
-        self.setNumCards()
+        self.set_num_cards()
 
     # Sets deck list
     # could simply add 1, but to be safe set to len(decklist)
-    def setNumCards(self):
+    def set_num_cards(self):
         self._currentNumCards = len(self._deckList)
 
-    def getCurrentNumCards(self):
+    def get_current_num_cards(self):
         return self._currentNumCards
 
     # Picks random card from deck and appends to hand - returns that card
-    def drawCard(self, hand):
+    def draw_card(self, hand):
         if len(self._deckList) <= 0:
             print('Your Deck is empty!!!')
         else:
             draw = random.choice(self._deckList)
             hand.append(draw)
-            self.removeCard(draw)
+            self.remove_card(draw)
             return draw
 
-    def burnCard(self):
+    def burn_card(self):
         draw = random.choice(self._deckList)
-        self.removeCard(draw)
+        self.remove_card(draw)
         return draw
 
 
     def __repr__(self):
         print('____________________')
-        print(f'Current Deck Size: {self.getCurrentNumCards()}')
+        print(f'Current Deck Size: {self.get_current_num_cards()}')
         for i in self._deckList:
             print(i)
         return('____________________')

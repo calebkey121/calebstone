@@ -39,25 +39,25 @@ class Ally(Card):
             self._health = h
         return self._health
 
-    def lowerHealth(self, attackVal):
+    def lower_health(self, attackVal):
         self._health -= attackVal
 
-    def readyUp(self):
+    def ready_up(self):
         self._ready = True
 
-    def readyDown(self):
+    def ready_down(self):
         self._ready = False
 
-    def isReady(self):
+    def is_ready(self):
         return self._ready
 
-    def attackEnemy(self, enemy):
+    def attack_enemy(self, enemy):
         if self._ready:
             if self.attack() >= 0:
-                enemy.lowerHealth(self.attack())
+                enemy.lower_health(self.attack())
             if enemy.attack() >= 0:
-                self.lowerHealth(enemy.attack())
-            self.readyDown()
+                self.lower_health(enemy.attack())
+            self.ready_down()
         else:
             print(f'{self.name()} is not ready!')
 

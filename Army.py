@@ -8,37 +8,37 @@ class Army:
         self._armySize = 0
         self._army = []
 
-    def maxSlots(self, maxSlots=None):
+    def max_slots(self, maxSlots=None):
         if maxSlots:
             self._maxSlots = maxSlots
         return self._maxSlots
 
-    def armySize(self, armySize=None):
+    def army_size(self, armySize=None):
         if armySize:
             self._armySize = armySize
         return self._armySize
 
-    def setArmySize(self):
+    def set_army_size(self):
         self._armySize = len(self._army)
 
-    def getArmy(self):
+    def get_army(self):
         return self._army
 
-    def addAlly(self, ally):
-        if self.armySize() <= self.maxSlots():
+    def add_ally(self, ally):
+        if self.army_size() <= self.max_slots():
             self._army.append(ally)
-            self.setArmySize()
+            self.set_army_size()
         else:
             print('Army is full')
 
     #This clears your Army of dead Allies
-    def tollTheDead(self):
+    def toll_the_dead(self):
         for i in self._army:
             if i.health() <= 0:
                 self._army.remove(i)
 
     # find the index of a specific ally on the army
-    def findAlly(self, ally):
+    def find_ally(self, ally):
         if isinstance(ally, Ally):
             for i in self._army:
                 if i == ally:
@@ -47,15 +47,15 @@ class Army:
         print('That is not an ally')
 
     # gain access to an index on the army
-    def findIndex(self, index):
+    def find_index(self, index):
         if index < 0 & index > 7:
             print('Index is out of range')
         elif self._army[index] == None:
             print('There is no ally here')
         return(self._army[index])
 
-    def printArmy(self):
-        if self.armySize() > 0:
+    def print_army(self):
+        if self.army_size() > 0:
             for i, j in enumerate(self._army):
                 print(f'~_{i+1}{j}')
         else:
@@ -76,9 +76,9 @@ def main():
     caleb = Ally(name='Caleb', cost=1, attack=3, health=2)
     luka = Ally(name='Luka', cost=3, attack=3, health=3)
     nathan = Ally(name='Nathan', cost=5, attack=5, health=5)
-    army.addAlly(caleb)
-    army.addAlly(luka)
-    army.addAlly(nathan)
+    army.add_ally(caleb)
+    army.add_ally(luka)
+    army.add_ally(nathan)
 
     print('Printing Army...')
     print(army)
@@ -86,12 +86,12 @@ def main():
 
     # Then we simulate damage by directly setting the health of a couple allies
     print('\nSet Health')
-    army.findAlly(nathan).health(1)
-    army.findAlly(luka).health(0)
+    army.find_ally(nathan).health(1)
+    army.find_ally(luka).health(0)
 
     # If a ally has 0 health, like luka right now, then they are removed
     print('Toll the Dead\n')
-    army.tollTheDead()
+    army.toll_the_dead()
 
     # Results showns
     print('Printing New Army...')
