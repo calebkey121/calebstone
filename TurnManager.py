@@ -1,5 +1,5 @@
-import Hero as hero
-import Tools as tools
+import Hero as Hero
+import Tools as Tools
 
 class TurnManager:
     def __init__(self, hero, enemy):
@@ -11,7 +11,7 @@ class TurnManager:
         # coin toss:
         # True -> hero first
         # False -> enemy first
-        heroFirst = tools.coin_toss()
+        heroFirst = Tools.coin_toss()
         if heroFirst:
             self._hero.draw_cards(3)
             self._enemy.draw_cards(4)
@@ -46,9 +46,8 @@ class TurnManager:
     def turn_choice(self):
         # While the player makes a doable choice i.e. This will loop uptil the player makes
         #                                              a choice that can actually be done
-        print('')
         answers = ('attack', 'play card', 'something else')
-        turnChoice = tools.get_input('|Enter your option|', answers)
+        turnChoice = Tools.get_input('\n|Enter your option|', answers)
         if turnChoice == answers[0]:
             self.choice_attack()
         elif turnChoice == answers[1]:
@@ -61,7 +60,7 @@ class TurnManager:
         answers = ('end your turn', 'help', 'Game State',  'check hand', 'check gold', 'go back')
         returnOther = True
         while returnOther:
-            turnChoice = tools.get_input('|Enter your option|', answers)
+            turnChoice = Tools.get_input('\n|Enter your option|', answers)
             if turnChoice == answers[0]:
                 self.end_turn(True)
                 return
@@ -88,14 +87,14 @@ class TurnManager:
         for i in self._enemy.available_targets():
             availableDefenders.append(i)
         while tryAgain:
-            attacker = tools.get_input('|Attack with|', availableAttackers)
+            attacker = Tools.get_input('|Attack with|', availableAttackers)
             if attacker == 'Go Back':
                 return
             elif attacker.is_ready():
                 tryAgain = False
             else:
                 print(f'{attacker.name()} is not ready!')
-        defender = tools.get_input('|Attack who|', availableDefenders)
+        defender = Tools.get_input('|Attack who|', availableDefenders)
         if defender == 'Go Back':
                 return
         print('|Attacking:|', defender.name(), '\n')
@@ -119,7 +118,7 @@ class TurnManager:
             for i in self._hero._hand:
                 hand.append(i)
             self.print_gold()
-            playThisCard = tools.get_input('Play which card:', hand)
+            playThisCard = Tools.get_input('Play which card:', hand)
             if playThisCard == 'Go Back':
                 return
             # Is this chosen card playable?
@@ -146,39 +145,39 @@ class TurnManager:
     def get_help(self):
         print('Never give up!\n')
 
+    # Prints how much gold the hero has left
     def print_gold(self):
         print(f'You have {self._hero.gold()} gold')
 
+    # Gives the cards currently in the heros hand
     def check_hand(self):
         self.print_gold()
         self._hero.print_hand()
         print('')
 
-# Doesn't work when lengths are not equal to each other
+    # Prints the current state of the game i.e. the Heros and Armies of both sides
     def print_state(self):
         print(f'\t{self._hero}       |\t{self._enemy}\n')
 
         # This gets the armies together to output in an intelligible way
         # I am least proud of these lines of code but hey they work
-        board = []
-        ziped = zip(self._hero.call_to_arms().get_army(), self._enemy.call_to_arms().get_army())
-        for i in ziped:
-            board = board.append(i)
+        heroCounter = 0
+        enemyCounter = 0
         heroArmySize = self._hero.call_to_arms().army_size()
         enemyArmySize = self._enemy.call_to_arms().army_size()
-        i = min(heroArmySize, enemyArmySize)
-        if heroArmySize == enemyArmySize:
-            pass
-        elif heroArmySize < enemyArmySize:
-            while i < enemyArmySize:
-                board.append(('\t\t\t\t\t\t\t ', self._enemy.call_to_arms().get_ally_at(i)))
-                i += 1
-        elif heroArmySize > enemyArmySize:
-            while i < heroArmySize:
-                board.append((self._hero.call_to_arms().get_ally_at(i), '\t'))
-                i += 1
-        for i, j in board:
-            print(f'{i}|{j}')
+        largestArmy = max(heroArmySize, enemyArmySize)
+        while heroCounter < largestArmy and enemyCounter < largestArmy:
+            heroAlly = self._hero.call_to_arms().get_ally_at(heroCounter)
+            enemyAlly = self._enemy.call_to_arms().get_ally_at(enemyCounter)
+            if heroAlly == None:
+                #This mess of a string gets the spacing right
+                heroAlly = '\t\t\t\t\t\t\t '
+            elif enemyAlly == None:
+                #Same with this string
+                enemyAlly = '\t'
+            print(f'{heroAlly}|{enemyAlly}')
+            heroCounter += 1
+            enemyCounter += 1
 
 
 def main():

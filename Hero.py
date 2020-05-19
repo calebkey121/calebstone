@@ -12,7 +12,7 @@ class Hero:
         self._deckList = kwargs['deckList'] if 'deckList' in kwargs else Deck()
         self._army = kwargs['army'] if 'army' in kwargs else Army()
         self._health = 30
-        self._attack = 29
+        self._attack = 0
         self._ready = True
         self._gold = 0
         self._hand = []

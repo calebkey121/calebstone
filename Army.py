@@ -56,8 +56,8 @@ class Army:
     def get_ally_at(self, index):
         try:
             return self._army[index]
-        except IndexError as e:
-            print(e)
+        except IndexError:
+            return None
 
 
     def __repr__(self):

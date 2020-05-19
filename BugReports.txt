@@ -1,0 +1,1 @@
+print_state says none instead of being blank after I killed an enemy ally 

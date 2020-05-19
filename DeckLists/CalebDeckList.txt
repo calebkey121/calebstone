@@ -1,16 +1,16 @@
 # Reading cards from a text file ***ALLIES ONLY***
 # In text file, use '#' for comment 
 # Format: NAME, COST, ATTACK, HEALTH
-caleb1,1,11,1
-caleb2,1,12,2
-caleb3,1,13,3
-caleb4,1,14,4
-caleb5,1,15,5
-caleb6,1,16,6
-caleb7,1,7,7
-caleb8,1,8,8
-caleb9,1,9,9
-caleb10,1,10,10
+caleb1,1,1,1
+caleb2,2,2,2
+caleb3,3,3,3
+caleb4,4,4,4
+caleb5,5,5,5
+caleb6,6,6,6
+caleb7,7,7,7
+caleb8,8,8,8
+caleb9,9,9,9
+caleb10,10,10,10
 caleb11,1,1,1
 caleb12,2,2,2
 caleb13,3,3,3
