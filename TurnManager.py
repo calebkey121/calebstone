@@ -122,15 +122,18 @@ class TurnManager:
             if playThisCard == 'Go Back':
                 return
             # Is this chosen card playable?
-            if self._hero.playable_card(playThisCard) == False:
-                print('That card costs too much gold\n')
+            elif self._hero.playable_card(playThisCard) == False:
+                print('That card costs too much gold')
                 return
-            self._hero.play_ally(playThisCard)
-            playThisCard.ready_down()
-            print(playThisCard.name(), 'Get out there!\n')
-            print('This is your army looks like now:')
-            self._hero.call_to_arms().print_army()
-            print('')
+            elif self._hero.call_to_arms().full_army() == True:
+                print('Your Army is Full!')
+                return
+            else:
+                self._hero.play_ally(playThisCard)
+                playThisCard.ready_down()
+                print(playThisCard.name(), 'Get out there!\n')
+                self.print_state()
+                print('')
         # If you are over here, then you are not able to play a Card for some reason or other
         else:
             print('Your Hand is empty! Choose something else..\n')

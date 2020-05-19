@@ -1,1 +1,2 @@
 print_state says none instead of being blank after I killed an enemy ally - Fixed
+Army allowed 8 people- Fixed

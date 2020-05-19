@@ -14,12 +14,22 @@ class Army:
         return self._maxSlots
 
     def army_size(self, armySize=None):
+        self.set_army_size()
         if armySize:
             self._armySize = armySize
         return self._armySize
 
     def set_army_size(self):
         self._armySize = len(self._army)
+
+    
+    # Returns true if the army is full
+    def full_army(self):
+        self.set_army_size()
+        returnVal = False
+        if self.army_size() == self.max_slots():
+            returnVal = True
+        return returnVal
 
     def get_army(self):
         return self._army
