@@ -12,7 +12,7 @@ class Hero:
         self._deckList = kwargs['deckList'] if 'deckList' in kwargs else Deck()
         self._army = kwargs['army'] if 'army' in kwargs else Army()
         self._health = 30
-        self._attack = 0
+        self._attack = 29
         self._ready = True
         self._gold = 0
         self._hand = []
@@ -157,7 +157,7 @@ class Hero:
         return self._ready
 
     def __repr__(self):
-        return f'~__{self.name()}__~ \tAttack: {self.attack()} \tHealth: {self.health()}'
+        return f'~__{self.name()}__~ \tAttack: {self.attack():2d} \tHealth: {self.health():2d}'
 
 def main():
     pass

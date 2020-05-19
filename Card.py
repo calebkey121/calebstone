@@ -63,7 +63,7 @@ class Ally(Card):
 
     # Representation - Weird String is me trying to make the output look cool
     def __repr__(self):
-        return f'~__{self.name()}__~ \tCost: {self.cost()} \tAttack: {self.attack()} \tHealth: {self.health()}'
+        return f'~__{self.name()}__~ \t\tCost: {self.cost():2d} \tAttack: {self.attack():2d} \tHealth: {self.health():2d}'
 
 def main():
     pass

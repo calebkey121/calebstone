@@ -157,7 +157,7 @@ class TurnManager:
 
     # Prints the current state of the game i.e. the Heros and Armies of both sides
     def print_state(self):
-        print(f'\t{self._hero}       |\t{self._enemy}\n')
+        print(f'\t\t{self._hero}\t\t|\t{self._enemy}\n')
 
         # This gets the armies together to output in an intelligible way
         # I am least proud of these lines of code but hey they work
@@ -171,13 +171,15 @@ class TurnManager:
             enemyAlly = self._enemy.call_to_arms().get_ally_at(enemyCounter)
             if heroAlly == None:
                 #This mess of a string gets the spacing right
-                heroAlly = '\t\t\t\t\t\t\t '
-            elif enemyAlly == None:
+                heroAlly = '\t\t\t\t\t\t\t\t'
+            
+            if enemyAlly == None:
                 #Same with this string
-                enemyAlly = '\t'
-            print(f'{heroAlly}|{enemyAlly}')
+                enemyAlly = '\t\t\t\t\t\t\t\t  '
+            print(f'|{heroAlly}\t|{enemyAlly}|')
             heroCounter += 1
             enemyCounter += 1
+        print('___________________________________________________________________________________________________________________________________________')
 
 
 def main():
