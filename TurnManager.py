@@ -7,18 +7,21 @@ class TurnManager:
         self._enemy = enemy
         self._endTurn = False
 
+    # Make this silent
     def start_of_game(self):
         # coin toss:
         # True -> hero first
         # False -> enemy first
         heroFirst = Tools.coin_toss()
         if heroFirst:
-            self._hero.draw_cards(3)
-            self._enemy.draw_cards(4)
+            print(f'{self._hero.name()} wins the coin toss.\n')
+            self._hero.draw_cards(3, silently=True)
+            self._enemy.draw_cards(4, silently=True)
             return True
         else:
-            self._enemy.draw_cards(3)
-            self._hero.draw_cards(4)
+            print(f'{self._enemy.name()} wins the coin toss.\n')
+            self._enemy.draw_cards(3, silently=True)
+            self._hero.draw_cards(4, silently=True)
             return False
 
     def full_turn(self, roundNumber):
@@ -46,18 +49,18 @@ class TurnManager:
     def turn_choice(self):
         # While the player makes a doable choice i.e. This will loop uptil the player makes
         #                                              a choice that can actually be done
-        answers = ('attack', 'play card', 'something else')
+        answers = ('play card', 'attack', 'something else')
         turnChoice = Tools.get_input('\n|Enter your option|', answers)
         if turnChoice == answers[0]:
-            self.choice_attack()
-        elif turnChoice == answers[1]:
             self.choice_play_card()
+        elif turnChoice == answers[1]:
+            self.choice_attack()
         elif turnChoice == answers[2]:
             self.choice_other()
 
     # Give Player other options
     def choice_other(self):
-        answers = ('end your turn', 'help', 'Game State',  'check hand', 'check gold', 'go back')
+        answers = ('end your turn', 'help', 'Game State', 'Deck',  'go back') # 'check hand', 'check gold', Not very useful
         returnOther = True
         while returnOther:
             turnChoice = Tools.get_input('\n|Enter your option|', answers)
@@ -69,10 +72,12 @@ class TurnManager:
             elif turnChoice == answers[2]:
                 self.print_state()
             elif turnChoice == answers[3]:
-                self.check_hand()
+                self.check_deck()
+            # elif turnChoice == answers[3]:        Not very useful :/
+            #     self.check_hand()
+            # elif turnChoice == answers[4]:        Not very useful :/
+            #     self.print_gold()
             elif turnChoice == answers[4]:
-                self.print_gold()
-            elif turnChoice == answers[5]:
                 return
 
     # Player wants to Attack with a friendly ally
@@ -158,6 +163,9 @@ class TurnManager:
         self._hero.print_hand()
         print('')
 
+    def check_deck(self):
+        print(self._hero.deck_list())
+
     # Prints the current state of the game i.e. the Heros and Armies of both sides
     def print_state(self):
         print(f'\t\t{self._hero}\t\t|\t{self._enemy}\n')
@@ -183,6 +191,18 @@ class TurnManager:
             heroCounter += 1
             enemyCounter += 1
         print('___________________________________________________________________________________________________________________________________________')
+
+
+# # Implementing AI
+# class AITurnManager(TurnManager):
+
+
+
+
+
+
+
+
 
 
 def main():

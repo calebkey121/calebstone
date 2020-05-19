@@ -13,11 +13,12 @@ class GameManager:
         return self._roundCounter
 
     def game(self):
+        print('\nLet the games commence...\n')
         player1Turn = turn.TurnManager(self._player1, self._player2)
         player2Turn = turn.TurnManager(self._player2, self._player1)
+        player1goesFirst = player1Turn.start_of_game()
 
         # player1goesFirst = True if player1 wins coin toss
-        player1goesFirst = player1Turn.start_of_game()
         self.round_counter(1)
 
         while self.check_for_winner() == False:
