@@ -3,10 +3,11 @@ import os
 import random
 
 class Deck:
-    def __init__(self):
+    def __init__(self, deckName):
         self._deckList = []
         self._startingNumCards = 30
         self._currentNumCards = 0
+        self.import_txt(deckName + ".txt")
 
     # Reading cards from a text file ***ALLIES ONLY***
     # In text file, use '#' for comment 

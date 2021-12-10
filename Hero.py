@@ -1,3 +1,6 @@
+import pygame
+import os
+import settings
 from Army import Army
 from Deck import Deck
 from Card import Ally
@@ -8,9 +11,10 @@ class Hero:
         # Heros are the player and hold all the variables that the player will have in game
         # In the future, I want the heros to be unique, here the just have the following:
         # :: Name, Health, Gold, Deck(of cards), Hand(of cards), and related variables
-        self._name = kwargs['hero'] if 'hero' in kwargs else 'Finn'
-        self._deckList = kwargs['deckList'] if 'deckList' in kwargs else Deck()
-        self._army = kwargs['army'] if 'army' in kwargs else Army()
+        self._name = kwargs['hero']
+        self._deckList = Deck(kwargs['deckList'])
+        self._army = Army()
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "heros", self._name + ".png")), (settings.WIDTH / 5, settings.HEIGHT / 5))
         self._health = 30
         self._attack = 2
         self._ready = True
@@ -160,9 +164,112 @@ class Hero:
     def __repr__(self):
         return f'~__{self.name()}__~ \tAttack: {self.attack():2d} \tHealth: {self.health():2d}'
 
-def main():
-    pass
+class player1(Hero):
+    def draw(self, WIN):
+        # Players Avatar
+        defaultX = 10
+        defaultY = (settings.HEIGHT / 2) - (self._avatar.get_height() / 2)
+        WIN.blit(self._avatar, (10, defaultY))
+
+        # Stat Labels
+        health_label = settings.main_font.render(f"{self._health}", 1, (255,0,0)) # better way to choose rgb? is needed??
+        gold_label = settings.main_font.render(f"{self._gold}", 1, (255,188,0)) # better way to choose rgb? is needed??
+        name_label = settings.main_font.render(f"{self._name}", 1, (255,255,255)) # better way to choose rgb? is needed??
+
+        # Stat Area
+        pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height())) # BACKDROP
+        pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height()), 5) # BORDER
+        pygame.draw.line(WIN, (200, 200, 200), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height()), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height() + health_label.get_height()), 5) # HEALTH / GOLD
+        # Player Health
+        WIN.blit(health_label, (defaultX + self._avatar.get_width() / 4 - health_label.get_width() / 2, defaultY + self._avatar.get_height()))
+        WIN.blit(gold_label, (defaultX + self._avatar.get_width() * 3 / 4 - gold_label.get_width() / 2, defaultY + self._avatar.get_height()))
+       
+        # Name Area
+        pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height())) # BACKDROP
+        pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height()), 5) # BORDER
+        WIN.blit(name_label, (defaultX + self._avatar.get_width() / 2 - name_label.get_width() / 2, defaultY - name_label.get_height()))
+
+        # Final Border
+        pygame.draw.rect(WIN, (255,255,255), (10, defaultY, self._avatar.get_width(), self._avatar.get_height()), 5)
+
+    def draw_army(self, WIN, side1):
+
+        example = self._deckList._deckList[0]
+        x = settings.WIDTH / 2 - (settings.WIDTH / 2 - (10 + self._avatar.get_width())) / 2
+        temp = 1 # replace temp with self._army.army_size()
+        y = settings.HEIGHT / 2 - example._avatar.get_height() * temp / 2
 
 
-if __name__ == "__main__":
-    main()
+        """ if temp == 0:
+            pass
+        elif temp == 1:
+            y = settings.HEIGHT / 2 - example._avatar.get_height() / 2
+        elif temp == 2:
+            y = settings.HEIGHT / 2 - example._avatar.get_height()
+        elif temp == 3:
+            pass
+        elif temp == 4:
+            pass
+        elif temp == 5:
+            pass
+        elif temp == 6:
+            pass """
+
+        for idx in range(temp):
+            played_card = self._deckList._deckList[idx]
+            played_card.draw(WIN, x - played_card._avatar.get_width() / 2, y, side1)
+            y += played_card._avatar.get_height()
+
+class player2(Hero):
+    def draw(self, WIN):
+        # Players Avatar
+        defaultX = settings.WIDTH - 10 - self._avatar.get_width()
+        defaultY = (settings.HEIGHT / 2) - (self._avatar.get_height() / 2)
+        WIN.blit(self._avatar, (settings.WIDTH - self._avatar.get_width() - 10, defaultY))
+
+        # Stat Labels
+        health_label = settings.main_font.render(f"{self._health}", 1, (255,0,0)) # better way to choose rgb? is needed??
+        gold_label = settings.main_font.render(f"{self._gold}", 1, (255,188,0)) # better way to choose rgb? is needed??
+        name_label = settings.main_font.render(f"{self._name}", 1, (255,255,255)) # better way to choose rgb? is needed??
+        
+        # Stat Area
+        pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height())) # BACKDROP
+        pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height()), 5) # BORDER
+        pygame.draw.line(WIN, (200, 200, 200), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height()), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height() + health_label.get_height()), 5) # HEALTH / GOLD
+        WIN.blit(health_label, (defaultX + self._avatar.get_width() / 4 - health_label.get_width() / 2, defaultY + self._avatar.get_height()))
+        WIN.blit(gold_label, (defaultX + self._avatar.get_width() * 3 / 4 - gold_label.get_width() / 2, defaultY + self._avatar.get_height()))
+        
+        # Name Area
+        pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height())) # BACKDROP
+        pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height()), 5) # BORDER
+        WIN.blit(name_label, (defaultX + self._avatar.get_width() / 2 - name_label.get_width() / 2, defaultY - name_label.get_height()))
+        
+        # Final Border
+        pygame.draw.rect(WIN, (255,255,255), (settings.WIDTH - 10 - self._avatar.get_width(), defaultY, self._avatar.get_width(), self._avatar.get_height()), 5)
+
+    def draw_army(self, WIN, side1):
+        example = self._deckList._deckList[0]
+        x = settings.WIDTH / 2 + (settings.WIDTH / 2 - (10 + self._avatar.get_width())) / 2
+        temp = 3 # replace temp with self._army.army_size()
+        y = settings.HEIGHT / 2 - example._avatar.get_height() * temp / 2
+
+
+        """ if temp == 0:
+            pass
+        elif temp == 1:
+            y = settings.HEIGHT / 2 - example._avatar.get_height() / 2
+        elif temp == 2:
+            y = settings.HEIGHT / 2 - example._avatar.get_height()
+        elif temp == 3:
+            pass
+        elif temp == 4:
+            pass
+        elif temp == 5:
+            pass
+        elif temp == 6:
+            pass """
+
+        for idx in range(temp):
+            played_card = self._deckList._deckList[idx]
+            played_card.draw(WIN, x - played_card._avatar.get_width() / 2, y, side1)
+            y += played_card._avatar.get_height()

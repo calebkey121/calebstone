@@ -61,10 +61,10 @@ class GameManager:
             print(f'{self._player2.name()} loses!')
 
 def main():
-    caleb = hero.Hero(hero='caleb')
-    caleb.deck_list('CalebDeckList.txt')
-    dio = hero.Hero(hero='dio')
-    dio.deck_list('DioDeckList.txt')
+    caleb = hero.Hero(hero='Caleb', deckList="CalebDeckList")
+    #caleb.deck_list('CalebDeckList.txt')
+    dio = hero.Hero(hero='Dio', deckList="DioDeckList")
+    #dio.deck_list('DioDeckList.txt')
     
     game = GameManager(caleb, dio)
     game.game()
