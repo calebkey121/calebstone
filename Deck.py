@@ -56,7 +56,6 @@ class Deck:
     # Picks random card from deck and appends to hand - returns that card
     def draw_card(self, hand):
         if self.get_current_num_cards() <= 0:
-            print('Deck is empty!!!')
             self._currentNumCards -= 1
             return self.get_current_num_cards()
         else:
@@ -68,7 +67,7 @@ class Deck:
     def burn_card(self):
         draw = random.choice(self._deckList)
         self.remove_card(draw)
-        return draw
+        return draw._name
 
 
     def __repr__(self):

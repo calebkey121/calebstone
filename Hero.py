@@ -16,8 +16,8 @@ class Hero:
         self._army = Army()
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "heros", self._name + ".png")), (settings.WIDTH / 5, settings.HEIGHT / 5))
         self._health = 30
-        self._attack = 2
-        self._ready = True
+        self._attack = 0
+        self._ready = False
         self._gold = 0
         self._hand = []
         self._maxHandSize = 10
@@ -98,33 +98,45 @@ class Hero:
         self._health -= attackVal
 
     # Card Draw
-    def draw_card(self, silently=False):
+    def draw_card(self, output = False):
         if len(self._hand) < self.max_hand_size():
             # CASE: Out of Cards!! Take damage equal to the amount of cards that you have overdrawn
             if self.deck_list().get_current_num_cards() <= 0:
                 damage = self._deckList.draw_card(self._hand)
-                print(f'Fatigue: {-damage} damage delt to {self.name()}')
+                if not output:
+                    print(f'Fatigue: {-damage} damage delt to {self.name()}')
+                else: 
+                    return (f'Fatigue: {-damage} damage delt to {self.name()}')
                 self._health += damage
             else:
                 draw = self._deckList.draw_card(self._hand)
-                if not silently:
+                if not output:
                     print(self.name() + ' drew ' + draw.name() + '\n')
+                else:
+                    return (self.name() + ' drew ' + draw.name() + '\n')
         else:
             if self.deck_list().get_current_num_cards() > 0:
-                print(self._name + '\'s hand is too full!')
-                print(self._name + ' burned:', self._deckList.burn_card())
+                if not output:
+                    print(self._name + '\'s hand is too full!')
+                    print(self._name + ' burned:', self._deckList.burn_card())
+                else:
+                    return (self._name + '\'s hand is too full!\n' + self._name + ' burned:' + self._deckList.burn_card())
             else:
                 damage = self._deckList.draw_card(self._hand)
-                print(f'Fatigue: {-damage} damage delt to {self.name()}')
+                if not output:
+                    print(f'Fatigue: {-damage} damage delt to {self.name()}')
+                else:
+                    return (f'Fatigue: {-damage} damage delt to {self.name()}')
                 self._health += damage
 
-    def draw_cards(self, number, silently=False):
+    def draw_cards(self, number, output = False):
         for i in range(number):
-            self.draw_card(silently)
+            self.draw_card(output)
 
     # Playing Cards!!!
     def play_ally(self, card):
-        self.call_to_arms().add_ally(card)
+        self._army.add_ally(card)
+        card.ready_down()
         self._gold -= card.cost()
         self.remove_from_hand(card)
 
@@ -144,16 +156,36 @@ class Hero:
             playable = True
         return playable
 
-    # Representation - Weird String is me trying to make the output look cool
+    def playable_hand(self):
+        playable = []
+        for i in self._hand:
+            if i.cost() <= self._gold:
+                playable.append(i)
+        return playable
+
+
     def available_targets(self):
         availableTargets = []
         availableTargets.append(self)
-        for i in self.call_to_arms()._army:
+        for i in self._army._army:
             availableTargets.append(i)
         return availableTargets
 
+    def available_attackers(self):
+        available_attackers = []
+        if (self._ready and (self._attack > 0)):
+            available_attackers.append(self)
+        for i in self._army._army:
+            if (i._ready and (i._attack > 0)):
+                available_attackers.append(i)
+        return available_attackers
+
     def ready_up(self):
-        self._ready = True
+        if self._attack > 0:
+            self._ready = True
+        for card in self._army._army:
+            card.ready_up()
+
 
     def ready_down(self):
         self._ready = False
@@ -161,6 +193,7 @@ class Hero:
     def is_ready(self):
         return self._ready
 
+    # Representation - Weird String is me trying to make the output look cool
     def __repr__(self):
         return f'~__{self.name()}__~ \tAttack: {self.attack():2d} \tHealth: {self.health():2d}'
 

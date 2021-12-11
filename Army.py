@@ -8,6 +8,13 @@ class Army:
         self._armySize = 0
         self._army = []
 
+    # can any allies attack?
+    def available_attackers(self):
+        for ally in self._army:
+            if ally.is_ready():
+                return True
+        return False
+
     def max_slots(self, maxSlots=None):
         if maxSlots:
             self._maxSlots = maxSlots

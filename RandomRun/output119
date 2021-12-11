@@ -1,0 +1,598 @@
+Caleb wins the coin toss.
+Caleb drew caleb29
+Caleb drew caleb26
+Caleb drew caleb5
+Dio drew dio28
+Dio drew dio25
+Dio drew dio16
+Dio drew dio15
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb26
+caleb5
+Caleb drew caleb30
+You have 1 gold
+~__Caleb__~ 	Attack:  0 	Health: 30		|	~__Dio__~ 	Attack:  0 	Health: 30
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio25
+dio16
+dio15
+Dio drew dio6
+You have 1 gold
+~__Dio__~ 	Attack:  0 	Health: 30		|	~__Caleb__~ 	Attack:  0 	Health: 30
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb26
+caleb5
+caleb30
+Caleb drew caleb21
+You have 2 gold
+~__Caleb__~ 	Attack:  0 	Health: 30		|	~__Dio__~ 	Attack:  0 	Health: 30
+Caleb played caleb21
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio25
+dio16
+dio15
+dio6
+Dio drew dio12
+You have 2 gold
+~__Dio__~ 	Attack:  0 	Health: 30		|	~__Caleb__~ 	Attack:  0 	Health: 30
+|									|~__caleb21__~ 		Cost:  1 	Attack:  1 	Health:  1|
+Dio played dio12
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb26
+caleb5
+caleb30
+Caleb drew caleb3
+You have 3 gold
+~__Caleb__~ 	Attack:  0 	Health: 30		|	~__Dio__~ 	Attack:  0 	Health: 30
+|~__caleb21__~ 		Cost:  1 	Attack:  1 	Health:  1	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  2|
+Caleb played caleb3
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 30		|	~__Dio__~ 	Attack:  0 	Health: 30
+|~__caleb21__~ 		Cost:  1 	Attack:  1 	Health:  1	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+|Attacking:|dio12
+|Attacking with:|caleb21
+~__Caleb__~ 	Attack:  0 	Health: 30		|	~__Dio__~ 	Attack:  0 	Health: 30
+|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio25
+dio16
+dio15
+dio6
+Dio drew dio26
+You have 3 gold
+~__Dio__~ 	Attack:  0 	Health: 30		|	~__Caleb__~ 	Attack:  0 	Health: 30
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 30		|	~__Caleb__~ 	Attack:  0 	Health: 30
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|Attacking:|Caleb
+|Attacking with:|dio12
+~__Dio__~ 	Attack:  0 	Health: 30		|	~__Caleb__~ 	Attack:  0 	Health: 28
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb26
+caleb5
+caleb30
+Caleb drew caleb10
+You have 4 gold
+~__Caleb__~ 	Attack:  0 	Health: 28		|	~__Dio__~ 	Attack:  0 	Health: 30
+|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 28		|	~__Dio__~ 	Attack:  0 	Health: 30
+|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+|Attacking:|Dio
+|Attacking with:|caleb3
+~__Caleb__~ 	Attack:  0 	Health: 28		|	~__Dio__~ 	Attack:  0 	Health: 27
+|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio25
+dio16
+dio15
+dio6
+dio26
+Dio drew dio3
+You have 4 gold
+~__Dio__~ 	Attack:  0 	Health: 27		|	~__Caleb__~ 	Attack:  0 	Health: 28
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+Dio played dio3
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 27		|	~__Caleb__~ 	Attack:  0 	Health: 28
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+|Attacking:|Caleb
+|Attacking with:|dio12
+~__Dio__~ 	Attack:  0 	Health: 27		|	~__Caleb__~ 	Attack:  0 	Health: 26
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb26
+caleb5
+caleb30
+caleb10
+Caleb drew caleb16
+You have 5 gold
+~__Caleb__~ 	Attack:  0 	Health: 26		|	~__Dio__~ 	Attack:  0 	Health: 27
+|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+|									|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+Caleb played caleb5
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 26		|	~__Dio__~ 	Attack:  0 	Health: 27
+|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5	|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|Attacking:|Dio
+|Attacking with:|caleb3
+~__Caleb__~ 	Attack:  0 	Health: 26		|	~__Dio__~ 	Attack:  0 	Health: 24
+|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5	|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio25
+dio16
+dio15
+dio6
+dio26
+Dio drew dio23
+You have 5 gold
+~__Dio__~ 	Attack:  0 	Health: 24		|	~__Caleb__~ 	Attack:  0 	Health: 26
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5|
+Dio played dio25
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 24		|	~__Caleb__~ 	Attack:  0 	Health: 26
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5|
+|~__dio25__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+|Attacking:|Caleb
+|Attacking with:|dio12
+~__Dio__~ 	Attack:  0 	Health: 24		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5|
+|~__dio25__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+***********FIGHT***********
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 24		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb3__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|~__dio3__~ 		Cost:  3 	Attack:  3 	Health:  3	|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5|
+|~__dio25__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+|Attacking:|caleb3
+|Attacking with:|dio3
+~__Dio__~ 	Attack:  0 	Health: 24		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5|
+|~__dio25__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb26
+caleb30
+caleb10
+caleb16
+Caleb drew caleb28
+You have 6 gold
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 24
+|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+|									|~__dio25__~ 		Cost:  5 	Attack:  5 	Health:  5|
+Caleb played caleb26
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 24
+|~__caleb5__~ 		Cost:  5 	Attack:  5 	Health:  5	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__dio25__~ 		Cost:  5 	Attack:  5 	Health:  5|
+|Attacking:|dio25
+|Attacking with:|caleb5
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 24
+|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio16
+dio15
+dio6
+dio26
+dio23
+Dio drew dio13
+You have 6 gold
+~__Dio__~ 	Attack:  0 	Health: 24		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  6|
+Dio played dio15
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 24		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio12__~ 		Cost:  2 	Attack:  2 	Health:  1	|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__dio15__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+|Attacking:|caleb26
+|Attacking with:|dio12
+~__Dio__~ 	Attack:  0 	Health: 24		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio15__~ 		Cost:  5 	Attack:  5 	Health:  5	|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  4|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb30
+caleb10
+caleb16
+caleb28
+Caleb drew caleb22
+You have 7 gold
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 24
+|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  4	|~__dio15__~ 		Cost:  5 	Attack:  5 	Health:  5|
+Caleb played caleb16
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 24
+|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  4	|~__dio15__~ 		Cost:  5 	Attack:  5 	Health:  5|
+|~__caleb16__~ 		Cost:  6 	Attack:  6 	Health:  6	|								|
+|Attacking:|Dio
+|Attacking with:|caleb26
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 18
+|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  4	|~__dio15__~ 		Cost:  5 	Attack:  5 	Health:  5|
+|~__caleb16__~ 		Cost:  6 	Attack:  6 	Health:  6	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio16
+dio6
+dio26
+dio23
+dio13
+Dio drew dio17
+You have 7 gold
+~__Dio__~ 	Attack:  0 	Health: 18		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio15__~ 		Cost:  5 	Attack:  5 	Health:  5	|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  4|
+|									|~__caleb16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+Dio played dio6
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 18		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio15__~ 		Cost:  5 	Attack:  5 	Health:  5	|~__caleb26__~ 		Cost:  6 	Attack:  6 	Health:  4|
+|~__dio6__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|Attacking:|caleb26
+|Attacking with:|dio15
+~__Dio__~ 	Attack:  0 	Health: 18		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio6__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb30
+caleb10
+caleb28
+caleb22
+Caleb drew caleb9
+You have 8 gold
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 18
+|~__caleb16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__dio6__~ 		Cost:  6 	Attack:  6 	Health:  6|
+Caleb played caleb22
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 18
+|~__caleb16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__dio6__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|Attacking:|dio6
+|Attacking with:|caleb16
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 18
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio16
+dio26
+dio23
+dio13
+dio17
+Dio drew dio7
+You have 8 gold
+~__Dio__~ 	Attack:  0 	Health: 18		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|									|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2|
+Dio played dio17
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb30
+caleb10
+caleb28
+caleb9
+Caleb drew caleb27
+You have 9 gold
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 18
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7|
+Caleb played caleb27
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 18
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  7	|								|
+|Attacking:|Dio
+|Attacking with:|caleb22
+~__Caleb__~ 	Attack:  0 	Health: 24		|	~__Dio__~ 	Attack:  0 	Health: 16
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  7	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio16
+dio26
+dio23
+dio13
+dio7
+Dio drew dio27
+You have 9 gold
+~__Dio__~ 	Attack:  0 	Health: 16		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|									|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  7|
+Dio played dio16
+Dio played dio23
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 16		|	~__Caleb__~ 	Attack:  0 	Health: 24
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__dio23__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+|Attacking:|Caleb
+|Attacking with:|dio17
+~__Dio__~ 	Attack:  0 	Health: 16		|	~__Caleb__~ 	Attack:  0 	Health: 17
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__dio23__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb30
+caleb10
+caleb28
+caleb9
+Caleb drew caleb15
+You have 10 gold
+~__Caleb__~ 	Attack:  0 	Health: 17		|	~__Dio__~ 	Attack:  0 	Health: 16
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|									|~__dio23__~ 		Cost:  3 	Attack:  3 	Health:  3|
+Caleb played caleb30
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 17		|	~__Dio__~ 	Attack:  0 	Health: 16
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10	|~__dio23__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|Attacking:|dio23
+|Attacking with:|caleb27
+~__Caleb__~ 	Attack:  0 	Health: 17		|	~__Dio__~ 	Attack:  0 	Health: 16
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4	|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10	|								|
+***********FIGHT***********
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 17		|	~__Dio__~ 	Attack:  0 	Health: 16
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4	|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10	|								|
+|Attacking:|Dio
+|Attacking with:|caleb22
+~__Caleb__~ 	Attack:  0 	Health: 17		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4	|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio26
+dio13
+dio7
+dio27
+Dio drew dio29
+You have 10 gold
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 17
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4|
+|									|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10|
+Dio played dio26
+Dio played dio13
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 17
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4|
+|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10|
+|~__dio13__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+|Attacking:|Caleb
+|Attacking with:|dio16
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 11
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4|
+|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10|
+|~__dio13__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+***********FIGHT***********
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 11
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb22__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4|
+|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10|
+|~__dio13__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+|Attacking:|caleb22
+|Attacking with:|dio17
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 11
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4|
+|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10|
+|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6	|								|
+|~__dio13__~ 		Cost:  3 	Attack:  3 	Health:  3	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb10
+caleb28
+caleb9
+caleb15
+Caleb drew caleb12
+You have 10 gold
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10	|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|									|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|									|~__dio13__~ 		Cost:  3 	Attack:  3 	Health:  3|
+Caleb played caleb12
+Caleb played caleb28
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health: 10	|~__dio16__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  8	|~__dio13__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|Attacking:|dio16
+|Attacking with:|caleb30
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio13__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  8	|								|
+***********FIGHT***********
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  4	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2	|~__dio13__~ 		Cost:  3 	Attack:  3 	Health:  3|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  8	|								|
+|Attacking:|dio13
+|Attacking with:|caleb27
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  1	|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6|
+|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  8	|								|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Dio's turn!
+hand:
+dio28
+dio7
+dio27
+dio29
+Dio drew dio9
+You have 10 gold
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 11
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  1|
+|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4|
+|									|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|									|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  8|
+Dio played dio7
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 11
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5	|~__caleb27__~ 		Cost:  7 	Attack:  7 	Health:  1|
+|~__dio26__~ 		Cost:  6 	Attack:  6 	Health:  6	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4|
+|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|									|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  8|
+|Attacking:|caleb27
+|Attacking with:|dio26
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 11
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4|
+|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|									|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  8|
+***********FIGHT***********
+***********FIGHT***********
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 11
+|~__dio17__~ 		Cost:  7 	Attack:  7 	Health:  5	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4|
+|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|									|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  8|
+|Attacking:|caleb28
+|Attacking with:|dio17
+~__Dio__~ 	Attack:  0 	Health: 14		|	~__Caleb__~ 	Attack:  0 	Health: 11
+|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  7	|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4|
+|									|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2|
+|									|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  1|
+***********FIGHT***********
+______________________________________________________________________________________________________________
+It's Caleb's turn!
+hand:
+caleb29
+caleb10
+caleb9
+caleb15
+Caleb drew caleb2
+You have 10 gold
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  1	|								|
+Caleb played caleb2
+Caleb played caleb15
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  7|
+|~__caleb12__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  1	|								|
+|~__caleb2__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|~__caleb15__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+|Attacking:|dio7
+|Attacking with:|caleb12
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  1	|								|
+|~__caleb2__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|~__caleb15__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+***********FIGHT***********
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health: 14
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  1	|								|
+|~__caleb2__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|~__caleb15__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+|Attacking:|Dio
+|Attacking with:|caleb28
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health:  6
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  1	|								|
+|~__caleb2__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|~__caleb15__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+***********FIGHT***********
+***********FIGHT***********
+~__Caleb__~ 	Attack:  0 	Health: 11		|	~__Dio__~ 	Attack:  0 	Health:  6
+|~__caleb30__~ 		Cost: 10 	Attack: 10 	Health:  4	|~__dio7__~ 		Cost:  7 	Attack:  7 	Health:  5|
+|~__caleb28__~ 		Cost:  8 	Attack:  8 	Health:  1	|								|
+|~__caleb2__~ 		Cost:  2 	Attack:  2 	Health:  2	|								|
+|~__caleb15__~ 		Cost:  5 	Attack:  5 	Health:  5	|								|
+|Attacking:|Dio
+|Attacking with:|caleb30
+Dio loses!
