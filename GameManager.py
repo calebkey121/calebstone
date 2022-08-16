@@ -9,7 +9,7 @@ import os
 
 #WIN = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT),pygame.FULLSCREEN, pygame.RESIZABLE)
 #pygame.display.set_caption("Calebstone")
-## below puts ricardo on full scale of the screen
+## below puts ricardo on full scale of the scren
 #BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "backgrounds", "ricardo.png")), (settings.WIDTH, settings.HEIGHT))
 
 class GameManager:
