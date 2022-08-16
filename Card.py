@@ -7,7 +7,6 @@ class Card:
         self._cost = kwargs['cost'] if 'cost' in kwargs else -1
         self._name = kwargs['name'] if 'name' in kwargs else 'No Name'
         self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg")), settings.card_size)
-        self._ready = False
 
     def name(self, name=None):
         if name:
@@ -32,6 +31,8 @@ class Ally(Card):
         self._attack = kwargs['attack'] if 'attack' in kwargs else 0
         self._health = kwargs['health'] if 'health' in kwargs else 0
         self._ready = False
+        self._selected = False
+        self._sprite = None
 
     def attack(self, a=None):
         if a:
@@ -65,7 +66,13 @@ class Ally(Card):
         else:
             print(f'{self.name()} is not ready!')
 
-    def draw(self, WIN, x, y, leftSide, selected=False):
+    def select(self):
+        self._selected = True
+    
+    def unselect(self):
+        self._selected = False
+
+    def draw(self, WIN, x, y, leftSide):
         # Ally Avatar
         WIN.blit(self._avatar, (x, y))
 
@@ -91,11 +98,11 @@ class Ally(Card):
         WIN.blit(attack_label, (attack_border.center[0] - attack_label.get_width() / 2, attack_border.center[1] - attack_label.get_height() / 2))
         
         # Final Border
+        # Final Border
         finalBorderColor = (255,255,255)
-        if selected:
+        if self._ready:
             finalBorderColor = (102,255,0)
-        pygame.draw.rect(WIN, finalBorderColor, (x, y, self._avatar.get_width(), self._avatar.get_height()), 5)
-
-    # Representation - Weird String is me trying to make the output look cool
-    def __repr__(self):
-        return f'~__{self.name()}__~ \t\tCost: {self.cost():2d} \tAttack: {self.attack():2d} \tHealth: {self.health():2d}'
+        if self._selected:
+            finalBorderColor = (0,200,255)
+        self._sprite = pygame.Rect(x, y, self._avatar.get_width(), self._avatar.get_height())
+        pygame.draw.rect(WIN, finalBorderColor, self._sprite, 5)

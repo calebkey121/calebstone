@@ -18,10 +18,12 @@ class Hero:
         self._health = 30
         self._attack = 0
         self._ready = False
+        self._selected = False
         self._gold = 0
         self._hand = []
         self._maxHandSize = 10
         self._leftSide = kwargs['leftSide'] # says if the hero is on the left or right side
+        self._sprite = None
 
     # Hero's Army Functions
     def call_to_arms(self, ally=None):
@@ -190,86 +192,62 @@ class Hero:
 
     def is_ready(self):
         return self._ready
-        
-    # Print Representation - Weird String is me trying to make the output look cool
-    def __repr__(self):
-        return f'~__{self.name()}__~ \tAttack: {self.attack():2d} \tHealth: {self.health():2d}'
 
-    def draw(self, WIN, selected=False):
-        if (self._leftSide): # draws player on left side
-            # Players Avatar
+    def select(self):
+        self._selected = True
+    
+    def unselect(self):
+        self._selected = False
+
+
+    def draw(self, WIN):
+        # Players Avatar
+        if self._leftSide:
             defaultX = 10
             defaultY = (settings.HEIGHT / 2) - (self._avatar.get_height() / 2)
             WIN.blit(self._avatar, (10, defaultY))
-
-            # Stat Labels
-            health_label = settings.main_font.render(f"{self._health}", 1, (255,0,0)) # better way to choose rgb? is needed??
-            gold_label = settings.main_font.render(f"{self._gold}", 1, (255,188,0)) # better way to choose rgb? is needed??
-            name_label = settings.main_font.render(f"{self._name}", 1, (255,255,255)) # better way to choose rgb? is needed??
-
-            # Stat Area
-            pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height())) # BACKDROP
-            pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height()), 5) # BORDER
-            pygame.draw.line(WIN, (200, 200, 200), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height()), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height() + health_label.get_height()), 5) # HEALTH / GOLD
-            # Player Health
-            WIN.blit(health_label, (defaultX + self._avatar.get_width() / 4 - health_label.get_width() / 2, defaultY + self._avatar.get_height()))
-            WIN.blit(gold_label, (defaultX + self._avatar.get_width() * 3 / 4 - gold_label.get_width() / 2, defaultY + self._avatar.get_height()))
-        
-            # Name Area
-            pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height())) # BACKDROP
-            pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height()), 5) # BORDER
-            WIN.blit(name_label, (defaultX + self._avatar.get_width() / 2 - name_label.get_width() / 2, defaultY - name_label.get_height()))
-
-            # Final Border
-            finalBorderColor = (255,255,255)
-            if selected:
-                finalBorderColor = (102,255,0)
-            pygame.draw.rect(WIN, finalBorderColor, (10, defaultY, self._avatar.get_width(), self._avatar.get_height()), 5) 
-        else:# draws player on right side
-            # Players Avatar
+        else:
             defaultX = settings.WIDTH - 10 - self._avatar.get_width()
             defaultY = (settings.HEIGHT / 2) - (self._avatar.get_height() / 2)
             WIN.blit(self._avatar, (settings.WIDTH - self._avatar.get_width() - 10, defaultY))
 
-            # Stat Labels
-            health_label = settings.main_font.render(f"{self._health}", 1, (255,0,0)) # better way to choose rgb? is needed??
-            gold_label = settings.main_font.render(f"{self._gold}", 1, (255,188,0)) # better way to choose rgb? is needed??
-            name_label = settings.main_font.render(f"{self._name}", 1, (255,255,255)) # better way to choose rgb? is needed??
-            
-            # Stat Area
-            pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height())) # BACKDROP
-            pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height()), 5) # BORDER
-            pygame.draw.line(WIN, (200, 200, 200), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height()), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height() + health_label.get_height()), 5) # HEALTH / GOLD
-            WIN.blit(health_label, (defaultX + self._avatar.get_width() / 4 - health_label.get_width() / 2, defaultY + self._avatar.get_height()))
-            WIN.blit(gold_label, (defaultX + self._avatar.get_width() * 3 / 4 - gold_label.get_width() / 2, defaultY + self._avatar.get_height()))
-            
-            # Name Area
-            pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height())) # BACKDROP
-            pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height()), 5) # BORDER
-            WIN.blit(name_label, (defaultX + self._avatar.get_width() / 2 - name_label.get_width() / 2, defaultY - name_label.get_height()))
-            
-            # Final Border
-            finalBorderColor = (255,255,255)
-            if selected:
-                finalBorderColor = (102,255,0)
-            pygame.draw.rect(WIN, finalBorderColor, (settings.WIDTH - 10 - self._avatar.get_width(), defaultY, self._avatar.get_width(), self._avatar.get_height()), 5)
+        # Stat Labels
+        health_label = settings.main_font.render(f"{self._health}", 1, (255,0,0)) # better way to choose rgb? is needed??
+        gold_label = settings.main_font.render(f"{self._gold}", 1, (255,188,0)) # better way to choose rgb? is needed??
+        name_label = settings.main_font.render(f"{self._name}", 1, (255,255,255)) # better way to choose rgb? is needed??
+        # Stat Area
+        pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height())) # BACKDROP
+        pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY + self._avatar.get_height(), self._avatar.get_width(), health_label.get_height()), 5) # BORDER
+        pygame.draw.line(WIN, (200, 200, 200), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height()), (defaultX + self._avatar.get_width() / 2, defaultY + self._avatar.get_height() + health_label.get_height()), 5) # HEALTH / GOLD
+        # Player Health
+        WIN.blit(health_label, (defaultX + self._avatar.get_width() / 4 - health_label.get_width() / 2, defaultY + self._avatar.get_height()))
+        WIN.blit(gold_label, (defaultX + self._avatar.get_width() * 3 / 4 - gold_label.get_width() / 2, defaultY + self._avatar.get_height()))
+        # Name Area
+        pygame.draw.rect(WIN, (30, 30, 30), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height())) # BACKDROP
+        pygame.draw.rect(WIN, (200, 200, 200), (defaultX, defaultY - name_label.get_height(), self._avatar.get_width(), name_label.get_height()), 5) # BORDER
+        WIN.blit(name_label, (defaultX + self._avatar.get_width() / 2 - name_label.get_width() / 2, defaultY - name_label.get_height()))
+        # Final Border
+        finalBorderColor = (255,255,255)
+        if self._ready:
+            finalBorderColor = (102,255,0)
+        if self._selected:
+            finalBorderColor = (0,200,255)
+        if self._leftSide:
+            self._sprite = pygame.Rect(10, defaultY, self._avatar.get_width(), self._avatar.get_height())
+        else:
+            self._sprite = pygame.Rect(settings.WIDTH - 10 - self._avatar.get_width(), defaultY, self._avatar.get_width(), self._avatar.get_height())
+        pygame.draw.rect(WIN, finalBorderColor, self._sprite, 5)
 
     def draw_army(self, WIN):
+
         if (self._leftSide):
-            example = self._deckList._deckList[0]
             x = settings.WIDTH / 2 - (settings.WIDTH / 2 - (10 + self._avatar.get_width())) / 2
-            armySize = self.get_army_size() # replace temp with self._army.army_size()
-            y = settings.HEIGHT / 2 - example._avatar.get_height() * armySize / 2
+        else: x = x = settings.WIDTH / 2 + (settings.WIDTH / 2 - (10 + self._avatar.get_width())) / 2
 
-            for card in self._army.get_army():
-                card.draw(WIN, x - card._avatar.get_width() / 2, y, self._leftSide)
-                y += card._avatar.get_height()
-        else:
-            example = self._deckList._deckList[0]
-            x = settings.WIDTH / 2 + (settings.WIDTH / 2 - (10 + self._avatar.get_width())) / 2
-            armySize = self.get_army_size() # replace temp with self._army.army_size()
-            y = settings.HEIGHT / 2 - example._avatar.get_height() * armySize / 2
-
-            for card in self._army.get_army():
-                card.draw(WIN, x - card._avatar.get_width() / 2, y, self._leftSide)
-                y += card._avatar.get_height()
+        # example to get the size of card
+        example = self._deckList._deckList[0]
+        armySize = self.get_army_size()
+        y = settings.HEIGHT / 2 - example._avatar.get_height() * armySize / 2
+        for card in self._army.get_army():
+            card.draw(WIN, x - card._avatar.get_width() / 2, y, self._leftSide)
+            y += card._avatar.get_height()
