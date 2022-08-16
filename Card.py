@@ -6,7 +6,7 @@ class Card:
     def __init__(self, **kwargs):
         self._cost = kwargs['cost'] if 'cost' in kwargs else -1
         self._name = kwargs['name'] if 'name' in kwargs else 'No Name'
-        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "cards", self._name + ".png")), settings.card_size)
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg")), settings.card_size)
         self._ready = False
 
     def name(self, name=None):
@@ -65,7 +65,7 @@ class Ally(Card):
         else:
             print(f'{self.name()} is not ready!')
 
-    def draw(self, WIN, x, y, side1):
+    def draw(self, WIN, x, y, leftSide, selected=False):
         # Ally Avatar
         WIN.blit(self._avatar, (x, y))
 
@@ -76,7 +76,7 @@ class Ally(Card):
         
         # Stat Area
         health_border, attack_border = 0, 0
-        if side1 == True:
+        if leftSide:
             pygame.draw.rect(WIN, (30, 30, 30), (x + self._avatar.get_width(), y, max_label.get_width(), self._avatar.get_height())) # BACKDROP
             health_border = pygame.Rect(x + self._avatar.get_width(), y, max_label.get_width(), self._avatar.get_height() / 2) # BORDER health
             attack_border = pygame.Rect(x + self._avatar.get_width(), y + self._avatar.get_height() / 2, max_label.get_width(), self._avatar.get_height() / 2) # BORDER attack
@@ -91,7 +91,10 @@ class Ally(Card):
         WIN.blit(attack_label, (attack_border.center[0] - attack_label.get_width() / 2, attack_border.center[1] - attack_label.get_height() / 2))
         
         # Final Border
-        pygame.draw.rect(WIN, (255,255,255), (x, y, self._avatar.get_width(), self._avatar.get_height()), 5)
+        finalBorderColor = (255,255,255)
+        if selected:
+            finalBorderColor = (102,255,0)
+        pygame.draw.rect(WIN, finalBorderColor, (x, y, self._avatar.get_width(), self._avatar.get_height()), 5)
 
     # Representation - Weird String is me trying to make the output look cool
     def __repr__(self):

@@ -4,7 +4,7 @@ from Card import Ally
 # assumes only one type of ally
 class Army:
     def __init__(self):
-        self._maxSlots = 7
+        self._maxSlots = 6
         self._armySize = 0
         self._army = []
 
@@ -15,17 +15,20 @@ class Army:
                 return True
         return False
 
+    # getter/setter for maxSlots
     def max_slots(self, maxSlots=None):
         if maxSlots:
             self._maxSlots = maxSlots
         return self._maxSlots
 
+    # getter/setter for maxSlots
     def army_size(self, armySize=None):
         self.set_army_size()
         if armySize:
             self._armySize = armySize
         return self._armySize
 
+    
     def set_army_size(self):
         self._armySize = len(self._army)
 
