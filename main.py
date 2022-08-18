@@ -7,8 +7,8 @@ import settings
 WIN = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT),pygame.FULLSCREEN, pygame.RESIZABLE)
 pygame.display.set_caption("Calebstone")
 BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "backgrounds", "b1.jpg")), (settings.WIDTH, settings.HEIGHT))
-wolf = Hero.Hero(hero="Wolf", deckList="CalebDeckList", leftSide=True)
-bear = Hero.Hero(hero="Bear", deckList="DioDeckList", leftSide=False)
+wolf = Hero.Hero(hero="Wolf", deckList="CalebDeckList", side1=True)
+bear = Hero.Hero(hero="Bear", deckList="DioDeckList", side1=False)
 
 def redraw_window():
     WIN.blit(BACKGROUND, (0, 0))
