@@ -4,7 +4,7 @@ from Card import Ally
 # assumes only one type of ally
 class Army:
     def __init__(self):
-        self._maxSlots = 6
+        self._maxSlots = 7
         self._armySize = 0
         self._army = []
 
@@ -34,7 +34,7 @@ class Army:
 
     
     # Returns true if the army is full
-    def full_army(self):
+    def is_full(self):
         self.set_army_size()
         returnVal = False
         if self.army_size() == self.max_slots():
@@ -89,36 +89,7 @@ class Army:
         return '__________________________'
 
 def main():
-    pass
-    # # This is to demonstrate how the army class interacts with Allies
-    # # Here, we create an army of size 3
-    # army = Army()
-    # caleb = Ally(name='Caleb', cost=1, attack=3, health=2)
-    # luka = Ally(name='Luka', cost=3, attack=3, health=3)
-    # nathan = Ally(name='Nathan', cost=5, attack=5, health=5)
-    # army.add_ally(caleb)
-    # army.add_ally(luka)
-    # army.add_ally(nathan)
-
-    # print('Printing Army...')
-    # print(army)
-    # print('Finished Printing Army...')
-
-    # # Then we simulate damage by directly setting the health of a couple allies
-    # print('\nSet Health')
-    # army.find_ally(nathan).health(1)
-    # army.find_ally(luka).health(0)
-
-    # # If a ally has 0 health, like luka right now, then they are removed
-    # print('Toll the Dead\n')
-    # army.toll_the_dead()
-
-    # # Results showns
-    # print('Printing New Army...')
-    # print(army)
-    # print('Finished Printing New Army...')
-
-    
+    pass  
 
 if __name__ == "__main__":
     main()

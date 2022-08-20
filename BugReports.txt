@@ -1,2 +1,4 @@
-print_state says none instead of being blank after I killed an enemy ally - Fixed
-Army allowed 8 people- Fixed
+1) Targeting (yellow outline of available space to click)
+when you click down an list (clicking right to left on board, or right to left in hand) the targets deselect
+double clicking goes around this issue
+

@@ -5,70 +5,171 @@ import random
 import pygame
 import settings
 import os
+import Card
 
 
-#WIN = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT),pygame.FULLSCREEN, pygame.RESIZABLE)
-#pygame.display.set_caption("Calebstone")
-## below puts ricardo on full scale of the screen
-#BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "backgrounds", "ricardo.png")), (settings.WIDTH, settings.HEIGHT))
 
 class GameManager:
 
-    def __init__(self, player1Name="Caleb", player1Deck="CalebDeckList", player2Name="Dio", player2Deck="DioDeckList", typeGame="RandomvRandom"):
-        self._player1 = Hero.Hero(hero=player1Name, deckList=player1Deck, leftSide=True) # player1 is human when possible
-        self._player2 = Hero.Hero(hero=player2Name, deckList=player2Deck, leftSide=False) # player2 is random when possible
-        self._typeGame = typeGame # RandomvRandom, HumanvRandom, RandomvRandom
-        if typeGame == "RandomvRandom":
-            self._output = open("Runs/output.txt", 'w+')
-        else:
-            self._output = print
+    def __init__(self, player1Name="Wolf", player1Deck="CalebDeckList", player2Name="Bear", player2Deck="DioDeckList"):
+        self._player1 = Hero.Hero(hero=player1Name, deckList=player1Deck, side1=False) # player1 is human when possible
+        self._player1._yourTurn = True
+        self._player2 = Hero.Hero(hero=player2Name, deckList=player2Deck, side1=True) # player2 is random when possible
+        # typegame is always human v random
         self._player1GoesFirst = False
         self._roundCounter = 0
+        self._currentTurn = 1 # set back to 0 # 0 -> not in game, 1 -> player1 turn, 2 -> player2 turn
+        self._endTurnButton = settings.sub_font.render(f"End Turn", 1, settings.white)
+        self._endTurnRect = None
+        self._selectedCard = None # a card in hand is selected
+        self._selectedAttacker = None # a Ally on the board is selected
+        self._board1 = None
+        self._board2 = None
 
-        #def run(self):
-        
-        start = time.time()
+        # remove later
+        #self._player1.draw_cards(7)
+
+        # PYGAME
+        self.WIN = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT),pygame.FULLSCREEN, pygame.RESIZABLE)
+        pygame.display.set_caption("Calebstone")
+        self.BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "backgrounds", "b1.jpg")), (settings.WIDTH, settings.HEIGHT))
+
+        self.run_game()
+
+    def run_game(self):
         print("Starting Game...")
-        if self._typeGame == "RandomvRandom":
-            self.random_v_random()
-        elif self._typeGame == "HumanvRandom":
-            self.human_v_random()
+        self.start_of_game()
+
+        run = True
+        FPS = 60
+        clock = pygame.time.Clock()
+
+        while run:
+            clock.tick(FPS)
+            self.redraw_window()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        run = False
+                if event.type == pygame.MOUSEBUTTONUP:
+                    pos = pygame.mouse.get_pos()
+                    
+                    if self._currentTurn == 1: # must be player1's turn (human)
+                        #self._player1._yourTurn = True # may need for later
+                        if self._endTurnRect.collidepoint(pos):
+                            self.endTurn()
+
+                        # These check if you're clicking the respective sprite(s)
+                        self.select_enemy(pos) # check this first, becuase the others will unselect
+                        self.select_player1(pos)
+                        self.select_board(pos) # Are you playing a card or selecting an ally?
+                        self.select_card(pos) # Card in Hand
+            
+            if self.check_for_winner(): run = False
+
+        print("Ending Game...", self.winner(), "won!")
+
+# SELECTING FUNCTIONS ********************************************************************************************
+    def select_player1(self, mousePos):
+        if self._player1._sprite.collidepoint(mousePos):
+            self._selectedAttacker = self._player1
+            self._player1.select()
+            if self._player1.is_ready():
+                self._player2.target_all()
         else:
-            print("Incorrect game type given")
-            return
-        end = time.time()
-        print("Ending Game...")
-        #print(f"end run {i}\nelapsed time: {end - start}")
+            self._player1.unselect()
+            self._player2.untarget_all()
 
-    def __del__(self) -> None:
-        if self._output != print:
-            self._output.close()
+    def select_card(self, mousePos):
+        found = False
+        for card in self._player1._hand:
+            if card._sprite:
+                if card._sprite.collidepoint(mousePos):
+                    found = True
+                    self._selectedCard = card
+                    self._selectedCard.select()
 
-    def round_counter(self, roundNum=None):
-        if roundNum:
-            self._roundCounter = roundNum
-        return self._roundCounter
+        if not found:
+            if self._selectedCard:
+                self._selectedCard.unselect()
+                self._selectedCard = None
 
+
+    def select_board(self, mousePos):
+        if self._board1.collidepoint(mousePos):
+            # if you currently are selecting your hand, then you're trying to play a card when you click the board
+            if self._selectedCard:
+                if not self._player1.play_ally(self._selectedCard): # play selected card
+                    self._selectedCard.unselect()
+                    self._selectedCard = None
+            else: # if you are not currently selecting your hand, then you're trying to select an ally
+                self.select_ally(mousePos) # Ally in Army on Board
+        else: # selecting outside the board? make sure you unselect allies
+            if self._selectedAttacker and type(self._selectedAttacker) == Card.Ally:
+                self._selectedAttacker.unselect()
+                if self._selectedAttacker.is_ready(): # not strictly necessary, saves execution
+                    self._player2.untarget_all()
+                self._selectedAttacker = None
+   
+    def select_ally(self, mousePos):
+        for ally in self._player1._army.get_army():
+            if ally._sprite.collidepoint(mousePos):
+                self._selectedAttacker = ally
+                ally.select()
+                if ally.is_ready():
+                    self._player2.target_all()
+            elif ally._selected:
+                ally.unselect()
+                self._selectedAttacker = None
+                self._player2.untarget_all()
+
+    def select_enemy(self, mousePos):
+        if self._player2._sprite.collidepoint(mousePos):
+            if self._selectedAttacker:
+                self._player2.untarget_all()
+                self._selectedAttacker.attack_enemy(self._player2)
+                self._player1.call_to_arms().toll_the_dead()
+                self._player2.call_to_arms().toll_the_dead()
+        else:
+            for enemyAlly in self._player2._army.get_army():
+                if enemyAlly._sprite:
+                    if enemyAlly._sprite.collidepoint(mousePos):
+                        if self._selectedAttacker:
+                            self._player2.untarget_all()
+                            self._selectedAttacker.attack_enemy(enemyAlly)
+                            self._player1.call_to_arms().toll_the_dead()
+                            self._player2.call_to_arms().toll_the_dead()
+                        self._player2.untarget_all()
+# SELECTING FUNCTIONS ********************************************************************************************
+# GAME FUNCS ********************************************************************************************
     def start_of_game(self):
         # coin toss:
         # True -> hero first
         # False -> enemy first
         self._player1GoesFirst = Tools.coin_toss()
         if self._player1GoesFirst:
-            lst1 = self._player1.draw_cards(3)
-            lst2 = self._player2.draw_cards(4)
-            self.output(f'{self._player1.name()} wins the coin toss.\n')
+            #self._currentTurn = 1
+            self._player1.draw_cards(3)
+            self._player2.draw_cards(4)
         else:
-            lst1 = self._player2.draw_cards(3)
-            lst2 = self._player1.draw_cards(4)
-            self.output(f'{self._player2.name()} wins the coin toss.\n')
-        for i in lst1:
-            self.output(i)
-        for j in lst2:
-            self.output(j)
+            #self._currentTurn = 2
+            self._player2.draw_cards(3)
+            self._player1.draw_cards(4)
+        self.round_counter(1)
+        self._player1.gold(1)
+        self._player2.gold(1)
+
+    def round_counter(self, roundNum=None):
+        if roundNum:
+            self._roundCounter = roundNum
+        return self._roundCounter
 
     def check_for_winner(self):
         if self._player1.health() <= 0 or self._player2.health() <= 0:
+            # output winner and close everything
             return True
         else:
             return False
@@ -77,395 +178,152 @@ class GameManager:
         if self._player1.health() <= 0 and self._player2.health() <= 0:
             return 3
         elif self._player1.health() <= 0:
-            return 1
+            return self._player2._name
         elif self._player2.health() <= 0:
-            return 2
+            return self._player1._name
 
-    def human_v_human(self):
-        print('\nLet the games commence...\n')
-        player1Turn = turn.HumanTurnManagaer(self._player1, self._player2)
-        player2Turn = turn.HumanTurnManagaer(self._player2, self._player1)
-        self._player1GoesFirst = self.start_of_game()
-
-        # player1goesFirst = True if player1 wins coin toss
-        self.round_counter(1)
-
-        while self.check_for_winner() == False:
-            print(f'Round {self.round_counter()}:')
-            if self._player1GoesFirst:
-                # Take your turns - player 1 then player 2
-                # pass in round number to set gold for that turn
-                player1Turn.full_turn(self.round_counter())
-                if self.check_for_winner():
-                    break
-                player2Turn.full_turn(self.round_counter())
-                if self.check_for_winner():
-                    break
-            else:
-                # Take your turns - player 2 then player 1
-                player2Turn.full_turn(self.round_counter())
-                if self.check_for_winner():
-                    break
-                player1Turn.full_turn(self.round_counter())
-                if self.check_for_winner():
-                    break
+    def endTurn(self): # function that is called when end turn is clicked
+        if not self._player1GoesFirst: # if you went first, then the next player is in the same round (dont increment)
             self._roundCounter += 1
-        self.print_winner()
 
-    def human_v_random(self):
-        self.start_of_game()
+        # enemy takes their turn
+        self._currentTurn = 2
+        self.random_turn()
+        self._currentTurn = 1
 
-        # player1goesFirst = True if player1 wins coin toss
-        self.round_counter(1)
-
-        while self.check_for_winner() == False:
-            if self._player1GoesFirst:
-                # Take your turns - player 1 then player 2
-                # REMEMBER player1 is human when possible, p2 is random when possible
-                # pass in round number to set gold for that turn
-                self.full_turn(self._player1, self._player2, self.round_counter())
-                if self.check_for_winner():
-                    break
-                self.random_full_turn(self._player2, self._player1, self.round_counter())
-                if self.check_for_winner():
-                    break
-            else:
-                # Take your turns - player 2 then player 1
-                self.random_full_turn(self._player2, self._player1, self.round_counter())
-                if self.check_for_winner():
-                    break
-                self.full_turn(self._player1, self._player2, self.round_counter())
-                if self.check_for_winner():
-                    break
+        # start your next turn
+        if self._player1GoesFirst:
             self._roundCounter += 1
-        self.output_winner()
+        self._player1.gold(self._roundCounter)
+        self._player1.ready_up()
+        self._player1.draw_card()
 
-    def random_v_random(self): # must have file output
-        self.start_of_game()
-
-        # player1goesFirst = True if player1 wins coin toss
-        self.round_counter(1)
-
-        while self.check_for_winner() == False:
-            if self._player1GoesFirst:
-                # Take your turns - player 1 then player 2
-                # pass in round number to set gold for that turn
-                self.random_full_turn(self._player1, self._player2, self.round_counter())
-                if self.check_for_winner():
-                    break
-                self.random_full_turn(self._player2, self._player1, self.round_counter())
-                if self.check_for_winner():
-                    break
-            else:
-                # Take your turns - player 2 then player 1
-                self.random_full_turn(self._player2, self._player1, self.round_counter())
-                if self.check_for_winner():
-                    break
-                self.random_full_turn(self._player1, self._player2, self.round_counter())
-                if self.check_for_winner():
-                    break
-            self._roundCounter += 1
-        self.output_winner()
+# GAME FUNCS ********************************************************************************************
+# HUMAN ********************************************************************************************
 
 # HUMAN ********************************************************************************************
-# ALWAYS PRINT
-    # this is full turn for human player 
-    def full_turn(self, player, opposingPlayer, roundNumber):
-        self.output('______________________________________________________________________________________________________________\n')
-        self.output('It\'s ' + player.name() + '\'s turn!\n')
-        self.output_hand(player)
-        self.output(player.draw_card())
-        # check if fatigue killed the hero
-        if player.health() <= 0 or opposingPlayer.health() <= 0:
-            self.end_turn(True)
-            return
-
-        # set player's gold to round number
-        player.set_gold(roundNumber)
-            
-        self.output_gold(player)
-        self.output_state(player, opposingPlayer)
-        endTurn = False
-        while endTurn == False:
-            endTurn = self.turn_choice(player, opposingPlayer) # returns true when turn is over
-        player.ready_up() # readies hero and army
-
-    # Find out want the player wants to do and call correct function based on that choice
-    def turn_choice(self, player, opposingPlayer):
-        # While the player makes a doable choice i.e. This will loop uptil the player makes
-        #                                              a choice that can actually be done
-        answers = ('play card', 'attack', 'something else')
-        turnChoice = Tools.get_input('\n|Enter your option|', answers)
-        if turnChoice == answers[0]:
-            return self.choice_play_card(player, opposingPlayer)
-        elif turnChoice == answers[1]:
-            return self.choice_attack(player, opposingPlayer)
-        elif turnChoice == answers[2]:
-            return self.choice_other(player, opposingPlayer)
-
-        return True # shouldnt reach here
-
-    # Give Player other options
-    def choice_other(self, player, opposingPlayer):
-        answers = ('end your turn', 'help', 'Game State', 'Deck',  'go back') # 'check hand', 'check gold', Not very useful
-        while True:
-            turnChoice = Tools.get_input('\n|Enter your option|', answers)
-            if turnChoice == answers[0]:
-                return True # ends turn
-            elif turnChoice == answers[1]:
-                self.get_help()
-            elif turnChoice == answers[2]:
-                self.output_state(player, opposingPlayer)
-            elif turnChoice == answers[3]:
-                self.check_deck(player)
-            # elif turnChoice == answers[3]:        Not very useful :/
-            #     self.check_hand()
-            # elif turnChoice == answers[4]:        Not very useful :/
-            #     self.print_gold()
-            elif turnChoice == answers[4]:
-                return False
-
-    # Player wants to Attack with a friendly ally
-    def choice_attack(self, player, opposingPlayer):
-        tryAgain = True
-        availableAttackers = []
-        availableDefenders = []
-        availableAttackers.append('Go Back')
-        availableDefenders.append('Go Back')
-        for i in player.available_targets():
-            availableAttackers.append(i)
-        for i in opposingPlayer.available_targets():
-            availableDefenders.append(i)
-        while tryAgain:
-            attacker = Tools.get_input('|Attack with|', availableAttackers)
-            if attacker == 'Go Back':
-                return False
-            elif attacker.is_ready():
-                tryAgain = False
-            else:
-                print(f'{attacker.name()} is not ready!')
-        defender = Tools.get_input('|Attack who|', availableDefenders)
-        if defender == 'Go Back':
-                return False
-        print('|Attacking:|', defender.name(), '\n')
-        print('|Attacking with:|', attacker.name(), '\n')
-        attacker.attack_enemy(defender)
-        if player.health() <= 0 or opposingPlayer.health() <= 0:
-            return True 
-        player.call_to_arms().toll_the_dead()
-        opposingPlayer.call_to_arms().toll_the_dead()
-        self.output_state(player, opposingPlayer)
-        return False
-
-    # Player wants to play a card
-    def choice_play_card(self, player, opposingPlayer):
-        # Does the hero have any cards
-        if player.any_cards() == True:
-            # Great! Now we can play a card
-            # I want to play this card! Retrieve it from you hand
-            hand = []
-            hand.append('Go Back')
-            for i in player._hand:
-                hand.append(i)
-            self.output_gold(player)
-            playThisCard = Tools.get_input('Play which card:', hand)
-            if playThisCard == 'Go Back':
-                return False
-            # Is this chosen card playable?
-            elif player.playable_card(playThisCard) == False:
-                print('That card costs too much gold')
-                return False
-            elif player.call_to_arms().full_army() == True:
-                print('Your Army is Full!')
-                return False
-            else:
-                player.play_ally(playThisCard)
-                playThisCard.ready_down()
-                print(playThisCard.name(), 'Get out there!\n')
-                self.output_state(player, opposingPlayer)
-                print('')
-                return False
-        # If you are over here, then you are not able to play a Card for some reason or other
-        else:
-            print('Your Hand is empty! Choose something else..\n')
-            return False
-
-    # To be implemented later
-    def get_help(self):
-        self.output('Never give up!\n')
-        return False
-
-    def check_deck(self, player):
-        print(player.deck_list())
-        return False
-
-    # Prints the current state of the game i.e. the Heros and Armies of both sides
-    def print_state(self):
-        print(f'\t\t{self._hero}\t\t|\t{self._enemy}\n')
-
-        # This gets the armies together to output in an intelligible way
-        # I am least proud of these lines of code but hey they work
-        heroCounter = 0
-        enemyCounter = 0
-        heroArmySize = self._hero.call_to_arms().army_size()
-        enemyArmySize = self._enemy.call_to_arms().army_size()
-        largestArmy = max(heroArmySize, enemyArmySize)
-        while heroCounter < largestArmy and enemyCounter < largestArmy:
-            heroAlly = self._hero.call_to_arms().get_ally_at(heroCounter)
-            enemyAlly = self._enemy.call_to_arms().get_ally_at(enemyCounter)
-            if heroAlly == None:
-                #This mess of a string gets the spacing right
-                heroAlly = '\t\t\t\t\t\t\t\t'
-            
-            if enemyAlly == None:
-                #Same with this string
-                enemyAlly = '\t\t\t\t\t\t\t\t  '
-            print(f'|{heroAlly}\t|{enemyAlly}|')
-            heroCounter += 1
-            enemyCounter += 1
-        print('___________________________________________________________________________________________________________________________________________')
-
-# HUMAN ********************************************************************************************
-# OUTPUT ********************************************************************************************
-    def output(self, text):
-        if self._output == print:
-            self._output(text)
-        else: # fileOutput
-            self._output.write(text)
-
-    # Outputs who wins
-    def output_winner(self):
-        player1Lose = self._player1.health() <= 0
-        player2Lose = self._player2.health() <= 0
-        # tie
-        if player1Lose and player2Lose:
-            self.output('You both lose!')
-        elif player1Lose:
-            self.output(f'{self._player1.name()} loses!')
-        elif player2Lose:
-            self.output(f'{self._player2.name()} loses!')
-
-    # Ouptus how much gold the hero has left
-    def output_gold(self, player):
-        self.output(f'You have {player.gold()} gold\n')
-
-    # Outputs the current state of the game i.e. the Heros and Armies of both sides
-    def output_state(self, player, opposingPlayer):
-        self.output(f'{player}\t\t|\t{opposingPlayer}\n')
-
-        # This gets the armies together to output in an intelligible way
-        # I am least proud of these lines of code but hey they work
-        heroCounter = 0
-        enemyCounter = 0
-        heroArmySize = player.call_to_arms().army_size()
-        enemyArmySize = opposingPlayer.call_to_arms().army_size()
-        largestArmy = max(heroArmySize, enemyArmySize)
-        while heroCounter < largestArmy and enemyCounter < largestArmy:
-            heroAlly = player.call_to_arms().get_ally_at(heroCounter)
-            enemyAlly = opposingPlayer.call_to_arms().get_ally_at(enemyCounter)
-            if heroAlly == None:
-                #This mess of a string gets the spacing right
-                heroAlly = '\t\t\t\t\t\t\t\t'
-            
-            if enemyAlly == None:
-                #Same with this string
-                enemyAlly = '\t\t\t\t\t\t\t\t'
-            self.output(f'|{heroAlly}\t|{enemyAlly}|\n')
-            heroCounter += 1
-            enemyCounter += 1
-
-    # Outputs current hand
-    def output_hand(self, player):
-        self.output('hand:\n')
-        for card in player._hand:
-            self.output(card._name + '\n')
-# OUTPUT ********************************************************************************************
+# PYGAME ********************************************************************************************
     def redraw_window(self):
         # draws background onto window at coordinate (0, 0)
-        WIN.blit(BACKGROUND, (0, 0))
+        self.WIN.blit(self.BACKGROUND, (0, 0))
 
         #player dividing borders 
-        pygame.draw.line(WIN, (255,255,255), (settings.WIDTH / 2, 0), ((settings.WIDTH / 2, settings.HEIGHT)), 5)
-        #pygame.draw.line(WIN, (255,255,255), (0, settings.HEIGHT * 2 / 3), ((settings.WIDTH, settings.HEIGHT * 2 / 3)), 5)
+        pygame.draw.line(self.WIN, settings.white, (0, settings.HEIGHT / 2), (settings.WIDTH, settings.HEIGHT / 2), 5)
+        pygame.draw.line(self.WIN, settings.white, (settings.endHeroZone, 0), (settings.endHeroZone, settings.HEIGHT), 5)
+        # board / hand lines
+        top_line_y = settings.HEIGHT / 4
+        bot_line_y = settings.HEIGHT / 4 * 3
+        self._board1 = pygame.Rect(settings.endHeroZone, settings.HEIGHT / 2, settings.WIDTH - settings.endHeroZone, settings.HEIGHT / 4)
+        self._board2 = pygame.Rect(settings.endHeroZone, settings.HEIGHT / 4, settings.WIDTH - settings.endHeroZone, settings.HEIGHT / 4)
+        board1BorderColor = settings.white
+        board2BorderColor = settings.white
+        if self._selectedCard:
+            board1BorderColor = settings.targeted_color
+        pygame.draw.rect(self.WIN, board1BorderColor, self._board1, settings.card_border_size)
+        pygame.draw.rect(self.WIN, board2BorderColor, self._board2, settings.card_border_size)
 
-        self._player1.draw(WIN)
-        self._player1.draw_army(WIN) # side 1 = true
 
-        self._player2.draw(WIN)
-        self._player2.draw_army(WIN) # side 1 = false ie side 2
+        # Game Stats ##########################
+        # Player 1 Gold 
+        gold_p1 = settings.sub_font.render(f"Gold: {self._player1._gold}", 1, settings.gold)
+        gold_p1X = 0
+        gold_p1Y = settings.HEIGHT - gold_p1.get_height()
+        gold_p1_rect = pygame.Rect(gold_p1X, gold_p1Y, gold_p1.get_width(), gold_p1.get_height())
+        pygame.draw.rect(self.WIN, settings.dark_grey, gold_p1_rect) # BACKDROP
+        self.WIN.blit(gold_p1, gold_p1_rect)
+        # Player 2 Gold 
+        gold_p2 = settings.sub_font.render(f"Gold: {self._player2._gold}", 1, settings.gold)
+        gold_p2X = 0
+        gold_p2Y = 0
+        gold_p2_rect = pygame.Rect(gold_p2X, gold_p2Y, gold_p2.get_width(), gold_p2.get_height())
+        pygame.draw.rect(self.WIN, settings.dark_grey, gold_p2_rect) # BACKDROP
+        self.WIN.blit(gold_p2, gold_p2_rect)
+        # Round 
+        round_label = settings.sub_font.render(f"Round: {self._roundCounter}", 1, settings.white) # better way to choose rgb? is needed??
+        roundX = settings.endHeroZone - round_label.get_width()
+        roundY = 0
+        round_rect = pygame.Rect(roundX, roundY, round_label.get_width(), round_label.get_height())
+        pygame.draw.rect(self.WIN, settings.dark_grey, round_rect) # BACKDROP
+        self.WIN.blit(round_label, round_rect)
+        # End Turn Button
+        self._endTurnRect = pygame.Rect(settings.endHeroZone - self._endTurnButton.get_width(), settings.HEIGHT - self._endTurnButton.get_height(), self._endTurnButton.get_width(), self._endTurnButton.get_height())
+        self.WIN.blit(self._endTurnButton, self._endTurnRect)
+        pygame.draw.rect(self.WIN, settings.white, self._endTurnRect, 5)
+        ###########################################
+
+        self._player1.draw(self.WIN)
+        self._player1.draw_army(self.WIN) # side 1 = true
+        self._player1.draw_deck(self.WIN)
+        self._player1.draw_hand(self.WIN)
+
+        self._player2.draw(self.WIN)
+        self._player2.draw_army(self.WIN) # side 1 = false ie side 2
+        self._player2.draw_deck(self.WIN)
+        self._player2.draw_hand(self.WIN) # typically say hidden=True
 
         pygame.display.update()
+
+# PYGAME ********************************************************************************************
 # RANDOM ********************************************************************************************
+# Random player is always self._player2, human is always self._player1
     # player, opposingPlayer, round
-    def random_full_turn(self, player, opposingPlayer, roundNumber):
-        self.output('______________________________________________________________________________________________________________\n')
-        self.output('It\'s ' + player.name() + '\'s turn!\n')
-        self.output_hand(player)
-        self.output(player.draw_card())
+    def random_turn(self):
+        self._player2.draw_card()
         # check is fatigue killed the hero
-        if player.health() <= 0 or opposingPlayer.health() <= 0:
-            self.end_turn(True)
-            return
+        # if self._player2.health() <= 0:
+        #     self.end_turn(True)
+        #     return
 
         # set player's gold to round number
-        player.set_gold(roundNumber)
-            
-        self.output_gold(player)
-        self.output_state(player, opposingPlayer)
+        self._player2.set_gold(self._roundCounter)
+
         endTurn = False
         while endTurn == False:
-            endTurn = self.random_choice(player, opposingPlayer) # returns true when turn is over
-        player.ready_up() # readies hero and army
+            endTurn = self.random_choice() # returns true when turn is over
+        self._player2.ready_up() # readies hero and army
         
     # Randomly find out want the player wants to do and call correct function based on that choice
-    def random_choice(self, player, opposingPlayer):
+    def random_choice(self):
         # while you can play cards
-        while player.playable_cards():
+        while self._player2.playable_cards():
             # randomly play a card until out, no gold or board full
-            while player.playable_cards():
-                self.random_play_card(player)
+            while self._player2.playable_cards():
+                self.random_play_card()
 
             # while you can attack # are there any available attackers? return bool
-            while player._army.available_attackers() or player._ready == True:
-                self.random_attack(player, opposingPlayer)
+            while self._player2._army.available_attackers() or self._player2._ready == True:
+                self.random_attack()
             # attack
         # in case you cant play cards but can attack
-        while player._army.available_attackers() or player._ready == True:
-            self.random_attack(player, opposingPlayer)
+        while self._player2._army.available_attackers() or self._player2._ready == True:
+            self.random_attack()
 
         # end turn
         return True # endTurn = True
 
     # play a random card in hand
-    def random_play_card(self, player):
-        playable_hand = player.playable_hand()
+    def random_play_card(self):
+        playable_hand = self._player2.playable_hand()
         choice = random.randint(0, len(playable_hand) - 1)
-        player.play_ally(playable_hand[choice])
-        self.output(player._name + " played " + playable_hand[choice]._name + "\n")
+        self._player2.play_ally(playable_hand[choice])
 
     # randomly attack a random target
-    def random_attack(self, player, opposingPlayer):
-        availableAttackers = player.available_attackers()
-        availableDefenders = opposingPlayer.available_targets()
+    def random_attack(self):
+        availableAttackers = self._player2.available_attackers()
+        availableDefenders = self._player1.available_targets()
 
         attacker = availableAttackers[random.randint(0, len(availableAttackers) - 1)]
         defender = availableDefenders[random.randint(0, len(availableDefenders) - 1)]
 
-        self.output('***********FIGHT***********\n')
-        self.output_state(player, opposingPlayer)
-        self.output('|Attacking:|' + defender.name() + '\n')
-        self.output('|Attacking with:|' + attacker.name() + '\n')
         attacker.attack_enemy(defender)
-        if player.health() <= 0 or opposingPlayer.health() <= 0:
+        if self._player2.health() <= 0 or self._player1.health() <= 0:
             return True # stops the turn
-        player.call_to_arms().toll_the_dead()
-        opposingPlayer.call_to_arms().toll_the_dead()
-        self.output_state(player, opposingPlayer)
-        self.output('***********FIGHT***********\n')
+        self._player2.call_to_arms().toll_the_dead()
+        self._player1.call_to_arms().toll_the_dead()
 # RANDOM ********************************************************************************************
 
 def main():
-    GameManager()
+    game = GameManager()
 
 if __name__ == "__main__":
     main()
