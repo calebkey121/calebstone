@@ -88,6 +88,8 @@ class GameManager:
         for card in self._player1._hand:
             if card._sprite:
                 if card._sprite.collidepoint(mousePos):
+                    if self._selectedCard != card and self._selectedCard != None:
+                        self._selectedCard.unselect()
                     found = True
                     self._selectedCard = card
                     self._selectedCard.select()
@@ -96,7 +98,6 @@ class GameManager:
             if self._selectedCard:
                 self._selectedCard.unselect()
                 self._selectedCard = None
-
 
     def select_board(self, mousePos):
         if self._board1.collidepoint(mousePos):
@@ -208,11 +209,9 @@ class GameManager:
         self.WIN.blit(self.BACKGROUND, (0, 0))
 
         #player dividing borders 
-        pygame.draw.line(self.WIN, settings.white, (0, settings.HEIGHT / 2), (settings.WIDTH, settings.HEIGHT / 2), 5)
+        pygame.draw.line(self.WIN, settings.white, (0, settings.HEIGHT / 2), (settings.WIDTH, settings.HEIGHT / 2), 5) # horizontak line down the middle
         pygame.draw.line(self.WIN, settings.white, (settings.endHeroZone, 0), (settings.endHeroZone, settings.HEIGHT), 5)
         # board / hand lines
-        top_line_y = settings.HEIGHT / 4
-        bot_line_y = settings.HEIGHT / 4 * 3
         self._board1 = pygame.Rect(settings.endHeroZone, settings.HEIGHT / 2, settings.WIDTH - settings.endHeroZone, settings.HEIGHT / 4)
         self._board2 = pygame.Rect(settings.endHeroZone, settings.HEIGHT / 4, settings.WIDTH - settings.endHeroZone, settings.HEIGHT / 4)
         board1BorderColor = settings.white
@@ -259,7 +258,7 @@ class GameManager:
         self._player2.draw(self.WIN)
         self._player2.draw_army(self.WIN) # side 1 = false ie side 2
         self._player2.draw_deck(self.WIN)
-        self._player2.draw_hand(self.WIN) # typically say hidden=True
+        self._player2.draw_hand(self.WIN, hidden=True) # typically say hidden=True
 
         pygame.display.update()
 
