@@ -1,4 +1,4 @@
-import Hero
+from Hero import Hero
 import time
 import Tools
 import random
@@ -8,14 +8,15 @@ import os
 import Card
 import DeckLists.BearDeckList as Bear
 import DeckLists.WolfDeckList as Wolf
+import DeckLists.SpiderDeckList as Spider
 
 
 class GameManager:
 
-    def __init__(self, player1Name="Wolf", player1Deck=Wolf.deck_list, player2Name="Bear", player2Deck=Bear.deck_list):
-        self._player1 = Hero.Hero(hero=player1Name, deckList=player1Deck, side1=False) # player1 is human when possible
+    def __init__(self, player1Name="Necromancer", player1Deck=Spider.deck_list, player2Name="Skeleton Wizard", player2Deck=Spider.deck_list):
+        self._player1 = Hero(hero=player1Name, deckList=player1Deck, side1=False) # player1 is human when possible
         self._player1._yourTurn = True
-        self._player2 = Hero.Hero(hero=player2Name, deckList=player2Deck, side1=True) # player2 is random when possible
+        self._player2 = Hero(hero=player2Name, deckList=player2Deck, side1=True) # player2 is random when possible
         # typegame is always human v random
         self._player1GoesFirst = False
         self._roundCounter = 0
@@ -26,9 +27,6 @@ class GameManager:
         self._selectedAttacker = None # a Ally on the board is selected
         self._board1 = None
         self._board2 = None
-
-        # remove later
-        #self._player1.draw_cards(7)
 
         # PYGAME
         self.WIN = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT),pygame.FULLSCREEN, pygame.RESIZABLE)
@@ -73,7 +71,7 @@ class GameManager:
 
         print("Ending Game...", self.winner(), "won!")
 
-# SELECTING FUNCTIONS ********************************************************************************************
+# SELECTING FUNCTIONS ******************************************************************************************
     def select_player1(self, mousePos):
         if self._player1._sprite.collidepoint(mousePos):
             self._selectedAttacker = self._player1
@@ -146,7 +144,7 @@ class GameManager:
                             self._player2.call_to_arms().toll_the_dead()
                         self._player2.untarget_all()
 # **************************************************************************************************************
-# GAME FUNCS ********************************************************************************************
+# GAME FUNCS ***************************************************************************************************
     def start_of_game(self):
         # coin toss:
         # True -> hero first
@@ -201,10 +199,10 @@ class GameManager:
         self._player1.draw_card()
 
 # **************************************************************************************************************
-# HUMAN ********************************************************************************************
+# HUMAN ********************************************************************************************************
 
 # **************************************************************************************************************
-# PYGAME ********************************************************************************************
+# PYGAME *******************************************************************************************************
     def redraw_window(self):
         # draws background onto window at coordinate (0, 0)
         self.WIN.blit(self.BACKGROUND, (0, 0))
@@ -278,7 +276,7 @@ class GameManager:
         pygame.display.update()
 
 # **************************************************************************************************************
-# RANDOM ********************************************************************************************
+# RANDOM *******************************************************************************************************
 # Random player is always self._player2, human is always self._player1
     # player, opposingPlayer, round
     def random_turn(self):

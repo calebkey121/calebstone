@@ -29,7 +29,6 @@ class Card:
             self._cost = c
         return self._cost
 # ************************************************************************************************************
-
     @staticmethod 
     def draw_card_back(WIN, x, y):
         # may later want to add the option of drawing a specific cardback, dont really care rn, 
@@ -41,7 +40,6 @@ class Card:
         x = pygame.Rect(x, y, settings.card_size[0], settings.card_size[1])
         pygame.draw.rect(WIN, settings.light_grey, x, settings.card_border_size) # Border
 
-        #pygame.draw.rect(WIN, settings.dark_grey, x) # Card Back
 
 class Ally(Card):
     def __init__(self, cost=-1, name=None, attack=-1, health=-1):
@@ -63,8 +61,7 @@ class Ally(Card):
             self._health = h
         return self._health
 # ************************************************************************************************************
-
-    # Ready Self
+# READY ******************************************************************************************************
     def ready_up(self):
         if self._attack > 0:
             self._ready = True
@@ -72,13 +69,14 @@ class Ally(Card):
         self._ready = False
     def is_ready(self):
         return self._ready
-    
-    # Select Self
+# ************************************************************************************************************
+# Select *****************************************************************************************************
     def select(self):
         self._selected = True
     def unselect(self):
         self._selected = False
-
+# ************************************************************************************************************
+# BATTLE *****************************************************************************************************
     # Lower your own health by damage amount 
     def lower_health(self, damage):
         self._health -= damage
@@ -105,9 +103,8 @@ class Ally(Card):
         else:
             return f'{self.name()} is not ready!'
         return None
-
-
-    # PYGAME Draw Ally
+# ************************************************************************************************************
+# PYGAME *****************************************************************************************************
     def draw(self, WIN, x, y, yourTurn):
 
         WIN.blit(self._avatar, (x, y + settings.small_font.get_height()))
@@ -150,3 +147,4 @@ class Ally(Card):
             finalBorderColor = settings.targeted_color
         self._sprite = pygame.Rect(x, y, settings.card_size[0], settings.card_size[1])
         pygame.draw.rect(WIN, finalBorderColor, self._sprite, settings.card_border_size)
+# ************************************************************************************************************

@@ -3,12 +3,11 @@ import os
 import settings
 from Army import Army
 from Deck import Deck
-import Card
 from Card import Card
 
 # This represents the player - Human or AI
 class Hero:
-    def __init__(self, **kwargs): # must
+    def __init__(self, **kwargs):
         # Heros are the player and hold all the variables that the player will have in game
         self._name = kwargs['hero']
         self._health = 50
@@ -21,7 +20,16 @@ class Hero:
         self._hand = [] # hand is a part of Hero, not its own class
         self._maxHandSize = 7
 
-        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "heros", self._name + ".png")), (settings.hero_size[0], settings.hero_size[1] - settings.main_font.get_height() * 2))
+        # If appropriate avatar is in directory then use it, otherwise use a default picture
+        if os.path.exists(os.path.join("avatars", "heros", f"{self._name}.jpg")):
+            self._image = pygame.image.load(os.path.join("avatars", "heros", f"{self._name}.jpg"))
+        elif os.path.exists(os.path.join("avatars", "heros", f"{self._name}.png")):
+            self._image = pygame.image.load(os.path.join("avatars", "heros", f"{self._name}.png"))
+        else:
+            self._image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
+        self._avatar = pygame.transform.scale(self._image, (settings.hero_size[0], settings.hero_size[1]- settings.main_font.get_height() * 2))
+
+        
         self._side1 = kwargs['side1'] # says if the hero is on the left or right side
         self._sprite = None
         self._ready = False
@@ -139,6 +147,13 @@ class Hero:
         if card.cost() <= self.gold():
             playable = True
         return playable
+
+    def playable_hand(self):
+        playable = []
+        for i in self._hand:
+            if i.cost() <= self._gold:
+                playable.append(i)
+        return playable
 # ************************************************************************************************************
 # Army *******************************************************************************************************
     def call_to_arms(self, ally=None):
@@ -196,18 +211,17 @@ class Hero:
         elif roundNumber == 10:
             self._income += 5
         self._gold += self._income
+        if self._gold > 50: self._gold = 50
 
 # ************************************************************************************************************
 # PYGAME DRAW FUNCTIONS **************************************************************************************
     def draw(self, WIN):
-
-        # Players Avatar
+        # X and Y
         x = settings.hero_zone_buffer
         if self._side1:
             y = settings.HEIGHT / 2 - settings.hero_zone_buffer - settings.hero_size[1]
         else:
             y = settings.HEIGHT / 2 + settings.hero_zone_buffer
-        WIN.blit(self._avatar, (x, y + settings.main_font.get_height()))
 
         # Stat Area
         # Player Health
@@ -226,11 +240,24 @@ class Hero:
         
         # Player Name
         name_label = settings.main_font.render(f"{self._name}", 1, settings.white)
+
+        # Dynamically Lowers Font until the name fits
+        fontSize = 35
+        while name_label.get_width() >= settings.hero_size[0]:
+            fontSize -= 1
+            newFont = pygame.font.SysFont(settings.font_type, fontSize)
+            name_label = newFont.render(f"{self._name}", 1, settings.white)
+        # have to reset main avatar now that font has changed
+        self._avatar = pygame.transform.scale(self._image, (settings.hero_size[0], settings.hero_size[1]- settings.main_font.get_height() - name_label.get_height()))
+
+
         name_rect = pygame.Rect(x, y, settings.hero_size[0], name_label.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, name_rect) # BACKDROP
         pygame.draw.rect(WIN, settings.light_grey, name_rect, settings.card_border_size) # BORDER
         WIN.blit(name_label, (x + settings.hero_size[0] / 2 - name_label.get_width() / 2, y))
         
+        # Players Avatar
+        WIN.blit(self._avatar, (x, y + name_label.get_height()))
         # Final Border
         finalBorderColor = settings.light_grey
         if self._ready and self._yourTurn:
