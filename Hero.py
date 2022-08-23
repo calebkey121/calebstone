@@ -112,18 +112,19 @@ class Hero:
             if self.deck_list().get_current_num_cards() <= 0:
                 damage = self._deck.draw_card(self._hand)
                 self._health += damage
-                return (f'Fatigue: {-damage} damage delt to {self.name()}')
+                #return (f'Fatigue: {-damage} damage delt to {self.name()}')
             else:
                 draw = self._deck.draw_card(self._hand)
-                return (self.name() + ' drew ' + draw.name() + '\n')
+                #return (self.name() + ' drew ' + draw.name() + '\n')
         # CASE: Your hand is FULL
         else:
             if self.deck_list().get_current_num_cards() > 0:
-                return (self._name + '\'s hand is too full!\n' + self._name + ' burned:' + self._deck.burn_card())
+                self._deck.burn_card()
+                #return (self._name + '\'s hand is too full!\n' + self._name + ' burned:' + self._deck.burn_card())
             else:
                 damage = self._deck.draw_card(self._hand)
                 self._health += damage
-                return (f'Fatigue: {-damage} damage delt to {self.name()}')
+                #return (f'Fatigue: {-damage} damage delt to {self.name()}')
 
     def draw_cards(self, number):
         drawnCards = []
