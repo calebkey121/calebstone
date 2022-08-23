@@ -1,0 +1,2 @@
+Not a bug but if both players have the same decklist, they both draw from the same deck
+    ie player2deck = spider, player2deck = spider

@@ -118,11 +118,11 @@ class Hero:
                 self._health += damage
                 #return (f'Fatigue: {-damage} damage delt to {self.name()}')
             else:
-                draw = self._deck.draw_card(self._hand)
+                self._deck.draw_card(self._hand)
                 #return (self.name() + ' drew ' + draw.name() + '\n')
         # CASE: Your hand is FULL
         else:
-            if self.deck.get_current_num_cards() > 0:
+            if self._deck.get_current_num_cards() > 0:
                 self._deck.burn_card()
                 #return (self._name + '\'s hand is too full!\n' + self._name + ' burned:' + self._deck.burn_card())
             else:
