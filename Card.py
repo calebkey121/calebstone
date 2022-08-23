@@ -66,7 +66,8 @@ class Ally(Card):
 
     # Ready Self
     def ready_up(self):
-        self._ready = True
+        if self._attack > 0:
+            self._ready = True
     def ready_down(self):
         self._ready = False
     def is_ready(self):

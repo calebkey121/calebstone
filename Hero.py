@@ -10,40 +10,75 @@ from Card import Card
 class Hero:
     def __init__(self, **kwargs): # must
         # Heros are the player and hold all the variables that the player will have in game
-        # In the future, I want the heros to be unique, here the just have the following:
-        # :: Name, Health, Gold, Deck(of cards), Hand(of cards), and related variables
         self._name = kwargs['hero']
-        self._deck = Deck(kwargs['deckList'])
-        self._army = Army()
-        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "heros", self._name + ".png")), (settings.hero_size[0], settings.hero_size[1] - settings.main_font.get_height() * 2))
-        self._health = 30
+        self._health = 50
         self._attack = 0
         self._gold = 0
-        self._hand = []
+        self._income = 5
+
+        self._deck = Deck(kwargs['deckList'])
+        self._army = Army()
+        self._hand = [] # hand is a part of Hero, not its own class
         self._maxHandSize = 7
+
+        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "heros", self._name + ".png")), (settings.hero_size[0], settings.hero_size[1] - settings.main_font.get_height() * 2))
         self._side1 = kwargs['side1'] # says if the hero is on the left or right side
         self._sprite = None
-
         self._ready = False
         self._targeted = False
         self._selected = False
         self._yourTurn = False # is it your turn
 
-    # Hero's Army Functions
-    def call_to_arms(self, ally=None):
-        if ally:
-            self._army.add_ally(ally)
-        return self._army
-
+# GETTERS/SETTERS ********************************************************************************************
+    def name(self, name=None):
+        if name:
+            self._name = name
+        return self._name
+    def health(self, health=None):
+        if health:
+            self._health = health
+        return self._health
     def attack(self, attack=None):
         if attack:
             self._attack = attack
         return self._attack
-
-    def get_army_size(self):
-        return self.call_to_arms().army_size()
-
-    # Hand Functions
+    def gold(self, g=None):
+        if g:
+            self._gold = g
+        return self._gold
+    def income(self, i=None):
+        if i:
+            self._income = i
+        return self._income
+# ************************************************************************************************************
+# Ready ******************************************************************************************************
+    def ready_up(self):
+        if self._attack > 0:
+            self._ready = True
+        for card in self._army._army:
+            card.ready_up()
+    def ready_down(self):
+        self._ready = False
+    def is_ready(self):
+        return self._ready
+# ************************************************************************************************************
+# Selecting **************************************************************************************************
+    def select(self):
+        self._selected = True
+    def unselect(self):
+        self._selected = False
+# ************************************************************************************************************
+# Targeting **************************************************************************************************
+    def target_all(self):
+        self._targeted = True
+        for ally in self._army.get_army():
+            ally._targeted = True
+    def untarget_all(self):
+        self._targeted = False
+        for ally in self._army.get_army():
+            ally._targeted = False
+# ************************************************************************************************************
+# Hand *******************************************************************************************************
     def max_hand_size(self, newSize=None):
         if newSize:
             self._maxHandSize = newSize
@@ -52,24 +87,10 @@ class Hero:
     def current_hand_size(self):
         return len(self._hand)
 
-    def print_hand(self):
-        for i, j in enumerate(self._hand):
-            print(f'{i+1}: {j}')
-
     def remove_from_hand(self, card):
         for i in self._hand:
             if i == card:
                 self._hand.remove(i)
-
-    def attack_enemy(self, enemy):
-        if self._ready:
-            if self.attack() >= 0:
-                enemy.lower_health(self.attack())
-            if enemy.attack() >= 0:
-                self.lower_health(enemy.attack())
-            self.ready_down()
-        else:
-            print(f'{self.name()} is not ready!')
 
     def get_from_hand(self, position):
         return self._hand[position]
@@ -80,36 +101,11 @@ class Hero:
         else:
             return False
 
-    # Variable Changing
-    def deck_list(self, deckList=None):
-        if deckList:
-            self._deck.import_txt(deckList)
-        return self._deck
-
-    def gold(self, income=None):
-        if income:
-            self._gold = income
-        return self._gold
-
-    def name(self, name=None):
-        if name:
-            self._name = name
-        return self._name
-    
-    def health(self, health=None):
-        if health:
-            self._health = health
-        return self._health
-
-    def lower_health(self, attackVal):
-        self._health -= attackVal
-
-    # Card Draw
     def draw_card(self):
         # CASE: Your hand is NOT FULL
         if len(self._hand) < self.max_hand_size():
             # CASE: Out of Cards!! Take damage equal to the amount of cards that you have overdrawn
-            if self.deck_list().get_current_num_cards() <= 0:
+            if self._deck.get_current_num_cards() <= 0:
                 damage = self._deck.draw_card(self._hand)
                 self._health += damage
                 #return (f'Fatigue: {-damage} damage delt to {self.name()}')
@@ -118,13 +114,12 @@ class Hero:
                 #return (self.name() + ' drew ' + draw.name() + '\n')
         # CASE: Your hand is FULL
         else:
-            if self.deck_list().get_current_num_cards() > 0:
+            if self.deck.get_current_num_cards() > 0:
                 self._deck.burn_card()
                 #return (self._name + '\'s hand is too full!\n' + self._name + ' burned:' + self._deck.burn_card())
             else:
                 damage = self._deck.draw_card(self._hand)
                 self._health += damage
-                #return (f'Fatigue: {-damage} damage delt to {self.name()}')
 
     def draw_cards(self, number):
         drawnCards = []
@@ -132,7 +127,28 @@ class Hero:
             drawnCards.append(self.draw_card())
         return drawnCards
 
-    # Playing Cards!!!
+    def playable_cards(self): # Are there any playable cards in my hand?
+        playable = False
+        for i in self._hand:
+            if i.cost() <= self._gold:
+                playable = True
+        return playable
+
+    def playable_card(self, card):
+        playable = False
+        if card.cost() <= self.gold():
+            playable = True
+        return playable
+# ************************************************************************************************************
+# Army *******************************************************************************************************
+    def call_to_arms(self, ally=None):
+        if ally:
+            self._army.add_ally(ally)
+        return self._army
+
+    def get_army_size(self):
+        return self.call_to_arms().army_size()
+
     def play_ally(self, card):
         if not self._army.is_full() and card._cost <= self._gold:
             self._army.add_ally(card)
@@ -141,36 +157,7 @@ class Hero:
             self.remove_from_hand(card)
         else: return None # unsuccessful
 
-    # Gold Management
-    def set_gold(self, roundNumber):
-        if roundNumber < 10:
-            self.gold(roundNumber)
-        else:
-            self.gold(10)
-
-    # Are there any playable cards in my hand?
-    def playable_cards(self):
-        playable = False
-        for i in self._hand:
-            if i.cost() <= self._gold:
-                playable = True
-        return playable
-
-    # Is this card playable?
-    def playable_card(self, card):
-        playable = False
-        if card.cost() <= self.gold():
-            playable = True
-        return playable
-
-    def playable_hand(self):
-        playable = []
-        for i in self._hand:
-            if i.cost() <= self._gold:
-                playable.append(i)
-        return playable
-
-    def available_targets(self):
+    def available_targets(self): # attackable allies
         availableTargets = []
         availableTargets.append(self)
         for i in self._army._army:
@@ -186,35 +173,32 @@ class Hero:
                 available_attackers.append(i)
         return available_attackers
 
-    def ready_up(self):
-        if self._attack >= 0:
-            self._ready = True
-        for card in self._army._army:
-            card.ready_up()
+# ************************************************************************************************************
+# Battle *****************************************************************************************************
+    def lower_health(self, attackVal):
+        self._health -= attackVal
 
-    def ready_down(self):
-        self._ready = False
+    def attack_enemy(self, enemy):
+        if self._ready:
+            if self.attack() >= 0:
+                enemy.lower_health(self.attack())
+            if enemy.attack() >= 0:
+                self.lower_health(enemy.attack())
+            self.ready_down()
+        else:
+            return f'{self.name()} is not ready!'
 
-    def is_ready(self):
-        return self._ready
+# ************************************************************************************************************
+# Gold *******************************************************************************************************
+    def set_gold(self, roundNumber): # Players have a certain income, they earn that much gold per turn
+        if roundNumber == 5:
+            self._income += 5
+        elif roundNumber == 10:
+            self._income += 5
+        self._gold += self._income
 
-    def select(self):
-        self._selected = True
-    
-    def unselect(self):
-        self._selected = False
-
-    def target_all(self):
-        self._targeted = True
-        for ally in self._army.get_army():
-            ally._targeted = True
-            
-    def untarget_all(self):
-        self._targeted = False
-        for ally in self._army.get_army():
-            ally._targeted = False
-
-# PYGAME DRAW FUNCTIONS ********************************************************************************************
+# ************************************************************************************************************
+# PYGAME DRAW FUNCTIONS **************************************************************************************
     def draw(self, WIN):
 
         # Players Avatar
@@ -308,3 +292,5 @@ class Hero:
                     Card.draw_card_back(WIN, x, y)
                 else: card.draw(WIN, x, y, self._yourTurn)
                 x += settings.card_size[0] + settings.card_buffer
+
+# ************************************************************************************************************

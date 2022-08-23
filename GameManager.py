@@ -161,8 +161,8 @@ class GameManager:
             self._player2.draw_cards(3)
             self._player1.draw_cards(4)
         self.round_counter(1)
-        self._player1.gold(1)
-        self._player2.gold(1)
+        self._player1.set_gold(1)
+        self._player2.set_gold(1)
 
     def round_counter(self, roundNum=None):
         if roundNum:
@@ -196,7 +196,7 @@ class GameManager:
         # start your next turn
         if self._player1GoesFirst:
             self._roundCounter += 1
-        self._player1.gold(self._roundCounter)
+        self._player1.set_gold(self._roundCounter)
         self._player1.ready_up()
         self._player1.draw_card()
 
@@ -225,19 +225,33 @@ class GameManager:
 
         # Game Stats ##########################
         # Player 1 Gold 
-        gold_p1 = settings.sub_font.render(f"Gold: {self._player1._gold}", 1, settings.gold)
+        gold_p1 = settings.sub_font.render(f"Gold: {self._player1.gold()}", 1, settings.gold)
         gold_p1X = 0
         gold_p1Y = settings.HEIGHT - gold_p1.get_height()
         gold_p1_rect = pygame.Rect(gold_p1X, gold_p1Y, gold_p1.get_width(), gold_p1.get_height())
         pygame.draw.rect(self.WIN, settings.dark_grey, gold_p1_rect) # BACKDROP
         self.WIN.blit(gold_p1, gold_p1_rect)
+        # Player 1 Income
+        income_p1 = settings.sub_font.render(f"Income: {self._player1.income()}", 1, settings.gold)
+        income_p1X = 0
+        income_p1Y = settings.HEIGHT - gold_p1.get_height() - income_p1.get_height()
+        income_p1_rect = pygame.Rect(income_p1X, income_p1Y, income_p1.get_width(), income_p1.get_height())
+        pygame.draw.rect(self.WIN, settings.dark_grey, income_p1_rect) # BACKDROP
+        self.WIN.blit(income_p1, income_p1_rect)
         # Player 2 Gold 
-        gold_p2 = settings.sub_font.render(f"Gold: {self._player2._gold}", 1, settings.gold)
+        gold_p2 = settings.sub_font.render(f"Gold: {self._player2.gold()}", 1, settings.gold)
         gold_p2X = 0
         gold_p2Y = 0
         gold_p2_rect = pygame.Rect(gold_p2X, gold_p2Y, gold_p2.get_width(), gold_p2.get_height())
         pygame.draw.rect(self.WIN, settings.dark_grey, gold_p2_rect) # BACKDROP
         self.WIN.blit(gold_p2, gold_p2_rect)
+        # Player 2 Income
+        income_p2 = settings.sub_font.render(f"Income: {self._player2.income()}", 1, settings.gold)
+        income_p2X = 0
+        income_p2Y = gold_p2.get_height()
+        income_p2_rect = pygame.Rect(income_p2X, income_p2Y, income_p2.get_width(), income_p2.get_height())
+        pygame.draw.rect(self.WIN, settings.dark_grey, income_p2_rect) # BACKDROP
+        self.WIN.blit(income_p2, income_p2_rect)
         # Round 
         round_label = settings.sub_font.render(f"Round: {self._roundCounter}", 1, settings.white) # better way to choose rgb? is needed??
         roundX = settings.endHeroZone - round_label.get_width()

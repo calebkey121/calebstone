@@ -1,5 +1,3 @@
-from Card import Ally
-import os
 import random
 
 class Deck:
