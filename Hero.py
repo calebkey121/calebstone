@@ -291,7 +291,7 @@ class Hero:
             if not self._side1:
                 y = settings.HEIGHT - settings.card_zone_buffer - settings.card_size[1]
             Card.draw_card_back(WIN, x, y)
-        remaining_cards = settings.small_font.render(f"Remaining Cards:{self._deck.get_current_num_cards()}", 1, settings.white)
+        remaining_cards = settings.small_font.render(f"Remaining Cards:{self._deck.get_current_num_cards()}", 1, settings.black)
         WIN.blit(remaining_cards, (x + settings.card_size[0] / 2 - remaining_cards.get_width() / 2, y + settings.card_buffer))
 
     def draw_hand(self, WIN, hidden=False):

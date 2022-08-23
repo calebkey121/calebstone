@@ -6,12 +6,13 @@ import pygame
 import settings
 import os
 import Card
-
+import DeckLists.BearDeckList as Bear
+import DeckLists.WolfDeckList as Wolf
 
 
 class GameManager:
 
-    def __init__(self, player1Name="Wolf", player1Deck="CalebDeckList", player2Name="Bear", player2Deck="DioDeckList"):
+    def __init__(self, player1Name="Wolf", player1Deck=Wolf.deck_list, player2Name="Bear", player2Deck=Bear.deck_list):
         self._player1 = Hero.Hero(hero=player1Name, deckList=player1Deck, side1=False) # player1 is human when possible
         self._player1._yourTurn = True
         self._player2 = Hero.Hero(hero=player2Name, deckList=player2Deck, side1=True) # player2 is random when possible
@@ -144,7 +145,7 @@ class GameManager:
                             self._player1.call_to_arms().toll_the_dead()
                             self._player2.call_to_arms().toll_the_dead()
                         self._player2.untarget_all()
-# SELECTING FUNCTIONS ********************************************************************************************
+# **************************************************************************************************************
 # GAME FUNCS ********************************************************************************************
     def start_of_game(self):
         # coin toss:
@@ -199,10 +200,10 @@ class GameManager:
         self._player1.ready_up()
         self._player1.draw_card()
 
-# GAME FUNCS ********************************************************************************************
+# **************************************************************************************************************
 # HUMAN ********************************************************************************************
 
-# HUMAN ********************************************************************************************
+# **************************************************************************************************************
 # PYGAME ********************************************************************************************
     def redraw_window(self):
         # draws background onto window at coordinate (0, 0)
@@ -262,7 +263,7 @@ class GameManager:
 
         pygame.display.update()
 
-# PYGAME ********************************************************************************************
+# **************************************************************************************************************
 # RANDOM ********************************************************************************************
 # Random player is always self._player2, human is always self._player1
     # player, opposingPlayer, round
@@ -319,7 +320,7 @@ class GameManager:
             return True # stops the turn
         self._player2.call_to_arms().toll_the_dead()
         self._player1.call_to_arms().toll_the_dead()
-# RANDOM ********************************************************************************************
+# **************************************************************************************************************
 
 def main():
     game = GameManager()

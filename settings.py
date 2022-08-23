@@ -21,6 +21,7 @@ endHeroZone = 2 * hero_zone_buffer + hero_size[0]
 
 # Colors
 white = (255,255,255)
+black = (0,0,0)
 gold = (255,255,0)
 dark_grey = (30, 30, 30)
 light_grey = (200, 200, 200)
@@ -31,6 +32,7 @@ health_color = (255, 25, 60)
 attack_color = (255, 140, 0)
 
 # Fonts
-main_font = pygame.font.SysFont("comicsans", 35)
-sub_font = pygame.font.SysFont("comicsans", 20)
-small_font = pygame.font.SysFont("comicsans", 15)
+font_type = "comicsans"
+main_font = pygame.font.SysFont(font_type, 35)
+sub_font = pygame.font.SysFont(font_type, 20)
+small_font = pygame.font.SysFont(font_type, 15)

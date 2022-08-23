@@ -32,6 +32,8 @@ class Card:
 
     @staticmethod 
     def draw_card_back(WIN, x, y):
+        # may later want to add the option of drawing a specific cardback, dont really care rn, 
+        # the cardback.png would be stored in the hero class attributes, as that is what calls draw_card_back
         image = pygame.image.load(os.path.join("avatars", "cardBacks", "cardBack.png"))
         avatar = pygame.transform.scale(image, (settings.card_size[0], settings.card_size[1]))
         WIN.blit(avatar, (x, y))
@@ -91,7 +93,6 @@ class Ally(Card):
 
         # Type check, must be Ally or Hero
         if type(enemy) != Ally and type(enemy) != Hero.Hero:
-            print(type(enemy))
             return f'Parameter is type {type(enemy)}, must be type Ally or Hero'
 
         if self.is_ready():
