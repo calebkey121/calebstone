@@ -28,13 +28,18 @@ class Card:
         if isinstance(c, int):
             self._cost = c
         return self._cost
-# GETTERS/SETTERS ********************************************************************************************
+# ************************************************************************************************************
 
     @staticmethod 
     def draw_card_back(WIN, x, y):
+        image = pygame.image.load(os.path.join("avatars", "cardBacks", "cardBack.png"))
+        avatar = pygame.transform.scale(image, (settings.card_size[0], settings.card_size[1]))
+        WIN.blit(avatar, (x, y))
+
         x = pygame.Rect(x, y, settings.card_size[0], settings.card_size[1])
-        pygame.draw.rect(WIN, settings.dark_grey, x) # BACKDROP
-        pygame.draw.rect(WIN, settings.light_grey, x, settings.card_border_size)
+        pygame.draw.rect(WIN, settings.light_grey, x, settings.card_border_size) # Border
+
+        #pygame.draw.rect(WIN, settings.dark_grey, x) # Card Back
 
 class Ally(Card):
     def __init__(self, cost=-1, name=None, attack=-1, health=-1):
@@ -55,11 +60,7 @@ class Ally(Card):
         if isinstance(h, int):
             self._health = h
         return self._health
-# GETTERS/SETTERS ********************************************************************************************
-
-    # Lower your own health by damage amount 
-    def lower_health(self, damage):
-        self._health -= damage
+# ************************************************************************************************************
 
     # Ready Self
     def ready_up(self):
@@ -75,6 +76,10 @@ class Ally(Card):
     def unselect(self):
         self._selected = False
 
+    # Lower your own health by damage amount 
+    def lower_health(self, damage):
+        self._health -= damage
+
     # Attack enemy target
     # Parameters: 
     #   Enemy -> Ally or Hero type
@@ -85,7 +90,8 @@ class Ally(Card):
     def attack_enemy(self, enemy):
 
         # Type check, must be Ally or Hero
-        if type(enemy != Ally and enemy != Hero):
+        if type(enemy) != Ally and type(enemy) != Hero.Hero:
+            print(type(enemy))
             return f'Parameter is type {type(enemy)}, must be type Ally or Hero'
 
         if self.is_ready():
