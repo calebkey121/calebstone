@@ -27,8 +27,8 @@ class GameManager:
         self._board1 = None
         self._board2 = None
 
-        # PYGAME
-        self.WIN = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT),pygame.FULLSCREEN, pygame.RESIZABLE)
+        # PYGAME Setup
+        self.WIN = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT),pygame.FULLSCREEN | pygame.RESIZABLE)
         pygame.display.set_caption("Calebstone")
         self.BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "backgrounds", "b1.jpg")), (settings.WIDTH, settings.HEIGHT))
 
@@ -139,6 +139,8 @@ class GameManager:
                         if self._selectedAttacker:
                             self._player2.untarget_all()
                             self._selectedAttacker.attack_enemy(enemyAlly)
+                            if enemyAlly.health() == 0:
+                                self._player1.get_bounty(2)
                             self._player1.call_to_arms().toll_the_dead()
                             self._player2.call_to_arms().toll_the_dead()
                         self._player2.untarget_all()
@@ -318,7 +320,7 @@ class GameManager:
         choice = random.randint(0, len(playable_hand) - 1)
         self._player2.play_ally(playable_hand[choice])
 
-    # randomly attack a random target
+    # attack a random target
     def random_attack(self):
         availableAttackers = self._player2.available_attackers()
         availableDefenders = self._player1.available_targets()
@@ -329,6 +331,8 @@ class GameManager:
         attacker.attack_enemy(defender)
         if self._player2.health() <= 0 or self._player1.health() <= 0:
             return True # stops the turn
+        if defender.health() == 0:
+            self._player1.get_bounty(2)
         self._player2.call_to_arms().toll_the_dead()
         self._player1.call_to_arms().toll_the_dead()
 # **************************************************************************************************************

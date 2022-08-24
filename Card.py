@@ -11,12 +11,12 @@ class Card:
         
         # If appropriate avatar is in directory then use it, otherwise use a default picture
         if os.path.exists(os.path.join("avatars", "cards", f"{self._name}.jpg")):
-            image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.jpg"))
+            self.image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.jpg"))
         elif os.path.exists(os.path.join("avatars", "cards", f"{self._name}.png")):
-            image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.png"))
+            self.image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.png"))
         else:
-            image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
-        self._avatar = pygame.transform.scale(image, (settings.card_size[0], settings.card_size[1] - settings.sub_font.get_height() - settings.small_font.get_height()))
+            self.image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
+        self._avatar = pygame.transform.scale(self.image, (settings.card_size[0], settings.card_size[1] - settings.sub_font.get_height() - settings.small_font.get_height()))
 
 # GETTERS/SETTERS ********************************************************************************************
     def name(self, n=None):
@@ -99,6 +99,8 @@ class Ally(Card):
                 enemy.lower_health(self.attack())
             if enemy.attack() >= 0:
                 self.lower_health(enemy.attack())
+            if enemy.health() < 0:
+                enemy.health(0)
             self.ready_down()
         else:
             return f'{self.name()} is not ready!'
@@ -121,6 +123,16 @@ class Ally(Card):
         pygame.draw.rect(WIN, settings.light_grey, attack_border, settings.card_border_size)
 
         name_label = settings.sub_font.render(f"{self._name}", 1, settings.white) 
+
+        # Dynamically Lowers Font until the name fits
+        fontSize = 20
+        while name_label.get_width() >= settings.card_size[0] - 5:
+            fontSize -= 1
+            newFont = pygame.font.SysFont(settings.font_type, fontSize)
+            name_label = newFont.render(f"{self._name}", 1, settings.white)
+        # have to reset main avatar now that font has changed
+        self._avatar = pygame.transform.scale(self.image, (settings.card_size[0], settings.card_size[1] - settings.sub_font.get_height() - settings.small_font.get_height()))
+
         name_rect = pygame.Rect(x, y, settings.card_size[0], settings.small_font.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, name_rect)
         pygame.draw.rect(WIN, settings.light_grey, name_rect, 1)

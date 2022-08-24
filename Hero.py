@@ -13,7 +13,8 @@ class Hero:
         self._health = 50
         self._attack = 0
         self._gold = 0
-        self._income = 5
+        self._maxGold = 50
+        self._income = 2
 
         self._deck = Deck(kwargs['deckList'])
         self._army = Army()
@@ -199,6 +200,8 @@ class Hero:
                 enemy.lower_health(self.attack())
             if enemy.attack() >= 0:
                 self.lower_health(enemy.attack())
+            if enemy.health() < 0:
+                enemy.health(0)
             self.ready_down()
         else:
             return f'{self.name()} is not ready!'
@@ -206,12 +209,13 @@ class Hero:
 # ************************************************************************************************************
 # Gold *******************************************************************************************************
     def set_gold(self, roundNumber): # Players have a certain income, they earn that much gold per turn
-        if roundNumber == 5:
-            self._income += 5
-        elif roundNumber == 10:
-            self._income += 5
+        if (roundNumber % 3) == 0:
+            self._income += 1
         self._gold += self._income
-        if self._gold > 50: self._gold = 50
+        if self._gold > self._maxGold: self._gold = self._maxGold
+
+    def get_bounty(self, amount):
+        self._gold += amount
 
 # ************************************************************************************************************
 # PYGAME DRAW FUNCTIONS **************************************************************************************
@@ -243,7 +247,7 @@ class Hero:
 
         # Dynamically Lowers Font until the name fits
         fontSize = 35
-        while name_label.get_width() >= settings.hero_size[0]:
+        while name_label.get_width() >= settings.hero_size[0] - 5:
             fontSize -= 1
             newFont = pygame.font.SysFont(settings.font_type, fontSize)
             name_label = newFont.render(f"{self._name}", 1, settings.white)
