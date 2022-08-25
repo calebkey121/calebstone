@@ -30,6 +30,9 @@ Equipment Slots (random idea)
 
 Swarm (random Idea)
     - able to choose to add stats to another swarm ally, or play individually on the board
+
+Typing (random Idea)
+    - ex an ally deals frost dmg, and takes extra from fire dmg
     
 
     Maybe instead of a lot of slots, you have two slots for weapon and armor

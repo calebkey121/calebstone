@@ -12,9 +12,10 @@ class Hero:
     def __init__(self, **kwargs):
         # Heros are the player and hold all the variables that the player will have in game
         self._name = kwargs['hero']
+        self._text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam"
         self._health = 50
         self._attack = 0
-        self._gold = 0
+        self._gold = 50
         self._maxGold = 50
         self._income = 2
 
@@ -61,6 +62,14 @@ class Hero:
         if i:
             self._income = i
         return self._income
+    def army(self, a=None):
+        if a:  
+            self._army = a
+        return self._army.get_army()
+    def text(self, t=None):
+        if t:  
+            self._text = t
+        return self._text
 # ************************************************************************************************************
 # Ready ******************************************************************************************************
     def ready_up(self):
@@ -157,6 +166,11 @@ class Hero:
             if i.cost() <= self._gold:
                 playable.append(i)
         return playable
+
+    def in_hand(self, card):
+        if card in self._hand:
+            return True
+        return False
 # ************************************************************************************************************
 # Army *******************************************************************************************************
     def call_to_arms(self, ally=None):
@@ -190,6 +204,11 @@ class Hero:
             if (i._ready and (i._attack > 0)):
                 available_attackers.append(i)
         return available_attackers
+
+    def in_army(self, ally):
+        if self._army.in_army(ally):
+            return True
+        return False
 
 # ************************************************************************************************************
 # Battle *****************************************************************************************************
@@ -269,7 +288,7 @@ class Hero:
         finalBorderColor = settings.light_grey
         if self._ready and self._yourTurn:
             finalBorderColor = settings.ready_color
-        if self._selected and self._yourTurn:
+        if self._selected:
             finalBorderColor = settings.selected_color
         if self._targeted:
             finalBorderColor = settings.targeted_color
@@ -327,4 +346,43 @@ class Hero:
                 else: card.draw(WIN, x, y, self._yourTurn)
                 x += Card.width + settings.card_buffer
 
+    def draw_text_window(self, WIN):
+        x = self._sprite.right
+        y = self._sprite.y
+        numLines = 0
+
+        remainingWords = self._text.split(" ")
+        remainingText = self._text
+        text_pairs = []
+
+        while (len(remainingWords) != 0): # while we still have words to write
+            numLines += 1
+
+            # check the length of the text and we'll see if it fits
+            text_label = settings.small_font.render(remainingText, 1, settings.white, settings.dark_grey)
+
+            # reset the index for our word list, and text string
+            wordIdx = len(remainingWords) - 1
+            strIdx = len(remainingText)
+
+            # While the width of our text is greater than the desired width
+            while text_label.get_width() > settings.text_box_width:
+                # take away words from the end of the string, until they fit
+                # strIdx goes to the end of the previous word
+                strIdx -= len(remainingWords[wordIdx]) + 1 # + 1 accounts for the space
+                wordIdx -= 1 # wordIdx goes to previous word
+                checkText = remainingText[:strIdx]
+                text_label = settings.small_font.render(checkText, 1, settings.white)
+            
+            text_rect = pygame.Rect(x, y + ((numLines - 1) * settings.small_font.get_height()), text_label.get_width(), text_label.get_height())
+            text_pairs.append((text_label, text_rect))
+            wordIdx += 1
+            remainingWords = remainingWords[wordIdx:]
+            remainingText = remainingText[strIdx + 1:]
+
+        text_box_rect = pygame.Rect(x, y, settings.text_box_width + 5, text_label.get_height() * (numLines))
+        pygame.draw.rect(WIN, settings.dark_grey, text_box_rect)
+        for text_pair in text_pairs:
+            WIN.blit(text_pair[0], text_pair[1])
+        pygame.draw.rect(WIN, settings.white, text_box_rect, 1)
 # ************************************************************************************************************

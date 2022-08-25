@@ -157,7 +157,7 @@ class Ally(Card):
         finalBorderColor = settings.light_grey
         if self.is_ready() and yourTurn:
             finalBorderColor = settings.ready_color
-        if self._selected and yourTurn:
+        if self._selected:
             finalBorderColor = settings.selected_color
         if self._targeted:
             finalBorderColor = settings.targeted_color

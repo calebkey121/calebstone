@@ -22,9 +22,9 @@ class GameManager:
         self._currentTurn = 1 # set back to 0 # 0 -> not in game, 1 -> player1 turn, 2 -> player2 turn
         self._endTurnButton = settings.sub_font.render(f"End Turn", 1, settings.white)
         self._endTurnRect = None
-        self._selectedCard = None # a card in hand is selected
+        self._selectedCard = None # a card is selected
+        self._selectingHand = False # used to tell if we should highlight board or not
         self._showText = False # True when you want to show text
-        self._selectedAttacker = None # a Ally on the board is selected
         self._board1 = None
         self._board2 = None
 
@@ -62,100 +62,129 @@ class GameManager:
                             self.endTurn()
 
                         # These check if you're clicking the respective sprite(s)
-                        self.select_enemy(pos) # check this first, becuase the others will unselect
-                        self.select_player1(pos)
-                        self.select_board(pos) # Are you playing a card or selecting an ally?
-                        self.select_card(pos) # Card in Hand
+                        if self.select_enemy(pos): # check this first
+                            pass
+                        elif self.select_player1(pos):
+                            pass
+                        elif self.select_board(pos): # Are you playing a card or selecting an ally?
+                            pass
+                        elif self.select_card(pos): # Card in hand?
+                            pass
+                        else: self.unselect()
             
             if self.check_for_winner(): run = False
 
         print("Ending Game...", self.winner(), "won!")
 
 # SELECTING FUNCTIONS ******************************************************************************************
+    def select(self, target):
+        self._selectedCard = target
+        target.select()
+
+        if type(target) == Hero:
+            if target == self._player1:
+                if target.is_ready():
+                    self._player2.target_all()
+        elif type(target) == Card.Ally:
+            if self._player1.in_army(target):
+                if target.is_ready():
+                    self._player2.target_all()
+            
+    def unselect(self):
+        target = self._selectedCard # Default to self._selectedCard
+        if target:
+            target.unselect()
+
+            if type(target) == Hero:
+                self._player2.untarget_all()
+            elif type(target) == Card.Ally:
+                if self._player1.in_army(target) or self._player2.in_army(target):
+                    self._player2.untarget_all()
+                elif self._player1.in_hand(target):
+                    pass
+            self._showText = False
+            self._selectingHand = False
+            self._selectedCard = None
+
     def select_player1(self, mousePos):
         if self._player1._sprite.collidepoint(mousePos):
-            self._selectedAttacker = self._player1
-            self._player1.select()
-            if self._player1.is_ready():
-                self._player2.target_all()
-        else:
-            self._player1.unselect()
-            self._player2.untarget_all()
+            if self._selectedCard != self._player1:
+                self.unselect()
+            if self._selectedCard == self._player1: # if you are clicking a second time
+                self._showText = True
+            self.select(self._player1)
+            return True
+        return False
 
     def select_card(self, mousePos):
-        found = False
         for card in self._player1._hand:
             if card._sprite:
                 if card._sprite.collidepoint(mousePos):
-                    if self._selectedCard != card and self._selectedCard != None:
-                        self._selectedCard.unselect()
+                    if self._selectedCard != card:
+                        self.unselect()
                     elif self._selectedCard == card: # if you are clicking a second time
                         self._showText = True
                     
-                    found = True
-                    self._selectedCard = card # necessary if its none
-                    self._selectedCard.select()
-
-        if not found:
-            if self._selectedCard:
-                self._showText = False
-                self._selectedCard.unselect()
-                self._selectedCard = None
+                    self.select(card)
+                    self._selectingHand = True
+                    return True
+        return False
 
     def select_board(self, mousePos):
         if self._board1.collidepoint(mousePos):
             # if you currently are selecting your hand, then you're trying to play a card when you click the board
-            if self._selectedCard:
+            # make sure its a card in your hand (could be an attacker or hero or enemy ally)
+            if self._player1.in_hand(self._selectedCard):
                 if not self._player1.play_ally(self._selectedCard): # play selected card
-                    self._selectedCard.unselect()
-                    self._selectedCard = None
+                    self.unselect() # if you cant play, unselect card
+                    return False
             else: # if you are not currently selecting your hand, then try to select an ally
-                self.select_ally(mousePos) # Ally in Army on Board
-        else: # selecting outside the board? make sure you unselect allies
-            self._showText = False
-            if self._selectedAttacker and type(self._selectedAttacker) == Card.Ally:
-                self._selectedAttacker.unselect()
-                if self._selectedAttacker.is_ready(): # not strictly necessary, saves execution
-                    self._player2.untarget_all()
-                self._selectedAttacker = None
+                return self.select_ally(mousePos) # Ally in Army on Board
+        return False
    
     def select_ally(self, mousePos):
-        found = False
-        for ally in self._player1._army.get_army():
-            if ally._sprite.collidepoint(mousePos):
-                found = True
-                if self._selectedAttacker:
-                    self._selectedAttacker.unselect()
-                    self._player2.untarget_all()
-                    if self._selectedAttacker == ally: # if you are clicking a second time
-                            self._showText = True
-                self._selectedAttacker = ally
-                ally.select()
-                if ally.is_ready():
-                    self._player2.target_all()
-        if not found:
-            if self._selectedAttacker:
-                self._selectedAttacker.unselect()
-                self._selectedAttacker = None
-                self._player2.untarget_all()
+        for ally in self._player1.army():
+            if ally._sprite:
+                if ally._sprite.collidepoint(mousePos):
+                    if self._selectedCard != ally:
+                        self.unselect()
+                    elif self._selectedCard == ally: # if you are clicking a second time
+                        self._showText = True
+                    self.select(ally)
+                    return True
+        return False
 
     def select_enemy(self, mousePos):
         if self._player2._sprite.collidepoint(mousePos):
-            if self._selectedAttacker:
-                self._player2.untarget_all()
-                self._selectedAttacker.attack_enemy(self._player2, attackingPlayer=self._player1)
+            if self._player1.in_army(self._selectedCard) or self._selectedCard == self._player1: # if the current selected card is in the army
+                self._selectedCard.attack_enemy(self._player2, attackingPlayer=self._player1)
                 self._player1.call_to_arms().toll_the_dead()
                 self._player2.call_to_arms().toll_the_dead()
+                self.unselect()
+            else: # otherwise, select just to look at card
+                if self._selectedCard != self._player2:
+                    self.unselect()
+                if self._selectedCard == self._player2: # if you are clicking a second time
+                    self._showText = True
+                self.select(self._player2)
+            return True
         else:
-            for enemyAlly in self._player2._army.get_army():
+            for enemyAlly in self._player2.army():
                 if enemyAlly._sprite:
                     if enemyAlly._sprite.collidepoint(mousePos):
-                        if self._selectedAttacker:
-                            self._player2.untarget_all()
-                            self._selectedAttacker.attack_enemy(enemyAlly, attackingPlayer=self._player1)
+                        if self._player1.in_army(self._selectedCard) or self._selectedCard == self._player1:
+                            self._selectedCard.attack_enemy(enemyAlly, attackingPlayer=self._player1)
                             self._player1.call_to_arms().toll_the_dead()
                             self._player2.call_to_arms().toll_the_dead()
-                        self._player2.untarget_all()
+                            self.unselect()
+                        else:
+                            if self._selectedCard != enemyAlly:
+                                self.unselect()
+                            elif self._selectedCard == enemyAlly: # if you are clicking a second time
+                                self._showText = True
+                            self.select(enemyAlly)
+                        return True
+        return False
 # **************************************************************************************************************
 # GAME FUNCS ***************************************************************************************************
     def start_of_game(self):
@@ -228,7 +257,7 @@ class GameManager:
         self._board2 = pygame.Rect(settings.endHeroZone, settings.HEIGHT / 4, settings.WIDTH - settings.endHeroZone, settings.HEIGHT / 4)
         board1BorderColor = settings.white
         board2BorderColor = settings.white
-        if self._selectedCard:
+        if self._selectingHand:
             board1BorderColor = settings.targeted_color
         pygame.draw.rect(self.WIN, board1BorderColor, self._board1, settings.card_border_size)
         pygame.draw.rect(self.WIN, board2BorderColor, self._board2, settings.card_border_size)
@@ -291,10 +320,6 @@ class GameManager:
             if self._showText:
                 if self._selectedCard._text:
                     self._selectedCard.draw_text_window(self.WIN)
-        if self._selectedAttacker:
-            if self._showText:
-                if self._selectedAttacker._text:
-                    self._selectedAttacker.draw_text_window(self.WIN)
 
         pygame.display.update()
 # **************************************************************************************************************
