@@ -7,6 +7,8 @@ from Card import Card
 
 # This represents the player - Human or AI
 class Hero:
+    width = settings.hero_size[0]
+    height = settings.hero_size[1]
     def __init__(self, **kwargs):
         # Heros are the player and hold all the variables that the player will have in game
         self._name = kwargs['hero']
@@ -28,7 +30,7 @@ class Hero:
             self._image = pygame.image.load(os.path.join("avatars", "heros", f"{self._name}.png"))
         else:
             self._image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
-        self._avatar = pygame.transform.scale(self._image, (settings.hero_size[0], settings.hero_size[1]- settings.main_font.get_height() * 2))
+        self._avatar = pygame.transform.scale(self._image, (Hero.width, Hero.height- settings.main_font.get_height() * 2))
 
         
         self._side1 = kwargs['side1'] # says if the hero is on the left or right side
@@ -194,7 +196,7 @@ class Hero:
     def lower_health(self, attackVal):
         self._health -= attackVal
 
-    def attack_enemy(self, enemy):
+    def attack_enemy(self, enemy, attackingPlayer):
         if self._ready:
             if self.attack() >= 0:
                 enemy.lower_health(self.attack())
@@ -202,6 +204,7 @@ class Hero:
                 self.lower_health(enemy.attack())
             if enemy.health() < 0:
                 enemy.health(0)
+                attackingPlayer.get_bounty(2)
             self.ready_down()
         else:
             return f'{self.name()} is not ready!'
@@ -223,42 +226,42 @@ class Hero:
         # X and Y
         x = settings.hero_zone_buffer
         if self._side1:
-            y = settings.HEIGHT / 2 - settings.hero_zone_buffer - settings.hero_size[1]
+            y = settings.HEIGHT / 2 - settings.hero_zone_buffer - Hero.height
         else:
             y = settings.HEIGHT / 2 + settings.hero_zone_buffer
 
         # Stat Area
         # Player Health
         health_label = settings.main_font.render(f"{self._health}", 1, settings.health_color) 
-        health_rect = pygame.Rect(x, y + settings.hero_size[1] - health_label.get_height(), settings.hero_size[0] / 2, health_label.get_height())
+        health_rect = pygame.Rect(x, y + Hero.height - health_label.get_height(), Hero.width / 2, health_label.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, health_rect) # Backdrop
         pygame.draw.rect(WIN, settings.light_grey, health_rect, 5) # Border
-        WIN.blit(health_label, (x + self._avatar.get_width() / 4 - health_label.get_width() / 2, y + settings.hero_size[1] - settings.main_font.get_height()))
+        WIN.blit(health_label, (x + self._avatar.get_width() / 4 - health_label.get_width() / 2, y + Hero.height - settings.main_font.get_height()))
 
         # Player Attack
         attack_label = settings.main_font.render(f"{self._attack}", 1, settings.attack_color)
-        attack_rect = pygame.Rect(x + settings.hero_size[0] / 2, y + settings.hero_size[1] - health_label.get_height(), settings.hero_size[0] / 2, health_label.get_height())
+        attack_rect = pygame.Rect(x + Hero.width / 2, y + Hero.height - health_label.get_height(), Hero.width / 2, health_label.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, attack_rect) # Backdrop
         pygame.draw.rect(WIN, settings.light_grey, attack_rect, settings.card_border_size) # Border
-        WIN.blit(attack_label, (x + self._avatar.get_width() * 3 / 4 - attack_label.get_width() / 2, y + settings.hero_size[1] - settings.main_font.get_height()))
+        WIN.blit(attack_label, (x + self._avatar.get_width() * 3 / 4 - attack_label.get_width() / 2, y + Hero.height - settings.main_font.get_height()))
         
         # Player Name
         name_label = settings.main_font.render(f"{self._name}", 1, settings.white)
 
         # Dynamically Lowers Font until the name fits
         fontSize = 35
-        while name_label.get_width() >= settings.hero_size[0] - 5:
+        while name_label.get_width() >= Hero.width - 5:
             fontSize -= 1
             newFont = pygame.font.SysFont(settings.font_type, fontSize)
             name_label = newFont.render(f"{self._name}", 1, settings.white)
         # have to reset main avatar now that font has changed
-        self._avatar = pygame.transform.scale(self._image, (settings.hero_size[0], settings.hero_size[1]- settings.main_font.get_height() - name_label.get_height()))
+        self._avatar = pygame.transform.scale(self._image, (Hero.width, Hero.height- settings.main_font.get_height() - name_label.get_height()))
 
 
-        name_rect = pygame.Rect(x, y, settings.hero_size[0], name_label.get_height())
+        name_rect = pygame.Rect(x, y, Hero.width, name_label.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, name_rect) # BACKDROP
         pygame.draw.rect(WIN, settings.light_grey, name_rect, settings.card_border_size) # BORDER
-        WIN.blit(name_label, (x + settings.hero_size[0] / 2 - name_label.get_width() / 2, y))
+        WIN.blit(name_label, (x + Hero.width / 2 - name_label.get_width() / 2, y))
         
         # Players Avatar
         WIN.blit(self._avatar, (x, y + name_label.get_height()))
@@ -271,15 +274,15 @@ class Hero:
         if self._targeted:
             finalBorderColor = settings.targeted_color
         if self._side1:
-            self._sprite = pygame.Rect(x, y, settings.hero_size[0], settings.hero_size[1])
+            self._sprite = pygame.Rect(x, y, Hero.width, Hero.height)
         else:
-            self._sprite = pygame.Rect(x, y, settings.hero_size[0], settings.hero_size[1])
+            self._sprite = pygame.Rect(x, y, Hero.width, Hero.height)
         pygame.draw.rect(WIN, finalBorderColor, self._sprite, 5)
 
     def draw_army(self, WIN):
         # example to get the size of card and label
         if (self._side1):
-            y = settings.HEIGHT / 2 - (settings.card_zone_buffer + settings.card_size[1])
+            y = settings.HEIGHT / 2 - (settings.card_zone_buffer + Card.height)
         else: y = (settings.HEIGHT / 2) + settings.card_zone_buffer
 
         armySize = self.get_army_size()
@@ -288,7 +291,7 @@ class Hero:
         middle = (settings.WIDTH + starting_point) / 2
         settings.card_buffer = 5
 
-        x = middle - (settings.card_size[0] / 2) * armySize
+        x = middle - (Card.width / 2) * armySize
         x -= settings.card_buffer * (armySize - 1)
         for card in self._army.get_army():
             card.draw(WIN, x, y, self._yourTurn)
@@ -301,13 +304,13 @@ class Hero:
             pass 
             # deck is empty, display something saying that
         else: # deck is not empty
-            x = settings.WIDTH - settings.card_zone_buffer - settings.card_size[0]
+            x = settings.WIDTH - settings.card_zone_buffer - Card.width
             y = settings.card_zone_buffer
             if not self._side1:
-                y = settings.HEIGHT - settings.card_zone_buffer - settings.card_size[1]
+                y = settings.HEIGHT - settings.card_zone_buffer - Card.height
             Card.draw_card_back(WIN, x, y)
         remaining_cards = settings.small_font.render(f"Remaining Cards:{self._deck.get_current_num_cards()}", 1, settings.black)
-        WIN.blit(remaining_cards, (x + settings.card_size[0] / 2 - remaining_cards.get_width() / 2, y + settings.card_buffer))
+        WIN.blit(remaining_cards, (x + Card.width / 2 - remaining_cards.get_width() / 2, y + settings.card_buffer))
 
     def draw_hand(self, WIN, hidden=False):
         if self._hand == []:
@@ -317,11 +320,11 @@ class Hero:
             x = settings.endHeroZone + settings.card_zone_buffer
             y = settings.card_zone_buffer
             if not self._side1:
-                y = settings.HEIGHT - settings.card_zone_buffer - settings.card_size[1]
+                y = settings.HEIGHT - settings.card_zone_buffer - Card.height
             for card in self._hand:
                 if hidden:
                     Card.draw_card_back(WIN, x, y)
                 else: card.draw(WIN, x, y, self._yourTurn)
-                x += settings.card_size[0] + settings.card_buffer
+                x += Card.width + settings.card_buffer
 
 # ************************************************************************************************************

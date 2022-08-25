@@ -23,6 +23,7 @@ class GameManager:
         self._endTurnButton = settings.sub_font.render(f"End Turn", 1, settings.white)
         self._endTurnRect = None
         self._selectedCard = None # a card in hand is selected
+        self._showText = False # True when you want to show text
         self._selectedAttacker = None # a Ally on the board is selected
         self._board1 = None
         self._board2 = None
@@ -88,12 +89,16 @@ class GameManager:
                 if card._sprite.collidepoint(mousePos):
                     if self._selectedCard != card and self._selectedCard != None:
                         self._selectedCard.unselect()
+                    elif self._selectedCard == card: # if you are clicking a second time
+                        self._showText = True
+                    
                     found = True
-                    self._selectedCard = card
+                    self._selectedCard = card # necessary if its none
                     self._selectedCard.select()
 
         if not found:
             if self._selectedCard:
+                self._showText = False
                 self._selectedCard.unselect()
                 self._selectedCard = None
 
@@ -104,9 +109,10 @@ class GameManager:
                 if not self._player1.play_ally(self._selectedCard): # play selected card
                     self._selectedCard.unselect()
                     self._selectedCard = None
-            else: # if you are not currently selecting your hand, then you're trying to select an ally
+            else: # if you are not currently selecting your hand, then try to select an ally
                 self.select_ally(mousePos) # Ally in Army on Board
         else: # selecting outside the board? make sure you unselect allies
+            self._showText = False
             if self._selectedAttacker and type(self._selectedAttacker) == Card.Ally:
                 self._selectedAttacker.unselect()
                 if self._selectedAttacker.is_ready(): # not strictly necessary, saves execution
@@ -114,14 +120,22 @@ class GameManager:
                 self._selectedAttacker = None
    
     def select_ally(self, mousePos):
+        found = False
         for ally in self._player1._army.get_army():
             if ally._sprite.collidepoint(mousePos):
+                found = True
+                if self._selectedAttacker:
+                    self._selectedAttacker.unselect()
+                    self._player2.untarget_all()
+                    if self._selectedAttacker == ally: # if you are clicking a second time
+                            self._showText = True
                 self._selectedAttacker = ally
                 ally.select()
                 if ally.is_ready():
                     self._player2.target_all()
-            elif ally._selected:
-                ally.unselect()
+        if not found:
+            if self._selectedAttacker:
+                self._selectedAttacker.unselect()
                 self._selectedAttacker = None
                 self._player2.untarget_all()
 
@@ -129,7 +143,7 @@ class GameManager:
         if self._player2._sprite.collidepoint(mousePos):
             if self._selectedAttacker:
                 self._player2.untarget_all()
-                self._selectedAttacker.attack_enemy(self._player2)
+                self._selectedAttacker.attack_enemy(self._player2, attackingPlayer=self._player1)
                 self._player1.call_to_arms().toll_the_dead()
                 self._player2.call_to_arms().toll_the_dead()
         else:
@@ -138,9 +152,7 @@ class GameManager:
                     if enemyAlly._sprite.collidepoint(mousePos):
                         if self._selectedAttacker:
                             self._player2.untarget_all()
-                            self._selectedAttacker.attack_enemy(enemyAlly)
-                            if enemyAlly.health() == 0:
-                                self._player1.get_bounty(2)
+                            self._selectedAttacker.attack_enemy(enemyAlly, attackingPlayer=self._player1)
                             self._player1.call_to_arms().toll_the_dead()
                             self._player2.call_to_arms().toll_the_dead()
                         self._player2.untarget_all()
@@ -274,8 +286,17 @@ class GameManager:
         self._player2.draw_deck(self.WIN)
         self._player2.draw_hand(self.WIN, hidden=True) # typically say hidden=True
 
-        pygame.display.update()
+        # Show text box if you have a selected card
+        if self._selectedCard:
+            if self._showText:
+                if self._selectedCard._text:
+                    self._selectedCard.draw_text_window(self.WIN)
+        if self._selectedAttacker:
+            if self._showText:
+                if self._selectedAttacker._text:
+                    self._selectedAttacker.draw_text_window(self.WIN)
 
+        pygame.display.update()
 # **************************************************************************************************************
 # RANDOM *******************************************************************************************************
 # Random player is always self._player2, human is always self._player1
@@ -328,11 +349,9 @@ class GameManager:
         attacker = availableAttackers[random.randint(0, len(availableAttackers) - 1)]
         defender = availableDefenders[random.randint(0, len(availableDefenders) - 1)]
 
-        attacker.attack_enemy(defender)
+        attacker.attack_enemy(defender, attackingPlayer=self._player2)
         if self._player2.health() <= 0 or self._player1.health() <= 0:
             return True # stops the turn
-        if defender.health() == 0:
-            self._player1.get_bounty(2)
         self._player2.call_to_arms().toll_the_dead()
         self._player1.call_to_arms().toll_the_dead()
 # **************************************************************************************************************

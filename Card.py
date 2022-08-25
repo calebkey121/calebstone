@@ -4,9 +4,12 @@ import settings
 import Hero # used to type check for hero
 
 class Card:
-    def __init__(self, cost=-1, name=None):
+    width = settings.card_size[0]
+    height = settings.card_size[1]
+    def __init__(self, cost=-1, name=None, text=None):
         self._cost = cost
         self._name = name
+        self._text = text
         self._sprite = None # None until self.draw(x, y) is called, then a sprite is set at the appropriate spot on screen
         
         # If appropriate avatar is in directory then use it, otherwise use a default picture
@@ -16,7 +19,7 @@ class Card:
             self.image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.png"))
         else:
             self.image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
-        self._avatar = pygame.transform.scale(self.image, (settings.card_size[0], settings.card_size[1] - settings.sub_font.get_height() - settings.small_font.get_height()))
+        self._avatar = pygame.transform.scale(self.image, (Card.width, Card.height - settings.sub_font.get_height() - settings.small_font.get_height()))
 
 # GETTERS/SETTERS ********************************************************************************************
     def name(self, n=None):
@@ -34,16 +37,16 @@ class Card:
         # may later want to add the option of drawing a specific cardback, dont really care rn, 
         # the cardback.png would be stored in the hero class attributes, as that is what calls draw_card_back
         image = pygame.image.load(os.path.join("avatars", "cardBacks", "cardBack.png"))
-        avatar = pygame.transform.scale(image, (settings.card_size[0], settings.card_size[1]))
+        avatar = pygame.transform.scale(image, (Card.width, Card.height))
         WIN.blit(avatar, (x, y))
 
-        x = pygame.Rect(x, y, settings.card_size[0], settings.card_size[1])
+        x = pygame.Rect(x, y, Card.width, Card.height)
         pygame.draw.rect(WIN, settings.light_grey, x, settings.card_border_size) # Border
 
 
 class Ally(Card):
-    def __init__(self, cost=-1, name=None, attack=-1, health=-1):
-        super().__init__(cost, name)
+    def __init__(self, cost=-1, name=None, attack=-1, health=-1, text=None):
+        super().__init__(cost, name, text)
         self._attack = attack
         self._health = health
         self._ready = False
@@ -88,7 +91,7 @@ class Ally(Card):
     #   Deal appropriate damage to self and enemy
     # Return:
     #   None if successful, string if something went wrong
-    def attack_enemy(self, enemy):
+    def attack_enemy(self, enemy, attackingPlayer):
 
         # Type check, must be Ally or Hero
         if type(enemy) != Ally and type(enemy) != Hero.Hero:
@@ -101,6 +104,7 @@ class Ally(Card):
                 self.lower_health(enemy.attack())
             if enemy.health() < 0:
                 enemy.health(0)
+                attackingPlayer.get_bounty(2)
             self.ready_down()
         else:
             return f'{self.name()} is not ready!'
@@ -115,8 +119,8 @@ class Ally(Card):
         attack_label = settings.sub_font.render(f"{self._attack}", 1, settings.attack_color) 
         
         # Stat Area
-        health_border = pygame.Rect(x, y + settings.card_size[1] - settings.sub_font.get_height(), settings.card_size[0] / 2, settings.sub_font.get_height())
-        attack_border = pygame.Rect(x + settings.card_size[0] / 2, y + settings.card_size[1] - settings.sub_font.get_height(), settings.card_size[0] / 2,  settings.sub_font.get_height())
+        health_border = pygame.Rect(x, y + Card.height - settings.sub_font.get_height(), Card.width / 2, settings.sub_font.get_height())
+        attack_border = pygame.Rect(x + Card.width / 2, y + Card.height - settings.sub_font.get_height(), Card.width / 2,  settings.sub_font.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, health_border)
         pygame.draw.rect(WIN, settings.dark_grey, attack_border)
         pygame.draw.rect(WIN, settings.light_grey, health_border, settings.card_border_size)
@@ -126,20 +130,20 @@ class Ally(Card):
 
         # Dynamically Lowers Font until the name fits
         fontSize = 20
-        while name_label.get_width() >= settings.card_size[0] - 5:
+        while name_label.get_width() >= Card.width - 5:
             fontSize -= 1
             newFont = pygame.font.SysFont(settings.font_type, fontSize)
             name_label = newFont.render(f"{self._name}", 1, settings.white)
         # have to reset main avatar now that font has changed
-        self._avatar = pygame.transform.scale(self.image, (settings.card_size[0], settings.card_size[1] - settings.sub_font.get_height() - settings.small_font.get_height()))
+        self._avatar = pygame.transform.scale(self.image, (Card.width, Card.height - settings.sub_font.get_height() - settings.small_font.get_height()))
 
-        name_rect = pygame.Rect(x, y, settings.card_size[0], settings.small_font.get_height())
+        name_rect = pygame.Rect(x, y, Card.width, settings.small_font.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, name_rect)
         pygame.draw.rect(WIN, settings.light_grey, name_rect, 1)
         WIN.blit(name_label, (name_rect.center[0] - name_label.get_width() / 2, name_rect.center[1] - name_label.get_height() / 2))
         # Cost
         cost_label = settings.sub_font.render(f"{self._cost}", 1, settings.gold) 
-        cost_rect = pygame.Rect(x + settings.card_size[0] - cost_label.get_width() - settings.card_border_size, y + settings.small_font.get_height(), cost_label.get_width(),  settings.small_font.get_height())
+        cost_rect = pygame.Rect(x + Card.width - cost_label.get_width() - settings.card_border_size, y + settings.small_font.get_height(), cost_label.get_width(),  settings.small_font.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, cost_rect)
         pygame.draw.rect(WIN, settings.light_grey, cost_rect, 1)
         WIN.blit(cost_label, (cost_rect.center[0] - cost_label.get_width() / 2, cost_rect.center[1] - cost_label.get_height() / 2))
@@ -157,6 +161,46 @@ class Ally(Card):
             finalBorderColor = settings.selected_color
         if self._targeted:
             finalBorderColor = settings.targeted_color
-        self._sprite = pygame.Rect(x, y, settings.card_size[0], settings.card_size[1])
+        self._sprite = pygame.Rect(x, y, Card.width, Card.height)
         pygame.draw.rect(WIN, finalBorderColor, self._sprite, settings.card_border_size)
+
+    def draw_text_window(self, WIN):
+        x = self._sprite.right
+        y = self._sprite.y
+        numLines = 0
+
+        remainingWords = self._text.split(" ")
+        remainingText = self._text
+        text_pairs = []
+
+        while (len(remainingWords) != 0): # while we still have words to write
+            numLines += 1
+
+            # check the length of the text and we'll see if it fits
+            text_label = settings.small_font.render(remainingText, 1, settings.white, settings.dark_grey)
+
+            # reset the index for our word list, and text string
+            wordIdx = len(remainingWords) - 1
+            strIdx = len(remainingText)
+
+            # While the width of our text is greater than the desired width
+            while text_label.get_width() > settings.text_box_width:
+                # take away words from the end of the string, until they fit
+                # strIdx goes to the end of the previous word
+                strIdx -= len(remainingWords[wordIdx]) + 1 # + 1 accounts for the space
+                wordIdx -= 1 # wordIdx goes to previous word
+                checkText = remainingText[:strIdx]
+                text_label = settings.small_font.render(checkText, 1, settings.white)
+            
+            text_rect = pygame.Rect(x, y + ((numLines - 1) * settings.small_font.get_height()), text_label.get_width(), text_label.get_height())
+            text_pairs.append((text_label, text_rect))
+            wordIdx += 1
+            remainingWords = remainingWords[wordIdx:]
+            remainingText = remainingText[strIdx + 1:]
+
+        text_box_rect = pygame.Rect(x, y, settings.text_box_width + 5, text_label.get_height() * (numLines))
+        pygame.draw.rect(WIN, settings.dark_grey, text_box_rect)
+        for text_pair in text_pairs:
+            WIN.blit(text_pair[0], text_pair[1])
+        pygame.draw.rect(WIN, settings.white, text_box_rect, 1)
 # ************************************************************************************************************

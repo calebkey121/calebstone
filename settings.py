@@ -12,8 +12,9 @@ WIDTH,HEIGHT = info.current_w,info.current_h
 
 # Sizes
 card_size = (WIDTH / 10, HEIGHT / 5)
-card_border_size = 4
 hero_size = (WIDTH / 8, HEIGHT / 4)
+text_box_width = card_size[0] * 1.5
+card_border_size = 4
 
 # Buffers
 hero_zone_buffer = 15 # pixel buffer between the hero and the border
@@ -27,6 +28,7 @@ white = (255,255,255)
 black = (0,0,0)
 gold = (255,255,0)
 dark_grey = (30, 30, 30)
+grey = (90, 90, 90)
 light_grey = (200, 200, 200)
 ready_color = (102,255,0)
 selected_color = (0,200,255)
