@@ -1,50 +1,61 @@
 import pygame
-import os
+import os # used to find avatar pictures in avatar directory
 import settings
+import Hero # used to type check for hero
 
 class Card:
-    @staticmethod 
-    def draw_card_back(WIN, x, y):
-        x = pygame.Rect(x, y, settings.card_size[0], settings.card_size[1])
-        pygame.draw.rect(WIN, settings.dark_grey, x) # BACKDROP
-        pygame.draw.rect(WIN, settings.light_grey, x, settings.card_border_size)
+    width = settings.card_size[0]
+    height = settings.card_size[1]
+    def __init__(self, cost=-1, name=None, text=None):
+        self._cost = cost
+        self._name = name
+        self._text = text
+        self._sprite = None # None until self.draw(x, y) is called, then a sprite is set at the appropriate spot on screen
+        
+        # If appropriate avatar is in directory then use it, otherwise use a default picture
+        if os.path.exists(os.path.join("avatars", "cards", f"{self._name}.jpg")):
+            self.image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.jpg"))
+        elif os.path.exists(os.path.join("avatars", "cards", f"{self._name}.png")):
+            self.image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.png"))
+        else:
+            self.image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
+        self._avatar = pygame.transform.scale(self.image, (Card.width, Card.height - settings.sub_font.get_height() - settings.small_font.get_height()))
 
-    def __init__(self, **kwargs):
-        self._cost = kwargs['cost'] if 'cost' in kwargs else -1
-        self._name = kwargs['name'] if 'name' in kwargs else 'No Name'
-        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg")), (settings.card_size[0], settings.card_size[1] - settings.sub_font.get_height() - settings.small_font.get_height()))
-        self._sprite = None
-
-    def name(self, name=None):
-        if name:
-            self._name = name
+# GETTERS/SETTERS ********************************************************************************************
+    def name(self, n=None):
+        if isinstance(n, str):
+            self._name = n
         return self._name
 
-    def cost(self, cost=None):
-        if cost:
-            self._cost = cost
+    def cost(self, c=None):
+        if isinstance(c, int):
+            self._cost = c
         return self._cost
+# ************************************************************************************************************
+    @staticmethod 
+    def draw_card_back(WIN, x, y):
+        # may later want to add the option of drawing a specific cardback, dont really care rn, 
+        # the cardback.png would be stored in the hero class attributes, as that is what calls draw_card_back
+        image = pygame.image.load(os.path.join("avatars", "cardBacks", "cardBack.png"))
+        avatar = pygame.transform.scale(image, (Card.width, Card.height))
+        WIN.blit(avatar, (x, y))
 
+        x = pygame.Rect(x, y, Card.width, Card.height)
+        pygame.draw.rect(WIN, settings.light_grey, x, settings.card_border_size) # Border
 
-    # def __repr__(self):
-    #     return f'
-    #     Card: {self.name()}
-    #     Cost: {self.cost()}
-    #     '
-        
 
 class Ally(Card):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._attack = kwargs['attack'] if 'attack' in kwargs else 0
-        self._health = kwargs['health'] if 'health' in kwargs else 0
+    def __init__(self, cost=-1, name=None, attack=-1, health=-1, text=None):
+        super().__init__(cost, name, text)
+        self._attack = attack
+        self._health = health
         self._ready = False
         self._selected = False
         self._targeted = False
         
-
+# GETTERS/SETTERS ********************************************************************************************
     def attack(self, a=None):
-        if a:
+        if isinstance(a, int):
             self._attack = a
         return self._attack
 
@@ -52,35 +63,54 @@ class Ally(Card):
         if isinstance(h, int):
             self._health = h
         return self._health
-
-    def lower_health(self, attackVal):
-        self._health -= attackVal
-
+# ************************************************************************************************************
+# READY ******************************************************************************************************
     def ready_up(self):
-        self._ready = True
-
+        if self._attack > 0:
+            self._ready = True
     def ready_down(self):
         self._ready = False
-
     def is_ready(self):
         return self._ready
+# ************************************************************************************************************
+# Select *****************************************************************************************************
+    def select(self):
+        self._selected = True
+    def unselect(self):
+        self._selected = False
+# ************************************************************************************************************
+# BATTLE *****************************************************************************************************
+    # Lower your own health by damage amount 
+    def lower_health(self, damage):
+        self._health -= damage
 
-    def attack_enemy(self, enemy):
+    # Attack enemy target
+    # Parameters: 
+    #   Enemy -> Ally or Hero type
+    # Outcome:
+    #   Deal appropriate damage to self and enemy
+    # Return:
+    #   None if successful, string if something went wrong
+    def attack_enemy(self, enemy, attackingPlayer):
+
+        # Type check, must be Ally or Hero
+        if type(enemy) != Ally and type(enemy) != Hero.Hero:
+            return f'Parameter is type {type(enemy)}, must be type Ally or Hero'
+
         if self.is_ready():
             if self.attack() >= 0:
                 enemy.lower_health(self.attack())
             if enemy.attack() >= 0:
                 self.lower_health(enemy.attack())
+            if enemy.health() < 0:
+                enemy.health(0)
+                attackingPlayer.get_bounty(2)
             self.ready_down()
         else:
-            print(f'{self.name()} is not ready!')
-
-    def select(self):
-        self._selected = True
-    
-    def unselect(self):
-        self._selected = False
-
+            return f'{self.name()} is not ready!'
+        return None
+# ************************************************************************************************************
+# PYGAME *****************************************************************************************************
     def draw(self, WIN, x, y, yourTurn):
 
         WIN.blit(self._avatar, (x, y + settings.small_font.get_height()))
@@ -89,21 +119,31 @@ class Ally(Card):
         attack_label = settings.sub_font.render(f"{self._attack}", 1, settings.attack_color) 
         
         # Stat Area
-        health_border = pygame.Rect(x, y + settings.card_size[1] - settings.sub_font.get_height(), settings.card_size[0] / 2, settings.sub_font.get_height())
-        attack_border = pygame.Rect(x + settings.card_size[0] / 2, y + settings.card_size[1] - settings.sub_font.get_height(), settings.card_size[0] / 2,  settings.sub_font.get_height())
+        health_border = pygame.Rect(x, y + Card.height - settings.sub_font.get_height(), Card.width / 2, settings.sub_font.get_height())
+        attack_border = pygame.Rect(x + Card.width / 2, y + Card.height - settings.sub_font.get_height(), Card.width / 2,  settings.sub_font.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, health_border)
         pygame.draw.rect(WIN, settings.dark_grey, attack_border)
         pygame.draw.rect(WIN, settings.light_grey, health_border, settings.card_border_size)
         pygame.draw.rect(WIN, settings.light_grey, attack_border, settings.card_border_size)
 
         name_label = settings.sub_font.render(f"{self._name}", 1, settings.white) 
-        name_rect = pygame.Rect(x, y, settings.card_size[0], settings.small_font.get_height())
+
+        # Dynamically Lowers Font until the name fits
+        fontSize = 20
+        while name_label.get_width() >= Card.width - 5:
+            fontSize -= 1
+            newFont = pygame.font.SysFont(settings.font_type, fontSize)
+            name_label = newFont.render(f"{self._name}", 1, settings.white)
+        # have to reset main avatar now that font has changed
+        self._avatar = pygame.transform.scale(self.image, (Card.width, Card.height - settings.sub_font.get_height() - settings.small_font.get_height()))
+
+        name_rect = pygame.Rect(x, y, Card.width, settings.small_font.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, name_rect)
         pygame.draw.rect(WIN, settings.light_grey, name_rect, 1)
         WIN.blit(name_label, (name_rect.center[0] - name_label.get_width() / 2, name_rect.center[1] - name_label.get_height() / 2))
         # Cost
         cost_label = settings.sub_font.render(f"{self._cost}", 1, settings.gold) 
-        cost_rect = pygame.Rect(x + settings.card_size[0] - cost_label.get_width() - settings.card_border_size, y + settings.small_font.get_height(), cost_label.get_width(),  settings.small_font.get_height())
+        cost_rect = pygame.Rect(x + Card.width - cost_label.get_width() - settings.card_border_size, y + settings.small_font.get_height(), cost_label.get_width(),  settings.small_font.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, cost_rect)
         pygame.draw.rect(WIN, settings.light_grey, cost_rect, 1)
         WIN.blit(cost_label, (cost_rect.center[0] - cost_label.get_width() / 2, cost_rect.center[1] - cost_label.get_height() / 2))
@@ -117,9 +157,50 @@ class Ally(Card):
         finalBorderColor = settings.light_grey
         if self.is_ready() and yourTurn:
             finalBorderColor = settings.ready_color
-        if self._selected and yourTurn:
+        if self._selected:
             finalBorderColor = settings.selected_color
         if self._targeted:
             finalBorderColor = settings.targeted_color
-        self._sprite = pygame.Rect(x, y, settings.card_size[0], settings.card_size[1])
+        self._sprite = pygame.Rect(x, y, Card.width, Card.height)
         pygame.draw.rect(WIN, finalBorderColor, self._sprite, settings.card_border_size)
+
+    def draw_text_window(self, WIN):
+        x = self._sprite.right
+        y = self._sprite.y
+        numLines = 0
+
+        remainingWords = self._text.split(" ")
+        remainingText = self._text
+        text_pairs = []
+
+        while (len(remainingWords) != 0): # while we still have words to write
+            numLines += 1
+
+            # check the length of the text and we'll see if it fits
+            text_label = settings.small_font.render(remainingText, 1, settings.white, settings.dark_grey)
+
+            # reset the index for our word list, and text string
+            wordIdx = len(remainingWords) - 1
+            strIdx = len(remainingText)
+
+            # While the width of our text is greater than the desired width
+            while text_label.get_width() > settings.text_box_width:
+                # take away words from the end of the string, until they fit
+                # strIdx goes to the end of the previous word
+                strIdx -= len(remainingWords[wordIdx]) + 1 # + 1 accounts for the space
+                wordIdx -= 1 # wordIdx goes to previous word
+                checkText = remainingText[:strIdx]
+                text_label = settings.small_font.render(checkText, 1, settings.white)
+            
+            text_rect = pygame.Rect(x, y + ((numLines - 1) * settings.small_font.get_height()), text_label.get_width(), text_label.get_height())
+            text_pairs.append((text_label, text_rect))
+            wordIdx += 1
+            remainingWords = remainingWords[wordIdx:]
+            remainingText = remainingText[strIdx + 1:]
+
+        text_box_rect = pygame.Rect(x, y, settings.text_box_width + 5, text_label.get_height() * (numLines))
+        pygame.draw.rect(WIN, settings.dark_grey, text_box_rect)
+        for text_pair in text_pairs:
+            WIN.blit(text_pair[0], text_pair[1])
+        pygame.draw.rect(WIN, settings.white, text_box_rect, 1)
+# ************************************************************************************************************

@@ -3,47 +3,102 @@ import os
 import settings
 from Army import Army
 from Deck import Deck
-import Card
 from Card import Card
 
 # This represents the player - Human or AI
 class Hero:
-    def __init__(self, **kwargs): # must
+    width = settings.hero_size[0]
+    height = settings.hero_size[1]
+    def __init__(self, **kwargs):
         # Heros are the player and hold all the variables that the player will have in game
-        # In the future, I want the heros to be unique, here the just have the following:
-        # :: Name, Health, Gold, Deck(of cards), Hand(of cards), and related variables
         self._name = kwargs['hero']
+        self._text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam"
+        self._health = 50
+        self._attack = 0
+        self._gold = 50
+        self._maxGold = 50
+        self._income = 2
+
         self._deck = Deck(kwargs['deckList'])
         self._army = Army()
-        self._avatar = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "heros", self._name + ".png")), (settings.hero_size[0], settings.hero_size[1] - settings.main_font.get_height() * 2))
-        self._health = 30
-        self._attack = 0
-        self._gold = 0
-        self._hand = []
+        self._hand = [] # hand is a part of Hero, not its own class
         self._maxHandSize = 7
+
+        # If appropriate avatar is in directory then use it, otherwise use a default picture
+        if os.path.exists(os.path.join("avatars", "heros", f"{self._name}.jpg")):
+            self._image = pygame.image.load(os.path.join("avatars", "heros", f"{self._name}.jpg"))
+        elif os.path.exists(os.path.join("avatars", "heros", f"{self._name}.png")):
+            self._image = pygame.image.load(os.path.join("avatars", "heros", f"{self._name}.png"))
+        else:
+            self._image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
+        self._avatar = pygame.transform.scale(self._image, (Hero.width, Hero.height- settings.main_font.get_height() * 2))
+
+        
         self._side1 = kwargs['side1'] # says if the hero is on the left or right side
         self._sprite = None
-
         self._ready = False
         self._targeted = False
         self._selected = False
         self._yourTurn = False # is it your turn
 
-    # Hero's Army Functions
-    def call_to_arms(self, ally=None):
-        if ally:
-            self._army.add_ally(ally)
-        return self._army
-
+# GETTERS/SETTERS ********************************************************************************************
+    def name(self, name=None):
+        if name:
+            self._name = name
+        return self._name
+    def health(self, health=None):
+        if health:
+            self._health = health
+        return self._health
     def attack(self, attack=None):
         if attack:
             self._attack = attack
         return self._attack
-
-    def get_army_size(self):
-        return self.call_to_arms().army_size()
-
-    # Hand Functions
+    def gold(self, g=None):
+        if g:
+            self._gold = g
+        return self._gold
+    def income(self, i=None):
+        if i:
+            self._income = i
+        return self._income
+    def army(self, a=None):
+        if a:  
+            self._army = a
+        return self._army.get_army()
+    def text(self, t=None):
+        if t:  
+            self._text = t
+        return self._text
+# ************************************************************************************************************
+# Ready ******************************************************************************************************
+    def ready_up(self):
+        if self._attack > 0:
+            self._ready = True
+        for card in self._army._army:
+            card.ready_up()
+    def ready_down(self):
+        self._ready = False
+    def is_ready(self):
+        return self._ready
+# ************************************************************************************************************
+# Selecting **************************************************************************************************
+    def select(self):
+        self._selected = True
+    def unselect(self):
+        self._selected = False
+# ************************************************************************************************************
+# Targeting **************************************************************************************************
+    def target_all(self):
+        self._targeted = True
+        for ally in self._army.get_army():
+            ally._targeted = True
+    def untarget_all(self):
+        self._targeted = False
+        for ally in self._army.get_army():
+            ally._targeted = False
+# ************************************************************************************************************
+# Hand *******************************************************************************************************
     def max_hand_size(self, newSize=None):
         if newSize:
             self._maxHandSize = newSize
@@ -52,24 +107,10 @@ class Hero:
     def current_hand_size(self):
         return len(self._hand)
 
-    def print_hand(self):
-        for i, j in enumerate(self._hand):
-            print(f'{i+1}: {j}')
-
     def remove_from_hand(self, card):
         for i in self._hand:
             if i == card:
                 self._hand.remove(i)
-
-    def attack_enemy(self, enemy):
-        if self._ready:
-            if self.attack() >= 0:
-                enemy.lower_health(self.attack())
-            if enemy.attack() >= 0:
-                self.lower_health(enemy.attack())
-            self.ready_down()
-        else:
-            print(f'{self.name()} is not ready!')
 
     def get_from_hand(self, position):
         return self._hand[position]
@@ -80,50 +121,25 @@ class Hero:
         else:
             return False
 
-    # Variable Changing
-    def deck_list(self, deckList=None):
-        if deckList:
-            self._deck.import_txt(deckList)
-        return self._deck
-
-    def gold(self, income=None):
-        if income:
-            self._gold = income
-        return self._gold
-
-    def name(self, name=None):
-        if name:
-            self._name = name
-        return self._name
-    
-    def health(self, health=None):
-        if health:
-            self._health = health
-        return self._health
-
-    def lower_health(self, attackVal):
-        self._health -= attackVal
-
-    # Card Draw
     def draw_card(self):
         # CASE: Your hand is NOT FULL
         if len(self._hand) < self.max_hand_size():
             # CASE: Out of Cards!! Take damage equal to the amount of cards that you have overdrawn
-            if self.deck_list().get_current_num_cards() <= 0:
+            if self._deck.get_current_num_cards() <= 0:
                 damage = self._deck.draw_card(self._hand)
                 self._health += damage
-                return (f'Fatigue: {-damage} damage delt to {self.name()}')
+                #return (f'Fatigue: {-damage} damage delt to {self.name()}')
             else:
-                draw = self._deck.draw_card(self._hand)
-                return (self.name() + ' drew ' + draw.name() + '\n')
+                self._deck.draw_card(self._hand)
+                #return (self.name() + ' drew ' + draw.name() + '\n')
         # CASE: Your hand is FULL
         else:
-            if self.deck_list().get_current_num_cards() > 0:
-                return (self._name + '\'s hand is too full!\n' + self._name + ' burned:' + self._deck.burn_card())
+            if self._deck.get_current_num_cards() > 0:
+                self._deck.burn_card()
+                #return (self._name + '\'s hand is too full!\n' + self._name + ' burned:' + self._deck.burn_card())
             else:
                 damage = self._deck.draw_card(self._hand)
                 self._health += damage
-                return (f'Fatigue: {-damage} damage delt to {self.name()}')
 
     def draw_cards(self, number):
         drawnCards = []
@@ -131,31 +147,13 @@ class Hero:
             drawnCards.append(self.draw_card())
         return drawnCards
 
-    # Playing Cards!!!
-    def play_ally(self, card):
-        if not self._army.is_full() and card._cost <= self._gold:
-            self._army.add_ally(card)
-            card.ready_down()
-            self._gold -= card.cost()
-            self.remove_from_hand(card)
-        else: return None # unsuccessful
-
-    # Gold Management
-    def set_gold(self, roundNumber):
-        if roundNumber < 10:
-            self.gold(roundNumber)
-        else:
-            self.gold(10)
-
-    # Are there any playable cards in my hand?
-    def playable_cards(self):
+    def playable_cards(self): # Are there any playable cards in my hand?
         playable = False
         for i in self._hand:
             if i.cost() <= self._gold:
                 playable = True
         return playable
 
-    # Is this card playable?
     def playable_card(self, card):
         playable = False
         if card.cost() <= self.gold():
@@ -169,7 +167,29 @@ class Hero:
                 playable.append(i)
         return playable
 
-    def available_targets(self):
+    def in_hand(self, card):
+        if card in self._hand:
+            return True
+        return False
+# ************************************************************************************************************
+# Army *******************************************************************************************************
+    def call_to_arms(self, ally=None):
+        if ally:
+            self._army.add_ally(ally)
+        return self._army
+
+    def get_army_size(self):
+        return self.call_to_arms().army_size()
+
+    def play_ally(self, card):
+        if not self._army.is_full() and card._cost <= self._gold:
+            self._army.add_ally(card)
+            card.ready_down()
+            self._gold -= card.cost()
+            self.remove_from_hand(card)
+        else: return None # unsuccessful
+
+    def available_targets(self): # attackable allies
         availableTargets = []
         availableTargets.append(self)
         for i in self._army._army:
@@ -185,85 +205,103 @@ class Hero:
                 available_attackers.append(i)
         return available_attackers
 
-    def ready_up(self):
-        if self._attack >= 0:
-            self._ready = True
-        for card in self._army._army:
-            card.ready_up()
+    def in_army(self, ally):
+        if self._army.in_army(ally):
+            return True
+        return False
 
-    def ready_down(self):
-        self._ready = False
+# ************************************************************************************************************
+# Battle *****************************************************************************************************
+    def lower_health(self, attackVal):
+        self._health -= attackVal
 
-    def is_ready(self):
-        return self._ready
+    def attack_enemy(self, enemy, attackingPlayer):
+        if self._ready:
+            if self.attack() >= 0:
+                enemy.lower_health(self.attack())
+            if enemy.attack() >= 0:
+                self.lower_health(enemy.attack())
+            if enemy.health() < 0:
+                enemy.health(0)
+                attackingPlayer.get_bounty(2)
+            self.ready_down()
+        else:
+            return f'{self.name()} is not ready!'
 
-    def select(self):
-        self._selected = True
-    
-    def unselect(self):
-        self._selected = False
+# ************************************************************************************************************
+# Gold *******************************************************************************************************
+    def set_gold(self, roundNumber): # Players have a certain income, they earn that much gold per turn
+        if (roundNumber % 3) == 0:
+            self._income += 1
+        self._gold += self._income
+        if self._gold > self._maxGold: self._gold = self._maxGold
 
-    def target_all(self):
-        self._targeted = True
-        for ally in self._army.get_army():
-            ally._targeted = True
-            
-    def untarget_all(self):
-        self._targeted = False
-        for ally in self._army.get_army():
-            ally._targeted = False
+    def get_bounty(self, amount):
+        self._gold += amount
 
-# PYGAME DRAW FUNCTIONS ********************************************************************************************
+# ************************************************************************************************************
+# PYGAME DRAW FUNCTIONS **************************************************************************************
     def draw(self, WIN):
-
-        # Players Avatar
+        # X and Y
         x = settings.hero_zone_buffer
         if self._side1:
-            y = settings.HEIGHT / 2 - settings.hero_zone_buffer - settings.hero_size[1]
+            y = settings.HEIGHT / 2 - settings.hero_zone_buffer - Hero.height
         else:
             y = settings.HEIGHT / 2 + settings.hero_zone_buffer
-        WIN.blit(self._avatar, (x, y + settings.main_font.get_height()))
 
         # Stat Area
         # Player Health
         health_label = settings.main_font.render(f"{self._health}", 1, settings.health_color) 
-        health_rect = pygame.Rect(x, y + settings.hero_size[1] - health_label.get_height(), settings.hero_size[0] / 2, health_label.get_height())
+        health_rect = pygame.Rect(x, y + Hero.height - health_label.get_height(), Hero.width / 2, health_label.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, health_rect) # Backdrop
         pygame.draw.rect(WIN, settings.light_grey, health_rect, 5) # Border
-        WIN.blit(health_label, (x + self._avatar.get_width() / 4 - health_label.get_width() / 2, y + settings.hero_size[1] - settings.main_font.get_height()))
+        WIN.blit(health_label, (x + self._avatar.get_width() / 4 - health_label.get_width() / 2, y + Hero.height - settings.main_font.get_height()))
 
         # Player Attack
         attack_label = settings.main_font.render(f"{self._attack}", 1, settings.attack_color)
-        attack_rect = pygame.Rect(x + settings.hero_size[0] / 2, y + settings.hero_size[1] - health_label.get_height(), settings.hero_size[0] / 2, health_label.get_height())
+        attack_rect = pygame.Rect(x + Hero.width / 2, y + Hero.height - health_label.get_height(), Hero.width / 2, health_label.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, attack_rect) # Backdrop
         pygame.draw.rect(WIN, settings.light_grey, attack_rect, settings.card_border_size) # Border
-        WIN.blit(attack_label, (x + self._avatar.get_width() * 3 / 4 - attack_label.get_width() / 2, y + settings.hero_size[1] - settings.main_font.get_height()))
+        WIN.blit(attack_label, (x + self._avatar.get_width() * 3 / 4 - attack_label.get_width() / 2, y + Hero.height - settings.main_font.get_height()))
         
         # Player Name
         name_label = settings.main_font.render(f"{self._name}", 1, settings.white)
-        name_rect = pygame.Rect(x, y, settings.hero_size[0], name_label.get_height())
+
+        # Dynamically Lowers Font until the name fits
+        fontSize = 35
+        while name_label.get_width() >= Hero.width - 5:
+            fontSize -= 1
+            newFont = pygame.font.SysFont(settings.font_type, fontSize)
+            name_label = newFont.render(f"{self._name}", 1, settings.white)
+        # have to reset main avatar now that font has changed
+        self._avatar = pygame.transform.scale(self._image, (Hero.width, Hero.height- settings.main_font.get_height() - name_label.get_height()))
+
+
+        name_rect = pygame.Rect(x, y, Hero.width, name_label.get_height())
         pygame.draw.rect(WIN, settings.dark_grey, name_rect) # BACKDROP
         pygame.draw.rect(WIN, settings.light_grey, name_rect, settings.card_border_size) # BORDER
-        WIN.blit(name_label, (x + settings.hero_size[0] / 2 - name_label.get_width() / 2, y))
+        WIN.blit(name_label, (x + Hero.width / 2 - name_label.get_width() / 2, y))
         
+        # Players Avatar
+        WIN.blit(self._avatar, (x, y + name_label.get_height()))
         # Final Border
         finalBorderColor = settings.light_grey
         if self._ready and self._yourTurn:
             finalBorderColor = settings.ready_color
-        if self._selected and self._yourTurn:
+        if self._selected:
             finalBorderColor = settings.selected_color
         if self._targeted:
             finalBorderColor = settings.targeted_color
         if self._side1:
-            self._sprite = pygame.Rect(x, y, settings.hero_size[0], settings.hero_size[1])
+            self._sprite = pygame.Rect(x, y, Hero.width, Hero.height)
         else:
-            self._sprite = pygame.Rect(x, y, settings.hero_size[0], settings.hero_size[1])
+            self._sprite = pygame.Rect(x, y, Hero.width, Hero.height)
         pygame.draw.rect(WIN, finalBorderColor, self._sprite, 5)
 
     def draw_army(self, WIN):
         # example to get the size of card and label
         if (self._side1):
-            y = settings.HEIGHT / 2 - (settings.card_zone_buffer + settings.card_size[1])
+            y = settings.HEIGHT / 2 - (settings.card_zone_buffer + Card.height)
         else: y = (settings.HEIGHT / 2) + settings.card_zone_buffer
 
         armySize = self.get_army_size()
@@ -272,7 +310,7 @@ class Hero:
         middle = (settings.WIDTH + starting_point) / 2
         settings.card_buffer = 5
 
-        x = middle - (settings.card_size[0] / 2) * armySize
+        x = middle - (Card.width / 2) * armySize
         x -= settings.card_buffer * (armySize - 1)
         for card in self._army.get_army():
             card.draw(WIN, x, y, self._yourTurn)
@@ -285,13 +323,13 @@ class Hero:
             pass 
             # deck is empty, display something saying that
         else: # deck is not empty
-            x = settings.WIDTH - settings.card_zone_buffer - settings.card_size[0]
+            x = settings.WIDTH - settings.card_zone_buffer - Card.width
             y = settings.card_zone_buffer
             if not self._side1:
-                y = settings.HEIGHT - settings.card_zone_buffer - settings.card_size[1]
+                y = settings.HEIGHT - settings.card_zone_buffer - Card.height
             Card.draw_card_back(WIN, x, y)
-        remaining_cards = settings.small_font.render(f"Remaining Cards:{self._deck.get_current_num_cards()}", 1, settings.white)
-        WIN.blit(remaining_cards, (x + settings.card_size[0] / 2 - remaining_cards.get_width() / 2, y + settings.card_buffer))
+        remaining_cards = settings.small_font.render(f"Remaining Cards:{self._deck.get_current_num_cards()}", 1, settings.black)
+        WIN.blit(remaining_cards, (x + Card.width / 2 - remaining_cards.get_width() / 2, y + settings.card_buffer))
 
     def draw_hand(self, WIN, hidden=False):
         if self._hand == []:
@@ -301,9 +339,50 @@ class Hero:
             x = settings.endHeroZone + settings.card_zone_buffer
             y = settings.card_zone_buffer
             if not self._side1:
-                y = settings.HEIGHT - settings.card_zone_buffer - settings.card_size[1]
+                y = settings.HEIGHT - settings.card_zone_buffer - Card.height
             for card in self._hand:
                 if hidden:
                     Card.draw_card_back(WIN, x, y)
                 else: card.draw(WIN, x, y, self._yourTurn)
-                x += settings.card_size[0] + settings.card_buffer
+                x += Card.width + settings.card_buffer
+
+    def draw_text_window(self, WIN):
+        x = self._sprite.right
+        y = self._sprite.y
+        numLines = 0
+
+        remainingWords = self._text.split(" ")
+        remainingText = self._text
+        text_pairs = []
+
+        while (len(remainingWords) != 0): # while we still have words to write
+            numLines += 1
+
+            # check the length of the text and we'll see if it fits
+            text_label = settings.small_font.render(remainingText, 1, settings.white, settings.dark_grey)
+
+            # reset the index for our word list, and text string
+            wordIdx = len(remainingWords) - 1
+            strIdx = len(remainingText)
+
+            # While the width of our text is greater than the desired width
+            while text_label.get_width() > settings.text_box_width:
+                # take away words from the end of the string, until they fit
+                # strIdx goes to the end of the previous word
+                strIdx -= len(remainingWords[wordIdx]) + 1 # + 1 accounts for the space
+                wordIdx -= 1 # wordIdx goes to previous word
+                checkText = remainingText[:strIdx]
+                text_label = settings.small_font.render(checkText, 1, settings.white)
+            
+            text_rect = pygame.Rect(x, y + ((numLines - 1) * settings.small_font.get_height()), text_label.get_width(), text_label.get_height())
+            text_pairs.append((text_label, text_rect))
+            wordIdx += 1
+            remainingWords = remainingWords[wordIdx:]
+            remainingText = remainingText[strIdx + 1:]
+
+        text_box_rect = pygame.Rect(x, y, settings.text_box_width + 5, text_label.get_height() * (numLines))
+        pygame.draw.rect(WIN, settings.dark_grey, text_box_rect)
+        for text_pair in text_pairs:
+            WIN.blit(text_pair[0], text_pair[1])
+        pygame.draw.rect(WIN, settings.white, text_box_rect, 1)
+# ************************************************************************************************************

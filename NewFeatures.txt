@@ -1,0 +1,98 @@
+Preface
+    Creating this game to be my own, rather than a Hearthstone copy, sounds more fulfilling.
+    Core Mechanics that I want:
+        - Card/Deck based game
+        - Heros to act as the player that have special abilities, more interesting and impactful than 'hero powers'
+        - Need a goal to end the game, easy one is to kill the enemy hero. (consider alternatives)
+        - Must be a resource (I want to call it gold) required to play cards. 
+        - I want to go away from the way mana works (get one more mana a turn, cap at 20)
+        - Spend gold to call in allies, buy equipment, take actions (spells)
+            These specific things may change, but spending gold to cast cards will not
+        - Must have an area where Allies, and other things, are in-play (the board)
+        - Basic allies (characters on the board) have an attack and health
+
+    Resources Rethought
+        - Mana allows playing cards, 1 additional mana each turn, max of 10, lose mana not spent
+        - Income, get a certain amount of gold per turn
+        - Bounties, ex. first to kill x enemy allies gets a boon
+        - Create a baseline for gold to stat cost of cards ex. 5 gold buys 10 stats baseline
+
+
+Equipment Slots (random idea)
+    - Have a certain amount of slots that determine how much equipment a hero can have
+    - ex 10 slots, equiping a sword takes up 2 slots, certain armor takes anywhere from 3-5 slots
+    cons
+    - Dont like because playing a strong card that never leaves might be crazy
+    - might take a ton of the screen to view
+        can have a weapon and armor symbol that pulls up the card when selected
+    pros
+    - feels like youre powering up your hero
+
+Swarm (random Idea)
+    - able to choose to add stats to another swarm ally, or play individually on the board
+
+Typing (random Idea)
+    - ex an ally deals frost dmg, and takes extra from fire dmg
+    
+
+    Maybe instead of a lot of slots, you have two slots for weapon and armor
+        can equip low cost, low impact or high cost, high impact equipment
+        can have mechanics interecting with equipment
+        can have equipment to distinguish unique playstyle from other games
+
+1) Refactor Code
+    - Go through existing code to determine if it needs to change structure
+    - Comment, comment, comment
+    - Delete unused functions
+    - Update README
+    - Delete unused files (main.py, simulator.py, tools.py?)
+    - Determine if we actually need the classes we have
+    
+2) Deck 
+    - Instead of importing a .txt, maybe have a python file that creates a bunch of Card objs
+    - Create deck objs in the deck file and import them into the hero file
+
+3) Heros
+    - Create heros and choose a hero to play
+    - Give heros predetermined cards
+    - later on we can choose a hero and then choose cards, for now we can make a hero and give them cards
+    - Create hero objs in the hero file, using the deck objs in the deck file
+
+4) GameManager
+    Big Question: should GameManager == WindowManager? Should the game and the graphics be handled in this same class?
+    a) Start Screen
+        - Title
+        - Start Game (Main Menu)
+        - Exit Game
+    b) Main Menu
+        - Choose Hero
+        - Choose Enemy Hero
+        - Start Game (Actual Game)
+    c) End Screen
+        - Display Winner
+        - Rematch Option
+        - Main Menu Option
+
+5) Cool things to add
+    a) Actions (Spells)
+        - different than ally, but still a card
+        - should look like, but different than an ally
+        - needs text to describe the spell effect
+        Card Ideas with increasing difficulty
+            1) 5 gold, deal 5 damage
+
+    b) Simulator
+        - Runs random v random game
+        - Can run as many games as asked
+        - Documents the results of the games (might be useful to look back at archive calebstone for this task)
+            ex. winner/loser, heros, who went first, log of the game
+        
+    c) Game Log
+        - Documents Actions taken within the game
+        - Can be viewed in game to look back on what exactly happened
+
+    d) Visual Effects
+        - I'm thinking simple for now, of course. Following tasks are assumed to be simple
+        - Arrows to point from source, to target
+        - Damage indication (ex. 3/2 attacks 4/4, 3/2 takes 4 dmg and such is indicated, 4/4 takes 3 dmg and such is indicated)
+        - Death indication (ex. 3/2 attacks 4/4, 3/2 dies and such is indicated)

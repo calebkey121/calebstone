@@ -79,6 +79,11 @@ class Army:
         except IndexError:
             return None
 
+    def in_army(self, ally):
+        if ally in self._army:
+            return True
+        return False
+
 
     def __repr__(self):
         if self._army != []:
