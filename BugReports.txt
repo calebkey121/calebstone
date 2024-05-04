@@ -1,2 +1,6 @@
 Not a bug but if both players have the same decklist, they both draw from the same deck
     ie player2deck = spider, player2deck = spider
+
+Theres a bug where the computer has a playable card, but cant choose it with gamemanager.playrandomcard
+
+game doesnt work

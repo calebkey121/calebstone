@@ -4,7 +4,7 @@ class Deck:
     def __init__(self, deckList):
         self._deckList = deckList
         self.set_num_cards()
-        self._startingNumCards = 30
+        self._startingNumCards = 45
                 
     # adds card to deck
     def add_card(self, card):

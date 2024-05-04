@@ -13,16 +13,18 @@ class Hero:
         # Heros are the player and hold all the variables that the player will have in game
         self._name = kwargs['hero']
         self._text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam"
-        self._health = 50
+        self._showText = False
+        self._maxHealth = 200
+        self._health = 200
         self._attack = 0
-        self._gold = 50
+        self._gold = 0
         self._maxGold = 50
         self._income = 2
 
         self._deck = Deck(kwargs['deckList'])
         self._army = Army()
         self._hand = [] # hand is a part of Hero, not its own class
-        self._maxHandSize = 7
+        self._maxHandSize = 10
 
         # If appropriate avatar is in directory then use it, otherwise use a default picture
         if os.path.exists(os.path.join("avatars", "heros", f"{self._name}.jpg")):
@@ -70,6 +72,14 @@ class Hero:
         if t:  
             self._text = t
         return self._text
+    def hand(self, hand=None):
+        if hand:
+            self._hand = hand
+        return self._hand
+    def showText(self, showText=None):
+        if showText != None:
+            self._showText = showText
+        return self._showText
 # ************************************************************************************************************
 # Ready ******************************************************************************************************
     def ready_up(self):
@@ -79,8 +89,13 @@ class Hero:
             card.ready_up()
     def ready_down(self):
         self._ready = False
-    def is_ready(self):
-        return self._ready
+    def should_target(self):
+        if self._ready and self._selected:
+            return True
+        for ally in self.army():
+            if ally.is_ready() and ally.is_selected():
+                return True
+        return False
 # ************************************************************************************************************
 # Selecting **************************************************************************************************
     def select(self):
@@ -181,13 +196,24 @@ class Hero:
     def get_army_size(self):
         return self.call_to_arms().army_size()
 
-    def play_ally(self, card):
+    def play_ally(self, card, opposingPlayer):
         if not self._army.is_full() and card._cost <= self._gold:
             self._army.add_ally(card)
             card.ready_down()
             self._gold -= card.cost()
             self.remove_from_hand(card)
+
+            # handle battlecry
+            if card._playEffect:
+                card._playEffect(amount=card._amount[0], player=self, opposingPlayer=opposingPlayer)
+            self._army.toll_the_dead()
+            opposingPlayer._army.toll_the_dead()
         else: return None # unsuccessful
+
+    # Play building
+    def play_building(self, card, opposingPlayer):
+        print("pass")
+        pass
 
     def available_targets(self): # attackable allies
         availableTargets = []
@@ -228,6 +254,15 @@ class Hero:
         else:
             return f'{self.name()} is not ready!'
 
+    def heal(self, healAmount):
+        self._health += healAmount
+        if self._health  > self._maxHealth:
+            self._health = self._maxHealth
+
+    def heal_allies(self, healAmount):
+        for ally in self.army():
+            ally.heal(healAmount)
+        
 # ************************************************************************************************************
 # Gold *******************************************************************************************************
     def set_gold(self, roundNumber): # Players have a certain income, they earn that much gold per turn
@@ -238,6 +273,31 @@ class Hero:
 
     def get_bounty(self, amount):
         self._gold += amount
+
+    def change_income(self, amount):
+        self._income += amount
+        if self._income < 0:
+            self._income = 0
+
+    def steal_gold_from(self, opposingPlayer, amount):
+        opposingPlayer._gold -= amount
+        if opposingPlayer._gold < 0:
+            stolenAmount = amount + opposingPlayer._gold # ex stealing 5, has 4 -> ._gold = -1: 5 + -1 = 4 (how much was actually stolen)
+            opposingPlayer._gold = 0 # cant go below 0
+        else:
+            stolenAmount = amount
+        self.get_bounty(stolenAmount)
+    def steal_income_from(self, opposingPlayer, amount):
+        if amount > 0 and opposingPlayer:
+            opposingPlayer.change_income(-amount)
+            if opposingPlayer._income < 0:
+                stolenAmount = amount + opposingPlayer._income # ex stealing 5, has 4 -> ._gold = -1: 5 + -1 = 4 (how much was actually stolen)
+                opposingPlayer._income = 0 # cant go below 0
+            else:
+                stolenAmount = amount
+            self.change_income(stolenAmount)
+        else:
+            raise ValueError("Using Hero.steal_income_from incorrectly")
 
 # ************************************************************************************************************
 # PYGAME DRAW FUNCTIONS **************************************************************************************
@@ -334,17 +394,23 @@ class Hero:
     def draw_hand(self, WIN, hidden=False):
         if self._hand == []:
             pass 
-            # hand is empty, display something saying that
+            # hand is empty, maybe display something saying that
         else: # hand is not empty
             x = settings.endHeroZone + settings.card_zone_buffer
             y = settings.card_zone_buffer
+            focus = None
             if not self._side1:
                 y = settings.HEIGHT - settings.card_zone_buffer - Card.height
             for card in self._hand:
+                if card.showText(): # or card.is_selected()
+                    focus = card
+                    focusX, focusY = x, y
                 if hidden:
                     Card.draw_card_back(WIN, x, y)
                 else: card.draw(WIN, x, y, self._yourTurn)
-                x += Card.width + settings.card_buffer
+                x += 49
+            if focus:
+                focus.draw(WIN, focusX, focusY, self._yourTurn)
 
     def draw_text_window(self, WIN):
         x = self._sprite.right

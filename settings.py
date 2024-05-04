@@ -19,7 +19,7 @@ card_border_size = 4
 # Buffers
 hero_zone_buffer = 15 # pixel buffer between the hero and the border
 card_zone_buffer = 15 # pixel buffer between the middle of the screen and the army
-card_buffer = 10 # pixel buffer between the cards themselves
+card_buffer = 50 # pixel buffer between the start of cards themselves not working????
 
 endHeroZone = 2 * hero_zone_buffer + hero_size[0]
 
