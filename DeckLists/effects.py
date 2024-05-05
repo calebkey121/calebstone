@@ -1,5 +1,7 @@
 from Hero import Hero
 
+# god... we need to redo play_effects, make it a class come on
+
 # Damage *****************************************************************************************************
 # Card Text: Deal X damage to the enemy hero.
 def damage_enemy_hero(amount: int, player: Hero=None, opposingPlayer: Hero=None):

@@ -1,5 +1,5 @@
 import pygame
-import os # used to find avatar pictures in avatar directory
+import os # used to find card art in art directory
 import settings
 import Hero # used to type check for hero
 
@@ -17,12 +17,12 @@ class Card:
         self._sprite = None # None until self.draw(x, y) is called, then a sprite is set at the appropriate spot on screen
         
         # If appropriate avatar is in directory then use it, otherwise use a default picture
-        if os.path.exists(os.path.join("avatars", "cards", f"{self._name}.jpg")):
-            self.image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.jpg"))
-        elif os.path.exists(os.path.join("avatars", "cards", f"{self._name}.png")):
-            self.image = pygame.image.load(os.path.join("avatars", "cards", f"{self._name}.png"))
+        if os.path.exists(os.path.join("art", "cards", f"{self._name}.jpg")):
+            self.image = pygame.image.load(os.path.join("art", "cards", f"{self._name}.jpg"))
+        elif os.path.exists(os.path.join("art", "cards", f"{self._name}.png")):
+            self.image = pygame.image.load(os.path.join("art", "cards", f"{self._name}.png"))
         else:
-            self.image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
+            self.image = pygame.image.load(os.path.join("art", "cards", "raccoon.jpg"))
         self._avatar = pygame.transform.scale(self.image, (Card.width, Card.height - settings.sub_font.get_height() - settings.small_font.get_height()))
 
 # GETTERS/SETTERS ********************************************************************************************
@@ -47,7 +47,7 @@ class Card:
     def draw_card_back(WIN, x, y):
         # may later want to add the option of drawing a specific cardback, dont really care rn, 
         # the cardback.png would be stored in the hero class attributes, as that is what calls draw_card_back
-        image = pygame.image.load(os.path.join("avatars", "cardBacks", "cardBack.png"))
+        image = pygame.image.load(os.path.join("art", "cardbacks", "cardback.png"))
         avatar = pygame.transform.scale(image, (Card.width, Card.height))
         WIN.blit(avatar, (x, y))
 

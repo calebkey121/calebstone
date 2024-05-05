@@ -7,13 +7,13 @@ import pygame
 import settings
 import os
 import Card
-import DeckLists.BearDeckList as Bear
-import DeckLists.WolfDeckList as Wolf
+import DeckLists.PlayerOneList as p1
+import DeckLists.PlayerTwoList as p2
 #import DeckLists.SpiderDeckList as Spider
 
 class GameManager:
 
-    def __init__(self, player1Name="Necromancer", player1Deck=Wolf.deck_list, player2Name="Skeleton Wizard", player2Deck=Wolf.deck_list):
+    def __init__(self, player1Name="Plague Doctor", player1Deck=p1.deck_list, player2Name="Black Knight", player2Deck=p2.deck_list):
         self._player1 = Hero(hero=player1Name, deckList=player1Deck, side1=False) # player1 is human when possible
         self._player1._yourTurn = True
         self._player2 = Hero(hero=player2Name, deckList=player2Deck, side1=True) # player2 is random when possible
@@ -33,7 +33,7 @@ class GameManager:
         # PYGAME Setup
         self.WIN = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT),pygame.FULLSCREEN | pygame.RESIZABLE)
         pygame.display.set_caption("Calebstone")
-        self.BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("avatars", "backgrounds", "b1.jpg")), (settings.WIDTH, settings.HEIGHT))
+        self.BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("art", "backgrounds", "tabletop.png")), (settings.WIDTH, settings.HEIGHT))
 
         self.run_game()
 

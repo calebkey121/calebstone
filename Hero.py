@@ -27,12 +27,12 @@ class Hero:
         self._maxHandSize = 10
 
         # If appropriate avatar is in directory then use it, otherwise use a default picture
-        if os.path.exists(os.path.join("avatars", "heros", f"{self._name}.jpg")):
-            self._image = pygame.image.load(os.path.join("avatars", "heros", f"{self._name}.jpg"))
-        elif os.path.exists(os.path.join("avatars", "heros", f"{self._name}.png")):
-            self._image = pygame.image.load(os.path.join("avatars", "heros", f"{self._name}.png"))
+        if os.path.exists(os.path.join("art", "heros", f"{self._name}.jpg")):
+            self._image = pygame.image.load(os.path.join("art", "heros", f"{self._name}.jpg"))
+        elif os.path.exists(os.path.join("art", "heros", f"{self._name}.png")):
+            self._image = pygame.image.load(os.path.join("art", "heros", f"{self._name}.png"))
         else:
-            self._image = pygame.image.load(os.path.join("avatars", "cards", "raccoon.jpg"))
+            self._image = pygame.image.load(os.path.join("art", "cards", "raccoon.jpg"))
         self._avatar = pygame.transform.scale(self._image, (Hero.width, Hero.height- settings.main_font.get_height() * 2))
 
         
