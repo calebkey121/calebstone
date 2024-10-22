@@ -1,10 +1,12 @@
 import random
+from config.GameSettings import DECK_STARTING_NUM_CARDS
 
 class Deck:
     def __init__(self, deckList):
         self._deckList = deckList
         self.set_num_cards()
-        self._startingNumCards = 45
+        self._startingNumCards = DECK_STARTING_NUM_CARDS
+        self._fatigueCounter = 0
                 
     # adds card to deck
     def add_card(self, card):
@@ -20,21 +22,21 @@ class Deck:
     def set_num_cards(self):
         self._currentNumCards = len(self._deckList)
 
-    def get_current_num_cards(self):
+    def current_num_cards(self):
         return self._currentNumCards
+    
+    def out_of_cards(self):
+        return self._currentNumCards <= 0
 
-    # Picks random card from deck and appends to hand - returns that card
-    def draw_card(self, hand):
-        if self.get_current_num_cards() <= 0:
-            self._currentNumCards -= 1
-            return self.get_current_num_cards()
-        else:
-            draw = random.choice(self._deckList)
-            hand.append(draw)
-            self.remove_card(draw)
-            return draw
-
-    def burn_card(self):
+    # Picks random card from deck and returns that card
+    def draw_card(self):
+        if self.out_of_cards():
+            raise ValueError("Tried drawing a card when out of cards")
         draw = random.choice(self._deckList)
         self.remove_card(draw)
-        return draw._name
+        return draw
+    
+    def take_fatigue(self):
+        # Should we only increment this when out of cards?
+        self._fatigueCounter += 1
+        return self._fatigueCounter

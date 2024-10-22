@@ -21,10 +21,10 @@ Forest_Guardian = Ally(name="Forest Guardian", cost=15, attack=15, health=60, pl
 
 
 # Not being used currently
-Haunted_House = Building(name="Haunted House", cost=15, health=60, play_effect=effects.heal_all_friendly_characters, amount=[50], text="This is the text for a building")
-Decrepit_Mansion = Building(name="Decrepit Mansion", cost=15, health=60, play_effect=effects.heal_all_friendly_characters, amount=[50], text="This is the text for a building")
-Misty_Graveyard = Building(name="Misty Graveyard", cost=15, health=60, play_effect=effects.heal_all_friendly_characters, amount=[50], text="This is the text for a building")
-Silent_Forest = Building(name="Silent Forest", cost=15, health=60, play_effect=effects.heal_all_friendly_characters, amount=[50], text="This is the text for a building")
+# Haunted_House = Building(name="Haunted House", cost=15, health=60, play_effect=effects.heal_all_friendly_characters, amount=[50], text="This is the text for a building")
+# Decrepit_Mansion = Building(name="Decrepit Mansion", cost=15, health=60, play_effect=effects.heal_all_friendly_characters, amount=[50], text="This is the text for a building")
+# Misty_Graveyard = Building(name="Misty Graveyard", cost=15, health=60, play_effect=effects.heal_all_friendly_characters, amount=[50], text="This is the text for a building")
+# Silent_Forest = Building(name="Silent Forest", cost=15, health=60, play_effect=effects.heal_all_friendly_characters, amount=[50], text="This is the text for a building")
 
 # Play Effects
 # damage_enemy_hero
