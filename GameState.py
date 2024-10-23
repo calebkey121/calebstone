@@ -34,8 +34,8 @@ class GameState:
             "gold_gained": 0,
             "income_gained": 0,
             "income_lost": 0,
-            "damage_dealt": 0,
-            # "damage_dealt_by_allies": 0, # rn all damage is from allies
+            "damage_dealt_by_allies": 0, # rn all damage is from allies
+            "total_attacks_by_allies": 0,
             "hero_damage_taken": 0,
             "allies_damage_taken": 0,
             "allies_killed": 0,
@@ -53,6 +53,8 @@ class GameState:
     
     # Possible Actions
     def possible_cards_to_play(self):
+        if self.current_player._army.is_full():
+            return []
         actions = []
         playable_cards = self.current_player.playable_cards()
         for card in playable_cards:

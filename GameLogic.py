@@ -14,16 +14,20 @@ class GameLogic():
             card_index = action['card_index']
             if current_player.has_enough_gold(card_index):
                 # subscribe stats to track
-                subscribers = [lambda card=None : game_state.increment_stat(player, "allies_died", 1)]
-                current_player.play_card(card_index, subscribers)
+                on_death_subs = [lambda card=None : game_state.increment_stat(player, "allies_died", 1)]
+                on_attack_subs = [
+                    lambda attack_damage=0 : game_state.increment_stat(player, "damage_dealt_by_allies", attack_damage),
+                    lambda attack_damage=None : game_state.increment_stat(player, "total_attacks_by_allies", 1)
+                ]
+                on_damage_subs = []
+                current_player.play_card(card_index, on_death_subs=on_death_subs, on_attack_subs=on_attack_subs)
         
         elif action['type'] == 'attack':
             attacker = current_player.all_characters()[action['attacker_index']]
             target = opponent.all_characters()[action['target_index']]
-            target.take_damage(attacker._attack)
-            attacker.take_damage(target._attack)
-            attacker.ready_down()
-        
+            attacker.attack(target)
+            # potential addl. attack resolution
+
         return game_state
     
     @staticmethod

@@ -27,7 +27,23 @@ class Ally(Card):
             self._health = health
             self._ready = False
         self.on_death = Signal()  # Signal for when this ally dies
-
+        self.on_attack = Signal()  # Signal for when this ally deals damage
+        self.on_damage = Signal()  # Signal for when this ally takes damage
+    
+    @property
+    def health(self):
+        return self._health
+    @health.setter
+    def health(self, new_amount):
+        change_amount = new_amount - self.health
+        if change_amount >= 0:
+            pass # self.on_heal.emit(change_amount)
+        else:
+            if self.health <= 0:
+                self.die()
+            self.on_damage.emit(change_amount)
+        self._health = new_amount
+    
     # READY
     def ready_up(self):
         if self._attack > 0:
@@ -43,23 +59,24 @@ class Ally(Card):
         return self._ready and self._attack > 0
 
     # BATTLE
-    # Lower your own health by damage amount 
-    def take_damage(self, damage):
-        if not isinstance(damage, int) or damage < 0:
-            raise ValueError(f"Damage must be a positive integer. Got: {damage}")
-        self._health -= damage
-        if self._health <= 0:
-            self.die()
-    
+    # Attack
+    def attack(self, target):
+        # for now lets just do total damage dealt
+        self.on_attack.emit(min(self._attack, target.health))
+        target.health -= self._attack
+        self.health -= target._attack
+        self.ready_down()
+
     def die(self):
         self.on_death.emit(self)
 
-    def heal_damage(self, heal):
-        if not isinstance(heal, int) or heal < 0:
-            raise ValueError(f"Heal amount must be a positive integer. Got: {heal}")
-        self._health += heal
-        if self._health  > self._maxHealth:
-            self._health = self._maxHealth
+    # Move this to health setter
+    # def heal_damage(self, heal):
+    #     if not isinstance(heal, int) or heal < 0:
+    #         raise ValueError(f"Heal amount must be a positive integer. Got: {heal}")
+    #     self._health += heal
+    #     if self._health  > self._maxHealth:
+    #         self._health = self._maxHealth
 
     # Attack enemy target
     # Parameters: 

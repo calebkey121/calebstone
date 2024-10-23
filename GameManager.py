@@ -4,6 +4,7 @@ from OutputHandler import TerminalOutputHandler
 from GameLogic import GameLogic
 import DeckLists.PlayerOneList as p1d
 import DeckLists.PlayerTwoList as p2d
+import pprint
 
 """
 Purpose:
@@ -43,15 +44,15 @@ class GameManager:
 
             GameLogic.end_turn(self.game_state)
             
-        self.output_handler.display_state(self.game_state) # move
-        print(self.game_state.stats["player1"])
-        print(self.game_state.stats["player2"])
+        #self.output_handler.display_state(self.game_state) # move
         if self.game_state.player1.is_dead() and self.game_state.player2.is_dead():
             print("It's a tie!")
         elif self.game_state.player1.is_dead():
             print("Player 2 Wins!")
         else:
             print("Player 1 Wins!")
+        pprint.pprint(self.game_state.stats)
+        #print(self.game_state.stats["player2"])
     
 
 def main():

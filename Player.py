@@ -55,15 +55,15 @@ class Player:
         return {
             "name": self._hero._name,
             "attack": self._hero._attack,
-            "health": self._hero._health
+            "health": self._hero.health
         }
     def get_army_status(self):
-        return [ { "name": ally._name, "attack": ally._attack, "health": ally._health, "cost": ally._cost } for ally in self._army.get_army() ]
+        return [ { "name": ally._name, "attack": ally._attack, "health": ally.health, "cost": ally._cost } for ally in self._army.get_army() ]
     def get_hand_status(self):
-        return [ { "name": card._name, "attack": card._attack, "health": card._health, "cost": card._cost } for card in self._hand ]
+        return [ { "name": card._name, "attack": card._attack, "health": card.health, "cost": card._cost } for card in self._hand ]
     # Hero Helpers
     def hero_health(self):
-        return self._hero._health
+        return self._hero.health
     def is_dead(self):
         return self.hero_health() <= 0
     # Deck Helpers
@@ -73,7 +73,7 @@ class Player:
     # Army Helpers
     def get_army_size(self):
         return self._army.army_size()
-    
+
     # IMPORTANT: Should return indicies, hero is always 0
     def available_targets(self): # attackable allies
         availableTargets = []
@@ -177,7 +177,7 @@ class Player:
     #        self._army.toll_the_dead()
     #        opposingPlayer._army.toll_the_dead()
     #    else: return None # unsuccessful
-    def play_ally(self, card, on_death_subs=[]):
+    def play_ally(self, card, on_death_subs=[], on_attack_subs=[], on_damage_subs=[]):
         if self._army.is_full() or card._cost > self.gold:
             raise ValueError("Card unplayable")
         self._army.add_ally(card)
@@ -186,15 +186,16 @@ class Player:
         self.remove_from_hand(card)
         on_death_subs.append(self._army.toll_the_dead)
         card.on_death.connect(on_death_subs) # will clear itself when it dies
+        card.on_attack.connect(on_attack_subs)
 
     # Hand Actions
-    def play_card(self, index, on_death_subs=[]):
+    def play_card(self, index, on_death_subs=[], on_attack_subs=[], on_damage_subs=[]):
         if not isinstance(index, int):
             raise ValueError(f"Expected int argument. Got: {index}")
         card = self._hand[index]
         if card._cost > self.gold:
             raise ValueError("Tried playing unplayable card.")
-        self.play_ally(card, on_death_subs)
+        self.play_ally(card, on_death_subs, on_attack_subs, on_damage_subs)
 
     def max_hand_size(self, newSize=None):
         if newSize:
