@@ -2,6 +2,7 @@ from Army import Army
 from Deck import Deck
 from Card import Card, Ally
 from Hero import Hero
+from Signal import Signal
 from config.GameSettings import *
 
 class Player:
@@ -15,9 +16,38 @@ class Player:
         self._hand = []
         self._maxHandSize = PLAYER_MAX_HAND_SIZE
         self._gold = 0
-        self._maxGold = PLAYER_MAX_GOLD
+        # self._maxGold = PLAYER_MAX_GOLD
         self._income = 0
-        self._maxIncome = PLAYER_MAX_INCOME
+        # self._maxIncome = PLAYER_MAX_INCOME
+        # signals
+        self.gold_gained = Signal()
+        self.gold_spent = Signal()
+        self.income_gained = Signal()
+        self.income_lost = Signal()
+    
+    @property
+    def gold(self):
+        return self._gold
+    @gold.setter
+    def gold(self, new_amount):
+        change_amount = new_amount - self.gold
+        if change_amount >= 0: # think if = is necessary
+            self.gold_gained.emit(change_amount)
+        else:
+            self.gold_spent.emit(change_amount)
+        self._gold = new_amount
+
+    @property
+    def income(self):
+        return self._income
+    @income.setter
+    def income(self, new_amount):
+        change_amount = new_amount - self.income
+        if change_amount >= 0: # think if = is necessary
+            self.income_gained.emit(change_amount)
+        else:
+            self.income_lost.emit(change_amount)
+        self._income += change_amount
     
     # Helpers: useful checks that don't affect the game state
     # Status Checks (mainly for output)
@@ -85,14 +115,14 @@ class Player:
     def any_playable_cards(self): # Are there any playable cards in my hand?
         playable = False
         for i in self._hand:
-            if i.cost() <= self._gold:
+            if i.cost() <= self.gold:
                 playable = True
         return playable
 
     def playable_cards(self): # What cards are playable in your hand?
         playable = [] # indicies
         for idx, card in enumerate(self._hand):
-            if card._cost <= self._gold:
+            if card._cost <= self.gold:
                 playable.append(idx)
         return playable
     
@@ -107,7 +137,7 @@ class Player:
     def playable_hand(self):
         playable = []
         for i in self._hand:
-            if i.cost() <= self._gold:
+            if i.cost() <= self.gold:
                 playable.append(i)
         return playable
 
@@ -120,7 +150,7 @@ class Player:
     def has_enough_gold(self, index):
         if not isinstance(index, int):
             raise ValueError(f"Checking non int index. Got: {index}")
-        return self._hand[index]._cost <= self._gold
+        return self._hand[index]._cost <= self.gold
     
     # Actions: exposed functions that directly affect the game state
     def ready_up(self):
@@ -133,16 +163,13 @@ class Player:
         if not isinstance(ally, Ally):
             raise ValueError(f"Tried adding non ally to army. Got: {ally}")
         self._army.add_ally(ally)
-    
-    def toll_the_dead(self):
-        self._army.toll_the_dead()
 
     # TODO move outside of player, player should just do what is told and manager will control battlecries and such
     #def play_ally(self, card, opposingPlayer):
-    #    if not self._army.is_full() and card._cost <= self._gold:
+    #    if not self._army.is_full() and card._cost <= self.gold:
     #        self._army.add_ally(card)
     #        card.ready_down()
-    #        self._gold -= card.cost()
+    #        self.gold -= card.cost()
     #        self.remove_from_hand(card)
     #        # handle battlecry
     #        if card._playEffect:
@@ -150,22 +177,24 @@ class Player:
     #        self._army.toll_the_dead()
     #        opposingPlayer._army.toll_the_dead()
     #    else: return None # unsuccessful
-    def play_ally(self, card):
-        if self._army.is_full() or card._cost > self._gold:
+    def play_ally(self, card, on_death_subs=[]):
+        if self._army.is_full() or card._cost > self.gold:
             raise ValueError("Card unplayable")
         self._army.add_ally(card)
         card.ready_down()
-        self._gold -= card._cost
+        self.gold -= card._cost
         self.remove_from_hand(card)
+        on_death_subs.append(self._army.toll_the_dead)
+        card.on_death.connect(on_death_subs) # will clear itself when it dies
 
     # Hand Actions
-    def play_card(self, index):
+    def play_card(self, index, on_death_subs=[]):
         if not isinstance(index, int):
             raise ValueError(f"Expected int argument. Got: {index}")
         card = self._hand[index]
-        if card._cost > self._gold:
+        if card._cost > self.gold:
             raise ValueError("Tried playing unplayable card.")
-        self.play_ally(card)
+        self.play_ally(card, on_death_subs)
 
     def max_hand_size(self, newSize=None):
         if newSize:
@@ -248,13 +277,13 @@ class Player:
     # def set_gold(self, roundNumber): # Players have a certain income, they earn that much gold per turn
     #     if (roundNumber % X_ROUNDS) == 0:
     #         self._income += INCOME_PER_X_ROUNDS
-    #     self._gold += self._income
-    #     if self._gold > self._maxGold: self._gold = self._maxGold
+    #     self.gold += self._income
+    #     if self.gold > self._maxGold: self.gold = self._maxGold
     # def steal_gold_from(self, opposingPlayer, amount):
-    #     opposingPlayer._gold -= amount
-    #     if opposingPlayer._gold < 0:
-    #         stolenAmount = amount + opposingPlayer._gold # ex stealing 5, has 4 -> ._gold = -1: 5 + -1 = 4 (how much was actually stolen)
-    #         opposingPlayer._gold = 0 # cant go below 0
+    #     opposingPlayer.gold -= amount
+    #     if opposingPlayer.gold < 0:
+    #         stolenAmount = amount + opposingPlayer.gold # ex stealing 5, has 4 -> .gold = -1: 5 + -1 = 4 (how much was actually stolen)
+    #         opposingPlayer.gold = 0 # cant go below 0
     #     else:
     #         stolenAmount = amount
     #     self.get_bounty(stolenAmount)
@@ -262,23 +291,10 @@ class Player:
     #     if amount > 0 and opposingPlayer:
     #         opposingPlayer.change_income(-amount)
     #         if opposingPlayer._income < 0:
-    #             stolenAmount = amount + opposingPlayer._income # ex stealing 5, has 4 -> ._gold = -1: 5 + -1 = 4 (how much was actually stolen)
+    #             stolenAmount = amount + opposingPlayer._income # ex stealing 5, has 4 -> .gold = -1: 5 + -1 = 4 (how much was actually stolen)
     #             opposingPlayer._income = 0 # cant go below 0
     #         else:
     #             stolenAmount = amount
     #         self.change_income(stolenAmount)
     #     else:
     #         raise ValueError("Using Hero.steal_income_from incorrectly")
-    def change_gold(self, amount):
-        self._gold += amount
-        if self._gold < 0:
-            self._gold = 0
-        if self._gold > self._maxGold:
-            self._gold = self._maxGold
-
-    def change_income(self, amount):
-        self._income += amount
-        if self._income < 0:
-            self._income = 0
-        if self._income > self._maxIncome:
-            self._income = self._maxIncome

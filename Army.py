@@ -9,6 +9,9 @@ class Army:
         self._armySize = 0
         self._army = []
 
+    def __repr__(self):
+        return repr([a._name for a in self._army])
+
     # getter/setters
     def max_size(self, maxSize=None):
         if maxSize:
@@ -48,11 +51,15 @@ class Army:
         self.set_army_size()
 
     #This clears your Army of dead Allies
-    def toll_the_dead(self):
-        for i in self._army:
-            if i._health <= 0:
-                self._army.remove(i)
-        self.set_army_size()
+    def toll_the_dead(self, ally=None):
+        if not ally: # clear all 
+            for i in self._army:
+                if i._health <= 0:
+                    self._army.remove(i)
+            self.set_army_size()
+        else: # clear specific Ally
+            self._army.remove(ally)
+        
 
     # find the index of a specific ally on the army
     def find_ally(self, ally):

@@ -1,4 +1,5 @@
 import Hero # used to type check for hero
+from Signal import Signal
 
 class Card:
     def __init__(self, cost=-1, name=None, play_effect=None, amount=None, text=None):
@@ -25,6 +26,7 @@ class Ally(Card):
             self._maxHealth = health
             self._health = health
             self._ready = False
+        self.on_death = Signal()  # Signal for when this ally dies
 
     # READY
     def ready_up(self):
@@ -46,6 +48,11 @@ class Ally(Card):
         if not isinstance(damage, int) or damage < 0:
             raise ValueError(f"Damage must be a positive integer. Got: {damage}")
         self._health -= damage
+        if self._health <= 0:
+            self.die()
+    
+    def die(self):
+        self.on_death.emit(self)
 
     def heal_damage(self, heal):
         if not isinstance(heal, int) or heal < 0:

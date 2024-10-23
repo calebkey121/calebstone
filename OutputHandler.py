@@ -33,7 +33,7 @@ class TerminalOutputHandler(OutputHandler):
 
         # Display Player 1's Status
         print("\nPlayer 1:")
-        print(f"\tGold: {game_state.player1._gold} | Income: {game_state.player1._income}")
+        print(f"\tGold: {game_state.player1.gold} | Income: {game_state.player1.income}")
 
         print("Hero:")
         print(f"\tHero: {player1_hero_status['name']} | Attack: {player1_hero_status['attack']} | Health: {player1_hero_status['health']}")
@@ -54,7 +54,7 @@ class TerminalOutputHandler(OutputHandler):
 
         # Display Player 2's Status
         print("\nPlayer 2:")
-        print(f"\tGold: {game_state.player2._gold} | Income: {game_state.player2._income}")
+        print(f"\tGold: {game_state.player2.gold} | Income: {game_state.player2.income}")
 
         print("Hero:")
         print(f"\tHero: {player2_hero_status['name']} | Attack: {player2_hero_status['attack']} | Health: {player2_hero_status['health']}")
