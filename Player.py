@@ -6,7 +6,7 @@ from Signal import Signal
 from config.GameSettings import *
 
 class Player:
-    def __init__(self, heroName, deckList):
+    def __init__(self, heroName, deckList, on_ally_death=[], on_ally_attack=[], on_ally_damage_dealt=[], on_ally_damage_taken=[], on_fatigue=[]):
         # Private Variables start with an underscore (_hero)
         # Very important that when using the player class you use the exposed functions and do NOT directly ref private variables
         self._name = heroName
@@ -24,6 +24,15 @@ class Player:
         self.gold_spent = Signal()
         self.income_gained = Signal()
         self.income_lost = Signal()
+        self.on_fatigue = Signal()
+
+        # Subscribers
+        self.on_ally_death = on_ally_death
+        self.on_ally_death.append(self._army.toll_the_dead)
+        self.on_ally_attack = on_ally_attack
+        self.on_ally_damage_dealt = on_ally_damage_dealt
+        self.on_ally_damage_taken = on_ally_damage_taken
+        self.on_fatigue.connect(on_fatigue)
     
     @property
     def gold(self):
@@ -34,7 +43,7 @@ class Player:
         if change_amount >= 0: # think if = is necessary
             self.gold_gained.emit(change_amount)
         else:
-            self.gold_spent.emit(change_amount)
+            self.gold_spent.emit(-change_amount) # want abs amount of gold spent
         self._gold = new_amount
 
     @property
@@ -177,25 +186,28 @@ class Player:
     #        self._army.toll_the_dead()
     #        opposingPlayer._army.toll_the_dead()
     #    else: return None # unsuccessful
-    def play_ally(self, card, on_death_subs=[], on_attack_subs=[], on_damage_subs=[]):
+    def play_ally(self, card):
         if self._army.is_full() or card._cost > self.gold:
             raise ValueError("Card unplayable")
         self._army.add_ally(card)
         card.ready_down()
         self.gold -= card._cost
         self.remove_from_hand(card)
-        on_death_subs.append(self._army.toll_the_dead)
-        card.on_death.connect(on_death_subs) # will clear itself when it dies
-        card.on_attack.connect(on_attack_subs)
+        
+        # Connect any signals to the ally
+        card.on_death.connect(self.on_ally_death) # will clear itself when it dies
+        card.on_attack.connect(self.on_ally_attack)
+        card.on_damage_dealt.connect(self.on_ally_damage_dealt)
+        card.on_damage_taken.connect(self.on_ally_damage_taken)
 
     # Hand Actions
-    def play_card(self, index, on_death_subs=[], on_attack_subs=[], on_damage_subs=[]):
+    def play_card(self, index):
         if not isinstance(index, int):
             raise ValueError(f"Expected int argument. Got: {index}")
         card = self._hand[index]
         if card._cost > self.gold:
             raise ValueError("Tried playing unplayable card.")
-        self.play_ally(card, on_death_subs, on_attack_subs, on_damage_subs)
+        self.play_ally(card)
 
     def max_hand_size(self, newSize=None):
         if newSize:
@@ -216,6 +228,7 @@ class Player:
             # oh no! taking fatigue damage
             fatigue_damage = self._deck.take_fatigue()
             self.damage_hero(fatigue_damage)
+            self.on_fatigue.emit(fatigue_damage)
             return
         card = self._deck.draw_card()
         if not self.hand_is_full():
@@ -242,13 +255,13 @@ class Player:
     def damage_hero(self, damage):
         if not isinstance(damage, int):
             raise ValueError(f"Damage must be an integer. Got: {damage}")
-        self._hero.take_damage(damage)
+        self._hero.health -= damage
     
     def damage_army(self, damage):
         if not isinstance(damage, int) or damage < 0:
             raise ValueError(f"Damage must be a positive integer. Got: {damage}")
         for ally in self._army:
-            ally.take_damage(damage)
+            ally.health -= damage
     
     def damage_all(self, damage): # simply additionally include hero
         if not isinstance(damage, int) or damage < 0:

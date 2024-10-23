@@ -33,4 +33,5 @@ class Hero:
     def ready_down(self):
         self._ready = False # yes i know this can be one function with ready_up, i like it this way
     
-
+    def defend(self, attacker):
+        pass

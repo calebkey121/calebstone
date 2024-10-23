@@ -13,8 +13,38 @@ Notes:
 """
 class GameState:
     def __init__(self, player1Hero, player1Deck, player2Hero, player2Deck):
-        self.player1 = Player(heroName=player1Hero, deckList=player1Deck)
-        self.player2 = Player(heroName=player2Hero, deckList=player2Deck)
+        # Player 1
+        on_ally_death_subs = [lambda card=None : self.increment_stat("player1", "allies_died", 1)]
+        on_ally_attack_subs = [ lambda attack_damage=None : self.increment_stat("player1", "total_attacks_by_allies", 1) ]
+        on_ally_damage_dealt_subs = [ lambda attack_damage=0, : self.increment_stat("player1", "damage_dealt_by_allies", attack_damage) ]
+        on_ally_damage_taken_subs = [lambda damage_taken=0, : self.increment_stat("player1", "allies_damage_taken", damage_taken)]
+        on_fatigue_subs = [lambda damage_taken=0, : self.increment_stat("player1", "fatigue_damage", damage_taken)]
+        self.player1 = Player(
+            heroName=player1Hero,
+            deckList=player1Deck,
+            on_ally_death=on_ally_death_subs,
+            on_ally_attack=on_ally_attack_subs,
+            on_ally_damage_dealt=on_ally_damage_dealt_subs,
+            on_ally_damage_taken=on_ally_damage_taken_subs,
+            on_fatigue=on_fatigue_subs,
+        )
+
+        # Player 2 - thinnk of a potential better way to pass these in
+        on_ally_death_subs = [lambda card=None : self.increment_stat("player2", "allies_died", 1)]
+        on_ally_attack_subs = [ lambda attack_damage=None : self.increment_stat("player2", "total_attacks_by_allies", 1) ]
+        on_ally_damage_dealt_subs = [ lambda attack_damage=0, : self.increment_stat("player2", "damage_dealt_by_allies", attack_damage) ]
+        on_ally_damage_taken_subs = [lambda damage_taken=0, : self.increment_stat("player2", "allies_damage_taken", damage_taken)]
+        on_fatigue_subs = [lambda damage_taken=0, : self.increment_stat("player2", "fatigue_damage", damage_taken)]
+        self.player2 = Player(
+            heroName=player2Hero,
+            deckList=player2Deck,
+            on_ally_death=on_ally_death_subs,
+            on_ally_attack=on_ally_attack_subs,
+            on_ally_damage_dealt=on_ally_damage_dealt_subs,
+            on_ally_damage_taken=on_ally_damage_taken_subs,
+            on_fatigue=on_fatigue_subs,
+        )
+
         self.current_player = None
         self.opponent_player = None
         self.turn = 0 # how many total turns have been taken?

@@ -27,8 +27,9 @@ class Ally(Card):
             self._health = health
             self._ready = False
         self.on_death = Signal()  # Signal for when this ally dies
-        self.on_attack = Signal()  # Signal for when this ally deals damage
-        self.on_damage = Signal()  # Signal for when this ally takes damage
+        self.on_attack = Signal() # Signal for when this ally attacks
+        self.on_damage_dealt = Signal()  # Signal for when this ally deals damage
+        self.on_damage_taken = Signal()  # Signal for when this ally takes damage
     
     @property
     def health(self):
@@ -39,9 +40,10 @@ class Ally(Card):
         if change_amount >= 0:
             pass # self.on_heal.emit(change_amount)
         else:
-            if self.health <= 0:
+            if new_amount <= 0:
+                change_amount -= new_amount # even if they overkill, only register down to 0
                 self.die()
-            self.on_damage.emit(change_amount)
+            self.on_damage_taken.emit(-change_amount) # want real value of hp lost
         self._health = new_amount
     
     # READY
@@ -62,13 +64,18 @@ class Ally(Card):
     # Attack
     def attack(self, target):
         # for now lets just do total damage dealt
-        self.on_attack.emit(min(self._attack, target.health))
+        self.on_attack.emit()
+        self.on_damage_dealt.emit(min(self._attack, target.health))
+        target.defend(self) # simple place to tell target to emit when its being attacked
         target.health -= self._attack
         self.health -= target._attack
         self.ready_down()
 
     def die(self):
         self.on_death.emit(self)
+    
+    def defend(self, attacker):
+        self.on_damage_dealt.emit(min(self._attack, attacker.health))
 
     # Move this to health setter
     # def heal_damage(self, heal):
