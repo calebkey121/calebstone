@@ -7,14 +7,9 @@ class Card:
         self._playEffect = play_effect
         self._text = text # description of playEffect
         self._amount = amount # a list of numbers for whatever the card is doing
-
-    @property
-    def name(self):
-        return self._name
     
-    @property
-    def cost(self):
-        return self._cost
+    def __repr__(self):
+        return self._name
 
 class Ally(Card):
     def __init__(self, orig=None, cost=-1, name=None, attack=-1, health=-1, play_effect=None, amount=None, text=None):
@@ -30,24 +25,6 @@ class Ally(Card):
             self._maxHealth = health
             self._health = health
             self._ready = False
-    
-    @property
-    def attack(self):
-        return self._attack
-    @attack.setter
-    def attack(self, a=None):
-        if isinstance(a, int):
-            self._attack = a
-        return self._attack
-    
-    @property
-    def health(self):
-        return self._health
-    @health.setter
-    def health(self, h=None):
-        if isinstance(h, int):
-            self._health = h
-        return self._health
 
     # READY
     def ready_up(self):

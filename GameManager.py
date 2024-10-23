@@ -1,6 +1,7 @@
 from GameState import GameState
-from Controller import RandomController
+from Controller import RandomController, TerminalController
 from OutputHandler import TerminalOutputHandler
+from GameLogic import GameLogic
 import DeckLists.PlayerOneList as p1d
 import DeckLists.PlayerTwoList as p2d
 
@@ -21,54 +22,34 @@ class GameManager:
         self.player1_controller = RandomController()
         self.player2_controller = RandomController()
         self.output_handler = TerminalOutputHandler()
+        self.start_game()
+    
+    def start_game(self):
+        GameLogic.start_game(self.game_state)
+        self.run_game
 
     def run_game(self):
-        while not self.is_game_over():
-            current_controller = self.player1_controller if self.game_state.turn else self.player2_controller
-            action = current_controller.get_action(self.game_state)
-
-            # Process the action
-            if action['type'] == 'end_turn':
-                self.game_state.switch_turn()
-                continue
-            self.process_turn(action)
-            
+        while not GameLogic.is_game_over(self.game_state):
+            GameLogic.start_turn(self.game_state)
             # Display or log the result of the action
-            self.output_handler.display_result(action, self.game_state)
+            
+            current_controller = self.player1_controller if self.game_state.is_player1_turn() else self.player2_controller
+
+            while ( action := current_controller.get_action(self.game_state) )["type"] != "end_turn":
+                self.output_handler.display_action(action, self.game_state)
+                GameLogic.process_turn(self.game_state, action)
+                if GameLogic.is_game_over(self.game_state):
+                    break
+
+            GameLogic.end_turn(self.game_state)
+            
+        self.output_handler.display_state(self.game_state) # move
         if self.game_state.player1.is_dead() and self.game_state.player2.is_dead():
             print("It's a tie!")
         elif self.game_state.player1.is_dead():
             print("Player 2 Wins!")
         else:
             print("Player 1 Wins!")
-
-    def process_turn(self, action):
-        # Here the action is validated and applied to the game state
-        current_player = self.game_state.current_player()
-        opponent = self.game_state.opponent()
-        
-        # Resolve action depending on its type
-        if action['type'] == 'play_card':
-            card_index = action['card_index']
-            if current_player.has_enough_gold(card_index):
-                current_player.play_card(card_index)
-        
-        elif action['type'] == 'attack':
-            attacker = current_player.all_characters()[action['attacker_index']]
-            target = opponent.all_characters()[action['target_index']]
-            target.take_damage(attacker._attack)
-            attacker.take_damage(target._attack)
-            if target.health <= 0:
-                opponent.toll_the_dead(target)
-            if attacker.health <= 0:
-                current_player.toll_the_dead(attacker)
-    
-    def setup_game(self):
-        
-
-    def is_game_over(self):
-        # Check if either player's health has reached 0
-        return self.game_state.player1.is_dead() or self.game_state.player2.is_dead()
     
 
 def main():

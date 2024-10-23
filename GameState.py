@@ -15,29 +15,22 @@ class GameState:
     def __init__(self, player1Hero, player1Deck, player2Hero, player2Deck):
         self.player1 = Player(heroName=player1Hero, deckList=player1Deck)
         self.player2 = Player(heroName=player2Hero, deckList=player2Deck)
-        self.turn_counter = 1 # how many total turns have been taken?
-        self.turn = True  # True for player1, False for player2
-
-    def current_player(self):
-        return self.player1 if self.turn else self.player2
-
-    def opponent(self):
-        return self.player2 if self.turn else self.player1
+        self.current_player = None
+        self.opponent_player = None
+        self.turn = 0 # how many total turns have been taken?
+        self.round = self.turn // 2 # round is how many turns a player has taken
     
     def switch_turn(self):
-        self.turn = not self.turn
-        self.turn_counter += 1
+        self.current_player, self.opponent_player = self.opponent_player, self.current_player
+        self.turn += 1
     
-    def current_player(self):
-        return self.player1 if self.turn else self.player2
-
-    def opponent(self):
-        return self.player2 if self.turn else self.player1
+    def is_player1_turn(self):
+        return self.current_player is self.player1
     
     # Possible Actions
     def possible_cards_to_play(self):
         actions = []
-        playable_cards = self.current_player().playable_cards()
+        playable_cards = self.current_player.playable_cards()
         for card in playable_cards:
             actions.append({
                 "type": "play_card",
@@ -47,8 +40,8 @@ class GameState:
     
     def possible_attacks(self):
         actions = []
-        attackers = self.current_player().available_attackers()
-        targets = self.opponent().available_targets()
+        attackers = self.current_player.available_attackers()
+        targets = self.opponent_player.available_targets()
         for attacker in attackers:
             for target in targets:
                 actions.append({

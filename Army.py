@@ -37,8 +37,12 @@ class Army:
     def is_full(self):
         return self.army_size() == self.max_size()
 
+    def ready_up(self):
+        for ally in self._army:
+            ally.ready_up()
+
     def add_ally(self, ally):
-        if not isinstance(ally, Ally) or self.is_full:
+        if not isinstance(ally, Ally) or self.is_full():
             raise ValueError("Must be adding an ally to a non full army")
         self._army.append(ally)
         self.set_army_size()
@@ -46,7 +50,7 @@ class Army:
     #This clears your Army of dead Allies
     def toll_the_dead(self):
         for i in self._army:
-            if i.health() <= 0:
+            if i._health <= 0:
                 self._army.remove(i)
         self.set_army_size()
 
