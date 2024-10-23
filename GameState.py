@@ -20,37 +20,29 @@ class GameState:
         self.turn = 0 # how many total turns have been taken?
         self.round = self.turn // 2 # round is how many turns a player has taken
         self.stats = {
-            "player1": {
-                "gold_spent": 0,
-                "gold_gained": 0,
-                "income_gained": 0,
-                "income_lost": 0,
-                "damage_dealt": 0,
-                # "damage_dealt_by_allies": 0,
-                "damage_taken": 0, # obvious from other player damage done?
-                "allies_killed": 0, # same?
-                "allies_died": 0,
-                "fatigue_damage": 0,
-                "cards_played": 0
-            },
-            "player2": {
-                "gold_spent": 0,
-                "gold_gained": 0,
-                "income_gained": 0,
-                "income_lost": 0,
-                "damage_dealt": 0,
-                # "damage_dealt_by_allies": 0,
-                "damage_taken": 0,
-                "allies_killed": 0,
-                "allies_died": 0,
-                "fatigue_damage": 0,
-                "cards_played": 0
-            }
+            "player1": self.player_stats(),
+            "player2": self.player_stats(),
         }
 
     def increment_stat(self, player, stat, amount=1):
         """Increment a stat for the given player by a specific amount."""
         self.stats[player][stat] += amount
+    
+    def player_stats(self):
+        return {
+            "gold_spent": 0,
+            "gold_gained": 0,
+            "income_gained": 0,
+            "income_lost": 0,
+            "damage_dealt": 0,
+            # "damage_dealt_by_allies": 0, # rn all damage is from allies
+            "hero_damage_taken": 0,
+            "allies_damage_taken": 0,
+            "allies_killed": 0,
+            "allies_died": 0,
+            "fatigue_damage": 0,
+            "cards_played": 0
+        }
     
     def switch_turn(self):
         self.current_player, self.opponent_player = self.opponent_player, self.current_player

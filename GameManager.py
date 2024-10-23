@@ -44,6 +44,8 @@ class GameManager:
             GameLogic.end_turn(self.game_state)
             
         self.output_handler.display_state(self.game_state) # move
+        print(self.game_state.stats["player1"])
+        print(self.game_state.stats["player2"])
         if self.game_state.player1.is_dead() and self.game_state.player2.is_dead():
             print("It's a tie!")
         elif self.game_state.player1.is_dead():

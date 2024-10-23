@@ -7,13 +7,13 @@ class GameLogic():
         # Here the action is validated and applied to the game state
         current_player = game_state.current_player
         opponent = game_state.opponent_player
+        player = "player1" if game_state.is_player1_turn() else "player2"
         
         # Resolve action depending on its type
         if action['type'] == 'play_card':
             card_index = action['card_index']
             if current_player.has_enough_gold(card_index):
                 # subscribe stats to track
-                player = "player1" if game_state.is_player1_turn() else "player2"
                 subscribers = [lambda card=None : game_state.increment_stat(player, "allies_died", 1)]
                 current_player.play_card(card_index, subscribers)
         
