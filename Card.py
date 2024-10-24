@@ -1,31 +1,36 @@
-import Hero # used to type check for hero
 from Signal import Signal
+from dataclasses import dataclass, field
+from typing import Optional
+from Effects import TimingWindow
 
 class Card:
-    def __init__(self, cost=-1, name=None, play_effect=None, amount=None, text=None):
+    def __init__(self, cost=-1, name=None, effect=None, text=None):
         self._cost = cost
         self._name = name
-        self._playEffect = play_effect
-        self._text = text # description of playEffect
-        self._amount = amount # a list of numbers for whatever the card is doing
+        self._effect = effect
+        self._text = text or (effect.text if effect else "")
     
     def __repr__(self):
         return self._name
 
 class Ally(Card):
-    def __init__(self, orig=None, cost=-1, name=None, attack=-1, health=-1, play_effect=None, amount=None, text=None):
+    def __init__(self, orig=None, cost=-1, name=None, attack=-1, health=-1, effect=None):
         if orig:
-            super().__init__(orig._cost, orig._name, orig._playEffect, orig._amount, orig._text)
+            super().__init__(orig._cost, orig._name, orig._effect, orig._text)
             self._attack = orig._attack
             self._maxHealth = orig._maxHealth
             self._health = orig._health
             self._ready = False
+            # Copy the effect if it exists
+            self._effect = orig._effect  # Effect objects are stateless, safe to share
         else:
-            super().__init__(cost, name, play_effect, amount, text)
+            super().__init__(cost, name, effect)
             self._attack = attack
             self._maxHealth = health
             self._health = health
             self._ready = False
+        
+        # Initialize Signals
         self.on_death = Signal()  # Signal for when this ally dies
         self.on_attack = Signal() # Signal for when this ally attacks
         self.on_damage_dealt = Signal()  # Signal for when this ally deals damage
@@ -34,11 +39,12 @@ class Ally(Card):
     @property
     def health(self):
         return self._health
+
     @health.setter
     def health(self, new_amount):
         change_amount = new_amount - self.health
         if change_amount >= 0:
-            pass # self.on_heal.emit(change_amount)
+            pass # Could add healing signal here if needed
         else:
             if new_amount <= 0:
                 change_amount -= new_amount # even if they overkill, only register down to 0
@@ -71,11 +77,12 @@ class Ally(Card):
         self.health -= target._attack
         self.ready_down()
 
-    def die(self):
-        self.on_death.emit(self)
     
     def defend(self, attacker):
         self.on_damage_dealt.emit(min(self._attack, attacker.health))
+    
+    def die(self):
+        self.on_death.emit(self)
 
     # Move this to health setter
     # def heal_damage(self, heal):

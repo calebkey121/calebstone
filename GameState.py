@@ -1,4 +1,6 @@
 from Player import Player
+from enum import Enum, auto
+from GameLogic import GameLogic
 
 """
 Purpose:
@@ -11,30 +13,43 @@ Notes:
     Keep this class as a snapshot of the current game. It’s a container for the state but doesn’t control what happens (that’s the job of the GameManager).
     Probably extend it later with more attributes and helper methods as needed.
 """
+
+class GameResult(Enum):
+    IN_PROGRESS = auto()
+    TIE = auto()
+    PLAYER1_WIN = auto()
+    PLAYER2_WIN = auto()
+
 class GameState:
     def __init__(self, player1Hero, player1Deck, player2Hero, player2Deck):
+        # Initialize base stats dictionary with hero-specific stats
+        self.stats = {
+            "player1": self.player_stats(),
+            "player2": self.player_stats(),
+        }
+
+        # Create both players with all subscriber types
         self.player1 = Player(
             heroName=player1Hero,
             deckList=player1Deck,
             ally_subscribers=self.create_ally_subscribers("player1"),
-            player_subscribers=self.create_player_subscribers("player1")
+            player_subscribers=self.create_player_subscribers("player1"),
+            hero_subscribers=self.create_hero_subscribers("player1")
         )
         
         self.player2 = Player(
             heroName=player2Hero,
             deckList=player2Deck,
             ally_subscribers=self.create_ally_subscribers("player2"),
-            player_subscribers=self.create_player_subscribers("player2")
+            player_subscribers=self.create_player_subscribers("player2"),
+            hero_subscribers=self.create_hero_subscribers("player2")
         )
 
         self.current_player = None
         self.opponent_player = None
         self.turn = 0 # how many total turns have been taken?
         self.round = self.turn // 2 # round is how many turns a player has taken
-        self.stats = {
-            "player1": self.player_stats(),
-            "player2": self.player_stats(),
-        }
+        self.who_went_first = None
 
     def increment_stat(self, player, stat, amount=1):
         """Increment a stat for the given player by a specific amount."""
@@ -46,14 +61,41 @@ class GameState:
             "gold_gained": 0,
             "income_gained": 0,
             "income_lost": 0,
-            "damage_dealt_by_allies": 0, # rn all damage is from allies
+            "damage_dealt_by_allies": 0,
             "total_attacks_by_allies": 0,
-            "hero_damage_taken": 0,
-            "allies_damage_taken": 0,
-            "allies_killed": 0,
+            # "allies_killed": 0, # redundant with allied_died
             "allies_died": 0,
+            "allies_damage_taken": 0,
             "fatigue_damage": 0,
-            "cards_played": 0
+            "cards_played": 0,
+            "hero_damage_taken": 0,
+            "hero_damage_dealt": 0,
+            "hero_attacks_made": 0,
+            "hero_healing_received": 0,
+            "total_healing_received": 0,  # Both hero and allies
+            "hero_kills": 0  # When hero gets the killing blow
+        }
+
+    def create_hero_subscribers(self, player_id):
+        """Create subscribers for hero-specific signals"""
+        return {
+            "on_death": [
+                # Hero death might need special handling in the future
+                lambda hero=None: None  # Placeholder for now
+            ],
+            "on_damage_taken": [
+                lambda damage=0: self.increment_stat(player_id, "hero_damage_taken", damage)
+            ],
+            "on_heal": [
+                lambda amount=0: self.increment_stat(player_id, "hero_healing_received", amount),
+                lambda amount=0: self.increment_stat(player_id, "total_healing_received", amount)
+            ],
+            "on_attack": [
+                lambda: self.increment_stat(player_id, "hero_attacks_made", 1)
+            ],
+            "on_damage_dealt": [
+                lambda damage=0: self.increment_stat(player_id, "hero_damage_dealt", damage)
+            ]
         }
     
     def create_ally_subscribers(self, player_id):
@@ -92,7 +134,7 @@ class GameState:
                 lambda amount=0: self.increment_stat(player_id, "income_gained", amount)
             ],
             "on_income_lost": [
-                lambda t=0: self.increment_stat(player_id, "income_lost", amount)
+                lambda amount=0: self.increment_stat(player_id, "income_lost", amount)
             ]
         }
 
@@ -138,6 +180,17 @@ class GameState:
             })
         return actions
     # Possible Actions
+
+    def get_result(self) -> GameResult:
+        if not GameLogic.is_game_over(self):
+            return GameResult.IN_PROGRESS
+        
+        if self.player1.is_dead() and self.player2.is_dead():
+            return GameResult.TIE
+        elif self.player1.is_dead():
+            return GameResult.PLAYER2_WIN
+        else:
+            return GameResult.PLAYER1_WIN
 
     def to_vector(self):
         # Convert game state to vector (for ML or saving)

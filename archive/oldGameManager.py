@@ -1,7 +1,7 @@
 from tkinter import X
 from Hero import Hero
 import time
-import Tools
+import archive.Tools as Tools
 import random
 import pygame
 import settings

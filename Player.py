@@ -22,23 +22,30 @@ class Player:
                  deckList,
                  player_subscribers: dict = None,
                  ally_subscribers: dict = None,
-                 ):
-        self._name = heroName
-        self._hero = Hero(heroName)
+                 hero_subscribers: dict = None):
+        
+        # Store hero subscribers for hero initialization
+        self._hero_subscribers = hero_subscribers or {
+            "on_death": [],
+            "on_damage_taken": [],
+            "on_heal": [],
+            "on_attack": [],
+            "on_damage_dealt": []
+        }
+        
+        # Initialize hero with subscribers
+        self._hero = Hero(heroName, hero_subscribers=self._hero_subscribers)
+        self._name = heroName # for now, we'll see
         self._deck = Deck(deckList)
         self._army = Army()
         self._hand = []
         self._maxHandSize = PLAYER_MAX_HAND_SIZE
         self._gold = 0
-        # self._maxGold = PLAYER_MAX_GOLD
         self._income = 0
-        # self._maxIncome = PLAYER_MAX_INCOME
 
         # Player-owned signals
         self.signals = PlayerSignals()
-        # might want some hero signals at some point
-
-        # Subscribers
+        
         # Store ally subscribers for use when allies are played
         self._ally_subscribers = ally_subscribers or {
             "on_death": [],
@@ -46,10 +53,10 @@ class Player:
             "on_damage_dealt": [],
             "on_damage_taken": []
         }
-        self._ally_subscribers["on_death"].append(self._army.toll_the_dead) # always happens
+        self._ally_subscribers["on_death"].append(self._army.toll_the_dead)
 
         # Connect player-level subscribers
-        for signal_name, callbacks in player_subscribers.items():
+        for signal_name, callbacks in (player_subscribers or {}).items():
             if hasattr(self.signals, signal_name):
                 signal = getattr(self.signals, signal_name)
                 signal.connect(callbacks)
@@ -222,14 +229,6 @@ class Player:
                 ally_signal.connect(callbacks)
 
     # Hand Actions
-    def play_card(self, index):
-        if not isinstance(index, int):
-            raise ValueError(f"Expected int argument. Got: {index}")
-        card = self._hand[index]
-        if card._cost > self.gold:
-            raise ValueError("Tried playing unplayable card.")
-        self.play_ally(card)
-
     def max_hand_size(self, newSize=None):
         if newSize:
             self._maxHandSize = newSize
@@ -273,6 +272,7 @@ class Player:
     #             enemy.health(0)
     #             attackingPlayer.get_bounty(2)
     #         self.ready_down()
+    
     def damage_hero(self, damage):
         if not isinstance(damage, int):
             raise ValueError(f"Damage must be an integer. Got: {damage}")
@@ -281,30 +281,30 @@ class Player:
     def damage_army(self, damage):
         if not isinstance(damage, int) or damage < 0:
             raise ValueError(f"Damage must be a positive integer. Got: {damage}")
-        for ally in self._army:
+        for ally in self._army._army:
             ally.health -= damage
     
     def damage_all(self, damage): # simply additionally include hero
         if not isinstance(damage, int) or damage < 0:
             raise ValueError(f"Damage must be a positive integer. Got: {damage}")
-        self._hero.take_damage(damage)
+        self.damage_hero(damage)
         self.damage_army(damage)
 
     def heal_hero(self, heal):
         if not isinstance(heal, int):
             raise ValueError(f"Heal amount must be an integer. Got: {heal}")
-        self._hero.heal_damage(heal)
+        self._hero.health += heal
     
     def heal_army(self, heal):
         if not isinstance(heal, int) or heal < 0:
             raise ValueError(f"Heal amount must be a positive integer. Got: {heal}")
-        for ally in self._army:
-            ally.heal_damage(heal)
+        for ally in self._army.get_army():
+            ally.health += heal
 
     def heal_all(self, heal):
         if not isinstance(heal, int) or heal < 0:
             raise ValueError(f"Heal amount must be a positive integer. Got: {heal}")
-        self._hero.heal_damage(heal)
+        self.heal_hero(heal)
         self.heal_army(heal)
 
     # Gold

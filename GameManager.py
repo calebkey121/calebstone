@@ -1,6 +1,6 @@
-from GameState import GameState
+from GameState import GameState, GameResult
 from Controller import RandomController, TerminalController
-from OutputHandler import TerminalOutputHandler
+from OutputHandler import TerminalOutputHandler, NoOutputHandler
 from GameLogic import GameLogic
 import DeckLists.PlayerOneList as p1d
 import DeckLists.PlayerTwoList as p2d
@@ -22,12 +22,21 @@ class GameManager:
         self.game_state = GameState(player1Hero="Caleb", player2Hero="Dio", player1Deck=p1d.deck_list, player2Deck=p2d.deck_list)
         self.player1_controller = RandomController()
         self.player2_controller = RandomController()
-        self.output_handler = TerminalOutputHandler()
+        self.output_handler = NoOutputHandler()
         self.start_game()
     
     def start_game(self):
         GameLogic.start_game(self.game_state)
         self.run_game
+    
+    def print_result(self) -> None:
+        result_messages = {
+            GameResult.IN_PROGRESS: "Game isn't over",
+            GameResult.TIE: "It's a tie!",
+            GameResult.PLAYER1_WIN: "Player 1 wins!",
+            GameResult.PLAYER2_WIN: "Player 2 wins!"
+        }
+        print(result_messages[self.get_result()])
 
     def run_game(self):
         while not GameLogic.is_game_over(self.game_state):
@@ -43,31 +52,53 @@ class GameManager:
                     break
 
             GameLogic.end_turn(self.game_state)
-            
-        #self.output_handler.display_state(self.game_state) # move
-        if self.game_state.player1.is_dead() and self.game_state.player2.is_dead():
-            print("It's a tie!")
-        elif self.game_state.player1.is_dead():
-            print("Player 2 Wins!")
-        else:
-            print("Player 1 Wins!")
-        stats = self.game_state.stats
-        pprint.pprint(stats)
-        player1_stats = stats['player1']
-        player2_stats = stats['player2']
 
-        for stat in player1_stats:
-            value1 = player1_stats[stat]
-            value2 = player2_stats[stat]
+        # printing stats
+        # stats = self.game_state.stats
+        # pprint.pprint(stats)
+        # player1_stats = stats['player1']
+        # player2_stats = stats['player2']
 
-            if value1 > value2:
-                diff = value1 - value2
-                print(f"Player 1 had (+{diff}) {stat.replace('_', ' ')} ({value1} vs {value2})")
-            elif value2 > value1:
-                diff = value2 - value1
-                print(f"Player 2 had (+{diff}) {stat.replace('_', ' ')} ({value2} vs {value1})")
-            else:
-                print(f"Both players had equal {stat.replace('_', ' ')} ({value1})")
+        # compare stats
+        # Define whether higher or lower is better for each stat
+        stats_preferences = {
+            "gold_spent": 'higher',
+            "gold_gained": 'higher',
+            "income_gained": 'higher',
+            "income_lost": 'lower',
+            "damage_dealt_by_allies": 'higher',
+            "total_attacks_by_allies": 'higher',
+            "hero_damage_taken": 'lower',
+            "allies_damage_taken": 'lower',
+            "allies_killed": 'higher',
+            "allies_died": 'lower',
+            "fatigue_damage": 'lower',
+            "cards_played": 'higher'
+        }
+        
+        # for stat in player1_stats:
+        #     value1 = player1_stats[stat]
+        #     value2 = player2_stats[stat]
+        #     preference = stats_preferences.get(stat, 'higher')  # Default to 'higher' if not specified
+        #     stat_name = stat.replace('_', ' ')
+        #     
+        #     if value1 == value2:
+        #         print(f"Both players had equal {stat_name} ({value1})")
+        #     else:
+        #         if preference == 'higher':
+        #             if value1 > value2:
+        #                 diff = value1 - value2
+        #                 print(f"Player 1 had (+{diff}) {stat_name} ({value1} vs {value2})")
+        #             else:
+        #                 diff = value2 - value1
+        #                 print(f"Player 2 had (+{diff}) {stat_name} ({value2} vs {value1})")
+        #         elif preference == 'lower':
+        #             if value1 < value2:
+        #                 diff = value2 - value1
+        #                 print(f"Player 1 had (-{diff}) {stat_name} ({value1} vs {value2})")
+        #             else:
+        #                 diff = value1 - value2
+        #                 print(f"Player 2 had (-{diff}) {stat_name} ({value2} vs {value1})")
     
 
 def main():
