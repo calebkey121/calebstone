@@ -7,7 +7,6 @@ class GameLogic():
         # Here the action is validated and applied to the game state
         current_player = game_state.current_player
         opponent = game_state.opponent_player
-        player = "player1" if game_state.is_player1_turn() else "player2"
         
         # Resolve action depending on its type
         if action['type'] == 'play_card':
@@ -42,17 +41,6 @@ class GameLogic():
         
         first_player = game_state.current_player
         second_player = game_state.opponent_player
-        
-        # Set Signals
-        pf, ps = ("player1", "player2") if first_player is game_state.player1 else ("player2", "player1")
-        first_player.gold_gained.connect(lambda amount=0 : game_state.increment_stat(pf, "gold_gained", amount))
-        first_player.gold_spent.connect(lambda amount=0 : game_state.increment_stat(pf, "gold_spent", amount))
-        first_player.income_gained.connect(lambda amount=0 : game_state.increment_stat(pf, "income_gained", amount))
-        first_player.income_lost.connect(lambda amount=0 : game_state.increment_stat(pf, "income_lost", amount))
-        second_player.gold_gained.connect(lambda amount=0 : game_state.increment_stat(ps, "gold_gained", amount))
-        second_player.gold_spent.connect(lambda amount=0 : game_state.increment_stat(ps, "gold_spent", amount))
-        second_player.income_gained.connect(lambda amount=0 : game_state.increment_stat(ps, "income_gained", amount))
-        second_player.income_lost.connect(lambda amount=0 : game_state.increment_stat(ps, "income_lost", amount))
         
         # Give each player starting gold/income
         first_player.gold = GAME_START_GOLD_FIRST

@@ -7,8 +7,6 @@ class Hero:
         self._health = HERO_STARTING_HEALTH
         self._attack = 0
         self._ready = False
-        # self.on_attack = Signal()  # Signal for when this ally deals damage
-        # self.on_damage = Signal()  # Signal for when this ally takes damage
     
     @property
     def health(self):
@@ -31,7 +29,7 @@ class Hero:
             self._ready = True
     
     def ready_down(self):
-        self._ready = False # yes i know this can be one function with ready_up, i like it this way
+        self._ready = False
     
     def defend(self, attacker):
-        pass
+        pass # might want to emit stuff once hero is actually attacking

@@ -5,8 +5,7 @@ class Signal:
 
     def connect(self, subscriber):
         if isinstance(subscriber, list):
-            for sub in subscriber:
-                self._subscribers.append(sub)
+            self._subscribers.extend(subscriber)
         else:
             self._subscribers.append(subscriber)
 

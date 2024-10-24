@@ -4,11 +4,25 @@ from Card import Card, Ally
 from Hero import Hero
 from Signal import Signal
 from config.GameSettings import *
+from dataclasses import dataclass, field
+
+@dataclass
+class PlayerSignals:
+    """Signals owned by the player"""
+    on_gold_gained: Signal = field(default_factory=Signal)
+    on_gold_spent: Signal = field(default_factory=Signal)
+    on_income_gained: Signal = field(default_factory=Signal)
+    on_income_lost: Signal = field(default_factory=Signal)
+    on_fatigue: Signal = field(default_factory=Signal)
+    on_card_played: Signal = field(default_factory=Signal)
 
 class Player:
-    def __init__(self, heroName, deckList, on_ally_death=[], on_ally_attack=[], on_ally_damage_dealt=[], on_ally_damage_taken=[], on_fatigue=[]):
-        # Private Variables start with an underscore (_hero)
-        # Very important that when using the player class you use the exposed functions and do NOT directly ref private variables
+    def __init__(self,
+                 heroName,
+                 deckList,
+                 player_subscribers: dict = None,
+                 ally_subscribers: dict = None,
+                 ):
         self._name = heroName
         self._hero = Hero(heroName)
         self._deck = Deck(deckList)
@@ -19,20 +33,26 @@ class Player:
         # self._maxGold = PLAYER_MAX_GOLD
         self._income = 0
         # self._maxIncome = PLAYER_MAX_INCOME
-        # signals
-        self.gold_gained = Signal()
-        self.gold_spent = Signal()
-        self.income_gained = Signal()
-        self.income_lost = Signal()
-        self.on_fatigue = Signal()
+
+        # Player-owned signals
+        self.signals = PlayerSignals()
+        # might want some hero signals at some point
 
         # Subscribers
-        self.on_ally_death = on_ally_death
-        self.on_ally_death.append(self._army.toll_the_dead)
-        self.on_ally_attack = on_ally_attack
-        self.on_ally_damage_dealt = on_ally_damage_dealt
-        self.on_ally_damage_taken = on_ally_damage_taken
-        self.on_fatigue.connect(on_fatigue)
+        # Store ally subscribers for use when allies are played
+        self._ally_subscribers = ally_subscribers or {
+            "on_death": [],
+            "on_attack": [],
+            "on_damage_dealt": [],
+            "on_damage_taken": []
+        }
+        self._ally_subscribers["on_death"].append(self._army.toll_the_dead) # always happens
+
+        # Connect player-level subscribers
+        for signal_name, callbacks in player_subscribers.items():
+            if hasattr(self.signals, signal_name):
+                signal = getattr(self.signals, signal_name)
+                signal.connect(callbacks)
     
     @property
     def gold(self):
@@ -41,9 +61,9 @@ class Player:
     def gold(self, new_amount):
         change_amount = new_amount - self.gold
         if change_amount >= 0: # think if = is necessary
-            self.gold_gained.emit(change_amount)
+            self.signals.on_gold_gained.emit(change_amount)
         else:
-            self.gold_spent.emit(-change_amount) # want abs amount of gold spent
+            self.signals.on_gold_spent.emit(-change_amount) # want abs amount of gold spent
         self._gold = new_amount
 
     @property
@@ -53,9 +73,9 @@ class Player:
     def income(self, new_amount):
         change_amount = new_amount - self.income
         if change_amount >= 0: # think if = is necessary
-            self.income_gained.emit(change_amount)
+            self.signals.on_income_gained.emit(change_amount)
         else:
-            self.income_lost.emit(change_amount)
+            self.signals.on_income_lost.emit(change_amount)
         self._income += change_amount
     
     # Helpers: useful checks that don't affect the game state
@@ -193,12 +213,13 @@ class Player:
         card.ready_down()
         self.gold -= card._cost
         self.remove_from_hand(card)
+        self.signals.on_card_played.emit(card)
         
-        # Connect any signals to the ally
-        card.on_death.connect(self.on_ally_death) # will clear itself when it dies
-        card.on_attack.connect(self.on_ally_attack)
-        card.on_damage_dealt.connect(self.on_ally_damage_dealt)
-        card.on_damage_taken.connect(self.on_ally_damage_taken)
+        # Connect all relevant subscribers to the ally's signals
+        for signal_name, callbacks in self._ally_subscribers.items():
+            if hasattr(card, signal_name):
+                ally_signal = getattr(card, signal_name) # ally.on_death
+                ally_signal.connect(callbacks)
 
     # Hand Actions
     def play_card(self, index):
@@ -228,7 +249,7 @@ class Player:
             # oh no! taking fatigue damage
             fatigue_damage = self._deck.take_fatigue()
             self.damage_hero(fatigue_damage)
-            self.on_fatigue.emit(fatigue_damage)
+            self.signals.on_fatigue.emit(fatigue_damage)
             return
         card = self._deck.draw_card()
         if not self.hand_is_full():

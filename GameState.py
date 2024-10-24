@@ -13,36 +13,18 @@ Notes:
 """
 class GameState:
     def __init__(self, player1Hero, player1Deck, player2Hero, player2Deck):
-        # Player 1
-        on_ally_death_subs = [lambda card=None : self.increment_stat("player1", "allies_died", 1)]
-        on_ally_attack_subs = [ lambda attack_damage=None : self.increment_stat("player1", "total_attacks_by_allies", 1) ]
-        on_ally_damage_dealt_subs = [ lambda attack_damage=0, : self.increment_stat("player1", "damage_dealt_by_allies", attack_damage) ]
-        on_ally_damage_taken_subs = [lambda damage_taken=0, : self.increment_stat("player1", "allies_damage_taken", damage_taken)]
-        on_fatigue_subs = [lambda damage_taken=0, : self.increment_stat("player1", "fatigue_damage", damage_taken)]
         self.player1 = Player(
             heroName=player1Hero,
             deckList=player1Deck,
-            on_ally_death=on_ally_death_subs,
-            on_ally_attack=on_ally_attack_subs,
-            on_ally_damage_dealt=on_ally_damage_dealt_subs,
-            on_ally_damage_taken=on_ally_damage_taken_subs,
-            on_fatigue=on_fatigue_subs,
+            ally_subscribers=self.create_ally_subscribers("player1"),
+            player_subscribers=self.create_player_subscribers("player1")
         )
-
-        # Player 2 - thinnk of a potential better way to pass these in
-        on_ally_death_subs = [lambda card=None : self.increment_stat("player2", "allies_died", 1)]
-        on_ally_attack_subs = [ lambda attack_damage=None : self.increment_stat("player2", "total_attacks_by_allies", 1) ]
-        on_ally_damage_dealt_subs = [ lambda attack_damage=0, : self.increment_stat("player2", "damage_dealt_by_allies", attack_damage) ]
-        on_ally_damage_taken_subs = [lambda damage_taken=0, : self.increment_stat("player2", "allies_damage_taken", damage_taken)]
-        on_fatigue_subs = [lambda damage_taken=0, : self.increment_stat("player2", "fatigue_damage", damage_taken)]
+        
         self.player2 = Player(
             heroName=player2Hero,
             deckList=player2Deck,
-            on_ally_death=on_ally_death_subs,
-            on_ally_attack=on_ally_attack_subs,
-            on_ally_damage_dealt=on_ally_damage_dealt_subs,
-            on_ally_damage_taken=on_ally_damage_taken_subs,
-            on_fatigue=on_fatigue_subs,
+            ally_subscribers=self.create_ally_subscribers("player2"),
+            player_subscribers=self.create_player_subscribers("player2")
         )
 
         self.current_player = None
@@ -73,6 +55,47 @@ class GameState:
             "fatigue_damage": 0,
             "cards_played": 0
         }
+    
+    def create_ally_subscribers(self, player_id):
+        """Create subscribers for ally-specific signals. Must be same name as Ally attributes (check Card.py)"""
+        return {
+            "on_death": [
+                lambda card=None: self.increment_stat(player_id, "allies_died", 1)
+            ],
+            "on_attack": [
+                lambda damage=None: self.increment_stat(player_id, "total_attacks_by_allies", 1)
+            ],
+            "on_damage_dealt": [
+                lambda damage=0: self.increment_stat(player_id, "damage_dealt_by_allies", damage)
+            ],
+            "on_damage_taken": [
+                lambda damage=0: self.increment_stat(player_id, "allies_damage_taken", damage)
+            ]
+        }
+    
+    def create_player_subscribers(self, player_id):
+        """Create subscribers for player-specific signals"""
+        return {
+            "on_fatigue": [
+                lambda damage=0: self.increment_stat(player_id, "fatigue_damage", damage)
+            ],
+            "on_card_played": [
+                lambda card=None: self.increment_stat(player_id, "cards_played", 1)
+            ],
+            "on_gold_gained": [
+                lambda amount=0: self.increment_stat(player_id, "gold_gained", amount)
+            ],
+            "on_gold_spent": [
+                lambda amount=0: self.increment_stat(player_id, "gold_spent", amount)
+            ],
+            "on_income_gained": [
+                lambda amount=0: self.increment_stat(player_id, "income_gained", amount)
+            ],
+            "on_income_lost": [
+                lambda t=0: self.increment_stat(player_id, "income_lost", amount)
+            ]
+        }
+
     
     def switch_turn(self):
         self.current_player, self.opponent_player = self.opponent_player, self.current_player

@@ -51,8 +51,23 @@ class GameManager:
             print("Player 2 Wins!")
         else:
             print("Player 1 Wins!")
-        pprint.pprint(self.game_state.stats)
-        #print(self.game_state.stats["player2"])
+        stats = self.game_state.stats
+        pprint.pprint(stats)
+        player1_stats = stats['player1']
+        player2_stats = stats['player2']
+
+        for stat in player1_stats:
+            value1 = player1_stats[stat]
+            value2 = player2_stats[stat]
+
+            if value1 > value2:
+                diff = value1 - value2
+                print(f"Player 1 had (+{diff}) {stat.replace('_', ' ')} ({value1} vs {value2})")
+            elif value2 > value1:
+                diff = value2 - value1
+                print(f"Player 2 had (+{diff}) {stat.replace('_', ' ')} ({value2} vs {value1})")
+            else:
+                print(f"Both players had equal {stat.replace('_', ' ')} ({value1})")
     
 
 def main():
