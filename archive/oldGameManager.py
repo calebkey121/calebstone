@@ -1,5 +1,5 @@
 from tkinter import X
-from Hero import Hero
+from .Hero import Hero
 import time
 import archive.Tools as Tools
 import random

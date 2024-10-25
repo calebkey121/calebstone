@@ -1,6 +1,6 @@
 from src.Effects import *
 from tests.TestFramework import *
-from src.GameLogic import GameLogic
+from src import GameLogic
 
 class HealEffectsTest(GameTestCase):
     def test_heal_all_allies_effect(self):

@@ -1,4 +1,4 @@
-from Hero import Hero
+from .Hero import Hero
 
 # god... we need to redo play_effects, make it a class come on
 

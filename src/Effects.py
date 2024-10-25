@@ -1,14 +1,18 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    import GameState
-    from Ally import Ally
+    from src.GameState import GameState
+    from src.Ally import Ally
 
 class TimingWindow(Enum):
     ON_PLAY = "on_play"
     ON_DEATH = "on_death"
     END_OF_TURN = "end_of_turn"
+    START_OF_TURN = "start_of_turn"
+    ON_DAMAGE = "on_damage"
+    ON_HEAL = "on_heal"
+    ALWAYS = "always"
 
 class Effect:
     def __init__(self, amount: list[int], timing: TimingWindow, text: str):

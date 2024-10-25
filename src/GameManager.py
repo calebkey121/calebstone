@@ -1,12 +1,11 @@
-from GameState import GameState, GameResult
-from Controller import RandomController, TerminalController
-from OutputHandler import TerminalOutputHandler, NoOutputHandler
-from GameLogic import GameLogic
-from GameLogger import GameLogger
-import DeckLists.PlayerOneList as p1d
+from src.GameState import GameState, GameResult
+from src.Controller import RandomController, TerminalController
+from src.OutputHandler import TerminalOutputHandler, NoOutputHandler
+from src.GameLogic import GameLogic
+from src.GameLogger import GameLogger
 import DeckLists.PlayerTwoList as p2d
+import DeckLists.PlayerOneList as p1d
 from typing import Optional
-import pprint
 
 """
 Purpose:
@@ -57,7 +56,6 @@ class GameManager:
 
             GameLogic.end_turn(self.game_state)
         self.logger.end_game(self.game_state)
-        print(self.logger.get_summary_stats())
         
 def main():
     game = GameManager()

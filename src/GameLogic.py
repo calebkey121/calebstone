@@ -1,8 +1,6 @@
 from config.GameSettings import *
 import random
-from Signal import Signal
-from dataclasses import dataclass, field
-from Effects import TimingWindow
+from src.Effects import TimingWindow
 
 # @dataclass
 # class GameSignals:

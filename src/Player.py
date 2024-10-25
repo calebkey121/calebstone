@@ -1,9 +1,9 @@
-from Army import Army
-from Deck import Deck
-from Card import Card
-from Ally import Ally
-from Hero import Hero
-from Signal import Signal
+from src.Army import Army
+from src.Deck import Deck
+from src.Card import Card
+from src.Ally import Ally
+from src.Hero import Hero
+from src.Signal import Signal
 from config.GameSettings import *
 from dataclasses import dataclass, field
 

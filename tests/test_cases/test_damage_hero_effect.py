@@ -1,6 +1,6 @@
 from src.Effects import *
 from tests.TestFramework import *
-from src.GameLogic import GameLogic
+from src import GameLogic
 # Example test case:
 class DamageEffectsTest(GameTestCase):
     def test_damage_hero_effect(self):

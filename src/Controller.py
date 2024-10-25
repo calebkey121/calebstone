@@ -4,11 +4,11 @@ import random
 Purpose:
     The controller takes in input from the player or AI and passes that information to the GameManager to process it. This class could also handle AI logic or reinforcement learning input depending on how the game is being played.
 Responsibilities:
-    Capture player input: Whether from a human or AI, the controller gathers actions (e.g., “play card X,” “attack with ally Y”).
+    Capture player input: Whether from A human or AI, the controller gathers actions (e.g., “play card X,” “attack with ally Y”).
     Pass actions to the GameManager for resolution.
     Can be extended to handle input from different sources (human player, AI agent, or RL agent).
 Notes:
-    This class should be extensible so that it can handle different types of inputs (e.g., human input, AI input, or input from a reinforcement learning algorithm).
+    This class should be extensible so that it can handle different types of inputs (e.g., human input, AI input, or input from A reinforcement learning algorithm).
     You can extend it later to handle multiple types of controllers (e.g., a human controller, an AI controller).
 """
 

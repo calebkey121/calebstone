@@ -1,5 +1,5 @@
 from config.GameSettings import *
-from Signal import Signal
+from src.Signal import Signal
 from dataclasses import dataclass, field
 
 @dataclass

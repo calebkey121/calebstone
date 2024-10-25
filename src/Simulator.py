@@ -6,10 +6,8 @@
 # output_file.write(f"First Rate Dio: {(p2First / numRuns) * 100}%")
 # output_file.write(f"Tie Rate: {(ties / numRuns) * 100}%")
 
-from GameManager import GameManager
-from GameState import GameResult
-from dataclasses import dataclass
-from GameLogger import GameLogger
+from src.GameManager import GameManager
+from src.GameLogger import GameLogger
 
 def run_simulation(num_games: int = 1000):
     logger = GameLogger(log_file="simulation_results.jsonl")

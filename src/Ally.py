@@ -1,5 +1,5 @@
-from Card import Card
-from Signal import Signal
+from src.Card import Card
+from src.Signal import Signal
 
 class Ally(Card):
     def __init__(self, orig=None, cost=-1, name=None, attack=-1, health=-1, effect=None):

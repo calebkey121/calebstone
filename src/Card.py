@@ -1,8 +1,3 @@
-from Signal import Signal
-from dataclasses import dataclass, field
-from typing import Optional
-from Effects import TimingWindow
-
 class Card:
     def __init__(self, cost=-1, name=None, effect=None, text=None):
         self._cost = cost

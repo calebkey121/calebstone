@@ -1,6 +1,6 @@
 from src.Effects import *
 from tests.TestFramework import *
-from src.GameLogic import GameLogic
+from src import GameLogic
 
 class CombatTest(GameTestCase):
     def test_attack_scenarios(self):
@@ -127,7 +127,7 @@ class CombatTest(GameTestCase):
         expected_player1._army._army = [hero_attacker, surviving_attacker, killing_attacker]
         
         expected_player2._gold = 10
-        expected_player2._hero._health = 195  # Took 5 damage from hero_attacker
+        expected_player2._hero._health = 195  # Took 5 damage from .Hero_attacker
         expected_player2._army._army = [surviving_defender, strong_defender]
         
         # Verify final state

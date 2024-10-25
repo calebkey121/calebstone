@@ -1,6 +1,6 @@
 from src.Effects import *
 from tests.TestFramework import *
-from src.GameLogic import GameLogic
+from src import GameLogic
 
 class ResourceEffectsTest(GameTestCase):
     def test_gain_gold_effect(self):

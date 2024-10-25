@@ -1,7 +1,5 @@
-from src.Cards import CARD_CATALOG
-from src.Ally import Ally
+from src import Ally
 
-# Keep the deck composition definition as is
 DECK_COMPOSITION = {
     "SIEGE_ENGINEER": 3,
     "ROYAL_FALCONER": 3,

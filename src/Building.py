@@ -1,4 +1,4 @@
-from Card import Card
+from src.Card import Card
 
 class Building(Card):
     def __init__(self, orig=None, cost=-1, name=None, health=-1, text=None, showText=False, selected=False, play_effect=None, amount=None):

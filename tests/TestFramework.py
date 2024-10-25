@@ -1,8 +1,8 @@
 # test_framework.py
 from typing import Optional, List, TYPE_CHECKING
-from src.GameState import GameState
-from src.Player import Player
-from src.Card import Ally
+from src import GameState
+from src import Player
+from src import Ally
 
 # test_framework.py
 class GameTestCase:
@@ -93,15 +93,17 @@ class GameTestCase:
         return "\n".join(mismatches)
 
     def create_player(self, 
-                     hero_name: str = "Test Hero",
-                     hero_health: int = 200,
-                     gold: int = 0,
-                     income: int = 0,
-                     hand: List[Ally] = None,
-                     board: List[Ally] = None) -> tuple[Player, Player]:
+                      player_name: str = "Test Player",
+                      hero_name: str = "Test Hero",
+                      hero_health: int = 200,
+                      gold: int = 0,
+                      income: int = 0,
+                      hand: List[Ally] = None,
+                      board: List[Ally] = None) -> tuple[Player, Player]:
         """Creates two identical players - one for testing, one for expected state"""
         # Create test player
         test_player = Player(
+            playerName=player_name,
             heroName=hero_name,
             deckList=[],
             player_subscribers=None,
@@ -122,6 +124,7 @@ class GameTestCase:
 
         # Create identical expected player
         expected_player = Player(
+            playerName=player_name,
             heroName=hero_name,
             deckList=[],
             player_subscribers=None,

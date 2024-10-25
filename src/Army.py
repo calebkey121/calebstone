@@ -1,4 +1,4 @@
-from Ally import Ally
+from src.Ally import Ally
 from config.GameSettings import ARMY_MAX_SIZE
 
 # The main way to organize allies in the game army

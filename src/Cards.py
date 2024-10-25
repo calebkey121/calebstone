@@ -1,6 +1,6 @@
-from Ally import Ally
-from Building import Building
-from Effects import *
+from src.Ally import Ally
+from src.Building import Building
+from src.Effects import *
 
 # Central definition of all cards in the game
 SIEGE_ENGINEER = Ally(
