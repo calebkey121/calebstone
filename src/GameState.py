@@ -1,6 +1,6 @@
-from Player import Player
+from src.Player import Player
 from enum import Enum, auto
-from GameLogic import GameLogic
+from src.GameLogic import GameLogic
 
 """
 Purpose:

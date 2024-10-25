@@ -1,5 +1,5 @@
 from config.GameSettings import *
-from Signal import Signal
+from src.Signal import Signal
 from dataclasses import dataclass, field
 
 @dataclass
@@ -28,6 +28,17 @@ class Hero:
                 if hasattr(self.signals, signal_name):
                     signal = getattr(self.signals, signal_name)
                     signal.connect(callbacks)
+    
+    def __eq__(self, other: 'Hero') -> bool:
+        if not isinstance(other, Hero):
+            return NotImplemented
+        return (
+            self._name == other._name and
+            self._health == other._health and
+            self._maxHealth == other._maxHealth and
+            self._attack == other._attack and
+            self._ready == other._ready
+        )
     
     @property
     def health(self):

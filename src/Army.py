@@ -1,4 +1,4 @@
-from Card import Ally
+from src.Card import Ally
 from config.GameSettings import ARMY_MAX_SIZE
 
 # The main way to organize allies in the game army
@@ -11,6 +11,13 @@ class Army:
 
     def __repr__(self):
         return repr([a._name for a in self._army])
+
+    def __eq__(self, other: 'Army') -> bool:
+        if not isinstance(other, Army):
+            return NotImplemented
+        return (
+            all(a1 == a2 for a1, a2 in zip(self._army, other._army))
+        )
 
     # getter/setters
     def max_size(self, maxSize=None):

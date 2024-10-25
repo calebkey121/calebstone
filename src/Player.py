@@ -1,8 +1,8 @@
-from Army import Army
-from Deck import Deck
-from Card import Card, Ally
-from Hero import Hero
-from Signal import Signal
+from src.Army import Army
+from src.Deck import Deck
+from src.Card import Card, Ally
+from src.Hero import Hero
+from src.Signal import Signal
 from config.GameSettings import *
 from dataclasses import dataclass, field
 
@@ -60,6 +60,18 @@ class Player:
             if hasattr(self.signals, signal_name):
                 signal = getattr(self.signals, signal_name)
                 signal.connect(callbacks)
+    
+    def __eq__(self, other: 'Player') -> bool:
+        if not isinstance(other, Player):
+            return NotImplemented
+        return (
+            self._hero == other._hero and
+            self._army == other._army and
+            self._gold == other._gold and
+            self._income == other._income and
+            len(self._hand) == len(other._hand) and
+            all(c1 == c2 for c1, c2 in zip(self._hand, other._hand))
+        )
     
     @property
     def gold(self):

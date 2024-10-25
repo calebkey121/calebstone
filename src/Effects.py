@@ -15,6 +15,15 @@ class Effect:
         self.amount = amount
         self.timing = timing
         self.text = text
+
+    def __eq__(self, other: 'Effect') -> bool:
+        if not isinstance(other, Effect):
+            return NotImplemented
+        return (
+            self.amount == other.amount and
+            self.timing == other.timing and
+            self.text == other.text
+        )
     
     def execute(self, game_state: 'GameState', source: 'Ally') -> 'GameState':
         """Execute the effect on the game state"""

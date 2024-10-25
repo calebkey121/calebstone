@@ -1,7 +1,7 @@
-from Signal import Signal
+from src.Signal import Signal
 from dataclasses import dataclass, field
 from typing import Optional
-from Effects import TimingWindow
+from src.Effects import TimingWindow
 
 class Card:
     def __init__(self, cost=-1, name=None, effect=None, text=None):
@@ -12,6 +12,16 @@ class Card:
     
     def __repr__(self):
         return self._name
+
+    def __eq__(self, other: 'Card') -> bool:
+        if not isinstance(other, Card):
+            return NotImplemented
+        return (
+            self._cost == other._cost and
+            self._name == other._name and
+            self._effect == other._effect and
+            self._text == other._text
+        )
 
 class Ally(Card):
     def __init__(self, orig=None, cost=-1, name=None, attack=-1, health=-1, effect=None):
@@ -36,6 +46,17 @@ class Ally(Card):
         self.on_damage_dealt = Signal()  # Signal for when this ally deals damage
         self.on_damage_taken = Signal()  # Signal for when this ally takes damage
     
+    def __eq__(self, other: 'Ally') -> bool:
+        if not isinstance(other, Ally):
+            return NotImplemented
+        return (
+            super().__eq__(other) and
+            self._attack == other._attack and
+            self._health == other._health and
+            self._maxHealth == other._maxHealth and
+            self._ready == other._ready
+        )
+    
     @property
     def health(self):
         return self._health
@@ -44,6 +65,7 @@ class Ally(Card):
     def health(self, new_amount):
         change_amount = new_amount - self.health
         if change_amount >= 0:
+            new_amount = min(new_amount, self._maxHealth)
             pass # Could add healing signal here if needed
         else:
             if new_amount <= 0:
