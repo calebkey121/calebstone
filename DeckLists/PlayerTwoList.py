@@ -1,7 +1,7 @@
 from Cards import CARD_CATALOG
 from Ally import Ally
 
-# Just define the composition of this specific deck
+# Keep the deck composition definition as is
 DECK_COMPOSITION = {
     "SIEGE_ENGINEER": 3,
     "ROYAL_FALCONER": 3,
@@ -20,9 +20,11 @@ DECK_COMPOSITION = {
     "FOREST_GUARDIAN": 3
 }
 
-# Create deck list from composition
-deck_list = []
-for card_name, copies in DECK_COMPOSITION.items():
-    card = CARD_CATALOG[card_name]
-    for _ in range(copies):
-        deck_list.append(Ally(orig=card))
+def create_deck():
+    """Creates a fresh deck from the composition"""
+    deck_list = []
+    for card_name, copies in DECK_COMPOSITION.items():
+        card = CARD_CATALOG[card_name]
+        for _ in range(copies):
+            deck_list.append(Ally(orig=card))
+    return deck_list

@@ -1,7 +1,0 @@
-Game Simulation Results
-==============================
-
-Total Games: 1000
-First Player Wins: 1000 (100.0%)
-Second Player Wins: 0 (0.0%)
-Ties: 0 (0.0%)

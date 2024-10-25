@@ -30,6 +30,7 @@ class GameState:
 
         # Create both players with all subscriber types
         self.player1 = Player(
+            playerName="player1",
             heroName=player1Hero,
             deckList=player1Deck,
             ally_subscribers=self.create_ally_subscribers("player1"),
@@ -38,6 +39,7 @@ class GameState:
         )
         
         self.player2 = Player(
+            playerName="player2",
             heroName=player2Hero,
             deckList=player2Deck,
             ally_subscribers=self.create_ally_subscribers("player2"),
@@ -47,8 +49,8 @@ class GameState:
 
         self.current_player = None
         self.opponent_player = None
-        self.turn = 0 # how many total turns have been taken?
-        self.round = self.turn // 2 # round is how many turns a player has taken
+        self.turns = 0 # how many total turns have been taken?
+        self.rounds = 0
         self.who_went_first = None
 
     def increment_stat(self, player, stat, amount=1):
@@ -141,7 +143,8 @@ class GameState:
     
     def switch_turn(self):
         self.current_player, self.opponent_player = self.opponent_player, self.current_player
-        self.turn += 1
+        self.turns += 1
+        self.rounds = ( self.turns + 1 ) // 2
     
     def is_player1_turn(self):
         return self.current_player is self.player1
@@ -197,5 +200,5 @@ class GameState:
         return [
             self.player1.health, len(self.player1.hand), len(self.player1.army), 
             self.player2.health, len(self.player2.hand), len(self.player2.army),
-            self.round_count, self.turn
+            self.round_count, self.turns
         ]

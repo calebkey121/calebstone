@@ -55,7 +55,7 @@ class GameLogic():
 
     @staticmethod
     def start_game(game_state):
-        if game_state.turn != 0 or game_state.current_player or game_state.opponent_player:
+        if game_state.turns != 0 or game_state.current_player or game_state.opponent_player:
             raise ValueError("Tried starting the game on non turn zero")
 
         if random.choice([True, False]): # Coin Flip
@@ -79,7 +79,7 @@ class GameLogic():
         first_player.draw_cards(GAME_START_CARDS_DRAWN_FIRST)
         second_player.draw_cards(GAME_START_CARDS_DRAWN_SECOND)
 
-        game_state.turn += 1
+        game_state.turns += 1
     
     @staticmethod
     def end_turn(game_state):
@@ -88,7 +88,7 @@ class GameLogic():
             if (ally._effect and 
                 ally._effect.timing == TimingWindow.END_OF_TURN):
                 ally._effect.execute(game_state, ally)
-        if (game_state.round % X_ROUNDS) == 0:
+        if (game_state.rounds % X_ROUNDS) == 0:
             game_state.current_player.income += INCOME_PER_X_ROUNDS
         game_state.switch_turn()
     

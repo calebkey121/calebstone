@@ -85,7 +85,7 @@ class GameLogger:
         else:
             self.current_game.winner = "player1" if game_state.get_result().name == "PLAYER1_WIN" else "player2"
         
-        self.current_game.total_turns = game_state.turn
+        self.current_game.total_turns = game_state.turns
         
         # Store final gold/income values
         for player_id, player in [("player1", game_state.player1), ("player2", game_state.player2)]:
@@ -143,11 +143,13 @@ class GameLogger:
         total_games = len(self.completed_games)
         wins = {"player1": 0, "player2": 0, "tie": 0}
         total_turns = 0
+        total_rounds = 0
         first_player_wins = 0
         
         for game in self.completed_games:
             wins[game.winner] += 1
             total_turns += game.total_turns
+            total_rounds += ( game.total_turns + 1 ) // 2
             if game.winner == game.first_player:
                 first_player_wins += 1
         
@@ -159,5 +161,6 @@ class GameLogger:
                 "ties": (wins["tie"] / total_games) * 100
             },
             "first_player_winrate": (first_player_wins / total_games) * 100,
-            "average_game_length": total_turns / total_games
+            "average_game_length": total_turns / total_games,
+            "average_num_rounds": total_rounds / total_games
         }

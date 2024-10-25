@@ -19,6 +19,7 @@ class PlayerSignals:
 
 class Player:
     def __init__(self,
+                 playerName,
                  heroName,
                  deckList,
                  player_subscribers: dict = None,
@@ -35,8 +36,8 @@ class Player:
         }
         
         # Initialize hero with subscribers
+        self._name = playerName
         self._hero = Hero(heroName, hero_subscribers=self._hero_subscribers)
-        self._name = heroName # for now, we'll see
         self._deck = Deck(deckList)
         self._army = Army()
         self._hand = []
