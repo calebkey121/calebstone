@@ -54,7 +54,7 @@ class Player:
             "on_damage_dealt": [],
             "on_damage_taken": []
         }
-        self._ally_subscribers["on_death"].append(lambda x: self._army.toll_the_dead(x))
+        self._ally_subscribers["on_death"].append(self._army.toll_the_dead)
 
         # Connect player-level subscribers
         for signal_name, callbacks in (player_subscribers or {}).items():
@@ -229,8 +229,6 @@ class Player:
     def play_ally(self, card):
         if self._army.is_full() or card._cost > self.gold:
             raise ValueError("Card unplayable")
-        if not card in self._hand:
-            raise ValueError("Card not in hand!")
         self._army.add_ally(card)
         card.ready_down()
         self.gold -= card._cost

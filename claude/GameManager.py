@@ -3,7 +3,7 @@ from Controller import RandomController, TerminalController
 from OutputHandler import TerminalOutputHandler, NoOutputHandler
 from GameLogic import GameLogic
 from GameLogger import GameLogger
-import DeckLists.PlayerOneList as p1d
+import Decklists.PlayerOneList as p1d
 import DeckLists.PlayerTwoList as p2d
 import pprint
 

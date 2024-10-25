@@ -1,5 +1,5 @@
 from Cards import CARD_CATALOG
-from Card import Ally
+from Ally import Ally
 
 # Just define the composition of this specific deck
 DECK_COMPOSITION = {
