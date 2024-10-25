@@ -1,8 +1,8 @@
 # test_framework.py
 from typing import Optional, List, TYPE_CHECKING
-from src import GameState
-from src import Player
-from src import Ally
+from src.GameState import GameState
+from src.Player import Player
+from src.Ally import Ally
 
 # test_framework.py
 class GameTestCase:

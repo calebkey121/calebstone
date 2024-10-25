@@ -1,6 +1,6 @@
 from src.Effects import *
 from tests.TestFramework import *
-from src import GameLogic
+from src.GameLogic import GameLogic
 
 class DrawEffectsTest(GameTestCase):
     def test_end_turn_draw_effect_with_fatigue(self):

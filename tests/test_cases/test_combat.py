@@ -1,6 +1,6 @@
 from src.Effects import *
 from tests.TestFramework import *
-from src import GameLogic
+from src.GameLogic import GameLogic
 
 class CombatTest(GameTestCase):
     def test_attack_scenarios(self):
