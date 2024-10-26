@@ -48,13 +48,12 @@ class GameManager:
             
             current_controller = self.player1_controller if self.game_state.is_player1_turn() else self.player2_controller
 
-            while ( action := current_controller.get_action(self.game_state) )["type"] != "end_turn":
+            while ( action := current_controller.get_action(self.game_state) ):
                 self.output_handler.display_action(action, self.game_state)
                 GameLogic.process_turn(self.game_state, action)
-                if GameLogic.is_game_over(self.game_state):
+                if GameLogic.is_game_over(self.game_state) or action["type"] != "end_turn":
                     break
 
-            GameLogic.end_turn(self.game_state)
         self.logger.end_game(self.game_state)
         
 def main():

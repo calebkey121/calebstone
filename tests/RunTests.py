@@ -11,7 +11,7 @@ def collect_test_cases():
     
     # Get all python files in test_cases directory
     for file in os.listdir(test_cases_dir):
-        if file.startswith("test_") and file.endswith(".py"):
+        if (file.startswith("test_") or file.endswith("_test.py")) and file.endswith(".py"):
             # Convert filename to module name
             module_name = f"tests.test_cases.{file[:-3]}"
             

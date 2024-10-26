@@ -63,17 +63,20 @@ class Player:
                 signal = getattr(self.signals, signal_name)
                 signal.connect(callbacks)
     
-    def __eq__(self, other: 'Player') -> bool:
-        if not isinstance(other, Player):
-            return NotImplemented
-        return (
-            self._hero == other._hero and
-            self._army == other._army and
-            self._gold == other._gold and
-            self._income == other._income and
-            len(self._hand) == len(other._hand) and
-            all(c1 == c2 for c1, c2 in zip(self._hand, other._hand))
-        )
+    # def __eq__(self, other: 'Player') -> bool:
+    #     if not isinstance(other, Player):
+    #         return NotImplemented
+    #     return (
+    #         self._hero == other._hero and
+    #         self._army == other._army and
+    #         self._gold == other._gold and
+    #         self._income == other._income and
+    #         len(self._hand) == len(other._hand) and
+    #         all(c1 == c2 for c1, c2 in zip(self._hand, other._hand))
+    #     )
+
+    def __repr__(self):
+        return self._name
     
     @property
     def gold(self):

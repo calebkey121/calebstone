@@ -80,52 +80,52 @@ class DrawCardsEffect(Effect):
         return game_state
 
 # Preset effects that can be used when creating cards
-EFFECTS = {
-    # On Play Effects
-    "HEAL_5": HealAllAlliesEffect(
-        amount=[5],
-        timing=TimingWindow.ON_PLAY,
-        text="When played, heal all allies for 5 health"
-    ),
-    "DAMAGE_HERO_3": DamageEnemyHeroEffect(
-        amount=[3],
-        timing=TimingWindow.ON_PLAY,
-        text="When played, deal 3 damage to the enemy hero"
-    ),
-    
-    # On Death Effects
-    "DEATH_DAMAGE_2": DamageAllEnemiesEffect(
-        amount=[2],
-        timing=TimingWindow.ON_DEATH,
-        text="When this dies, deal 2 damage to all enemies"
-    ),
-    "DEATH_DRAW": DrawCardsEffect(
-        amount=[1],
-        timing=TimingWindow.ON_DEATH,
-        text="When this dies, draw a card"
-    ),
-    
-    # End of Turn Effects
-    "EOT_GOLD_1": GainGoldEffect(
-        amount=[1],
-        timing=TimingWindow.END_OF_TURN,
-        text="At the end of your turn, gain 1 gold"
-    ),
-    "EOT_INCOME_1": GainIncomeEffect(
-        amount=[1],
-        timing=TimingWindow.END_OF_TURN,
-        text="At the end of your turn, gain 1 income"
-    )
-}
-
-# Example of how a card could be defined in JSON
-EXAMPLE_CARD_JSON = """
-{
-    "name": "Wealthy Merchant",
-    "cost": 4,
-    "attack": 2,
-    "health": 5,
-    "effect": "EOT_GOLD_1",
-    "timing": "END_OF_TURN"
-}
-"""
+# EFFECTS = {
+#     # On Play Effects
+#     "HEAL_5": HealAllAlliesEffect(
+#         amount=[5],
+#         timing=TimingWindow.ON_PLAY,
+#         text="When played, heal all allies for 5 health"
+#     ),
+#     "DAMAGE_HERO_3": DamageEnemyHeroEffect(
+#         amount=[3],
+#         timing=TimingWindow.ON_PLAY,
+#         text="When played, deal 3 damage to the enemy hero"
+#     ),
+#     
+#     # On Death Effects
+#     "DEATH_DAMAGE_2": DamageAllEnemiesEffect(
+#         amount=[2],
+#         timing=TimingWindow.ON_DEATH,
+#         text="When this dies, deal 2 damage to all enemies"
+#     ),
+#     "DEATH_DRAW": DrawCardsEffect(
+#         amount=[1],
+#         timing=TimingWindow.ON_DEATH,
+#         text="When this dies, draw a card"
+#     ),
+#     
+#     # End of Turn Effects
+#     "EOT_GOLD_1": GainGoldEffect(
+#         amount=[1],
+#         timing=TimingWindow.END_OF_TURN,
+#         text="At the end of your turn, gain 1 gold"
+#     ),
+#     "EOT_INCOME_1": GainIncomeEffect(
+#         amount=[1],
+#         timing=TimingWindow.END_OF_TURN,
+#         text="At the end of your turn, gain 1 income"
+#     )
+# }
+# 
+# # Example of how a card could be defined in JSON
+# EXAMPLE_CARD_JSON = """
+# {
+#     "name": "Wealthy Merchant",
+#     "cost": 4,
+#     "attack": 2,
+#     "health": 5,
+#     "effect": "EOT_GOLD_1",
+#     "timing": "END_OF_TURN"
+# }
+# """

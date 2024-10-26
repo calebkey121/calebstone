@@ -43,6 +43,12 @@ class GameLogic():
             target = opponent.all_characters()[action['target_index']]
             attacker.attack(target)
             # potential addl. attack resolution
+        
+        elif action['type'] == 'end_turn':
+            GameLogic.end_turn(game_state)
+        
+        else:
+            raise ValueError("GameLogic does not recognize action")
 
         return game_state
     
@@ -95,3 +101,9 @@ class GameLogic():
         game_state.current_player.draw_card()
         game_state.current_player.ready_up()
         game_state.current_player.gold += game_state.current_player.income
+
+        # trigger each start of turn effect
+        for ally in game_state.current_player._army.get_army():
+            if (ally._effect and 
+                ally._effect.timing == TimingWindow.START_OF_TURN):
+                ally._effect.execute(game_state, ally)
