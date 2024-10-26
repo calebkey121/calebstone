@@ -1,6 +1,7 @@
 from src.Player import Player
 from enum import Enum, auto
 from src.GameLogic import GameLogic
+from src.GameStatistics import GameStatistics
 
 """
 Purpose:
@@ -21,130 +22,50 @@ class GameResult(Enum):
     PLAYER2_WIN = auto()
 
 class GameState:
-    def __init__(self, player1Hero, player1Deck, player2Hero, player2Deck):
+    def __init__(self, player1Hero, player1Deck, player2Hero, player2Deck, statistics=None):
         # Initialize base stats dictionary with hero-specific stats
-        self.stats = {
-            "player1": self.player_stats(),
-            "player2": self.player_stats(),
-        }
+        self.stats = statistics or GameStatistics()
 
         # Create both players with all subscriber types
         self.player1 = Player(
             playerName="player1",
             heroName=player1Hero,
             deckList=player1Deck,
-            ally_subscribers=self.create_ally_subscribers("player1"),
-            player_subscribers=self.create_player_subscribers("player1"),
-            hero_subscribers=self.create_hero_subscribers("player1")
+            ally_subscribers=self.stats.create_ally_stat_subscribers("player1"),
+            player_subscribers=self.stats.create_player_stat_subscribers("player1"),
+            hero_subscribers=self.stats.create_hero_stat_subscribers("player1")
         )
         
         self.player2 = Player(
             playerName="player2",
             heroName=player2Hero,
             deckList=player2Deck,
-            ally_subscribers=self.create_ally_subscribers("player2"),
-            player_subscribers=self.create_player_subscribers("player2"),
-            hero_subscribers=self.create_hero_subscribers("player2")
+            ally_subscribers=self.stats.create_ally_stat_subscribers("player2"),
+            player_subscribers=self.stats.create_player_stat_subscribers("player2"),
+            hero_subscribers=self.stats.create_hero_stat_subscribers("player2")
         )
 
         self.current_player = None
         self.opponent_player = None
-        self.turns = 0 # how many total turns have been taken?
-        self.rounds = 0
+        self.current_round = 0
         self.who_went_first = None
-
-    def increment_stat(self, player, stat, amount=1):
-        """Increment a stat for the given player by a specific amount."""
-        self.stats[player][stat] += amount
-    
-    def player_stats(self):
-        return {
-            "gold_spent": 0,
-            "gold_gained": 0,
-            "income_gained": 0,
-            "income_lost": 0,
-            "damage_dealt_by_allies": 0,
-            "total_attacks_by_allies": 0,
-            # "allies_killed": 0, # redundant with allied_died
-            "allies_died": 0,
-            "allies_damage_taken": 0,
-            "fatigue_damage": 0,
-            "cards_played": 0,
-            "hero_damage_taken": 0,
-            "hero_damage_dealt": 0,
-            "hero_attacks_made": 0,
-            "hero_healing_received": 0,
-            "total_healing_received": 0,  # Both hero and allies
-            "hero_kills": 0  # When hero gets the killing blow
-        }
-
-    def create_hero_subscribers(self, player_id):
-        """Create subscribers for hero-specific signals"""
-        return {
-            "on_death": [
-                # Hero death might need special handling in the future
-                lambda hero=None: None  # Placeholder for now
-            ],
-            "on_damage_taken": [
-                lambda damage=0: self.increment_stat(player_id, "hero_damage_taken", damage)
-            ],
-            "on_heal": [
-                lambda amount=0: self.increment_stat(player_id, "hero_healing_received", amount),
-                lambda amount=0: self.increment_stat(player_id, "total_healing_received", amount)
-            ],
-            "on_attack": [
-                lambda: self.increment_stat(player_id, "hero_attacks_made", 1)
-            ],
-            "on_damage_dealt": [
-                lambda damage=0: self.increment_stat(player_id, "hero_damage_dealt", damage)
-            ]
-        }
-    
-    def create_ally_subscribers(self, player_id):
-        """Create subscribers for ally-specific signals. Must be same name as Ally attributes (check Card.py)"""
-        return {
-            "on_death": [
-                lambda card=None: self.increment_stat(player_id, "allies_died", 1)
-            ],
-            "on_attack": [
-                lambda damage=None: self.increment_stat(player_id, "total_attacks_by_allies", 1)
-            ],
-            "on_damage_dealt": [
-                lambda damage=0: self.increment_stat(player_id, "damage_dealt_by_allies", damage)
-            ],
-            "on_damage_taken": [
-                lambda damage=0: self.increment_stat(player_id, "allies_damage_taken", damage)
-            ]
-        }
-    
-    def create_player_subscribers(self, player_id):
-        """Create subscribers for player-specific signals"""
-        return {
-            "on_fatigue": [
-                lambda damage=0: self.increment_stat(player_id, "fatigue_damage", damage)
-            ],
-            "on_card_played": [
-                lambda card=None: self.increment_stat(player_id, "cards_played", 1)
-            ],
-            "on_gold_gained": [
-                lambda amount=0: self.increment_stat(player_id, "gold_gained", amount)
-            ],
-            "on_gold_spent": [
-                lambda amount=0: self.increment_stat(player_id, "gold_spent", amount)
-            ],
-            "on_income_gained": [
-                lambda amount=0: self.increment_stat(player_id, "income_gained", amount)
-            ],
-            "on_income_lost": [
-                lambda amount=0: self.increment_stat(player_id, "income_lost", amount)
-            ]
-        }
+        self.total_turns = 0 # how many total turns have been taken?
+        self.is_first_turn_of_round = True  # Track position within round
 
     
     def switch_turn(self):
+        # Swap players
         self.current_player, self.opponent_player = self.opponent_player, self.current_player
-        self.turns += 1
-        self.rounds = ( self.turns + 1 ) // 2
+        
+        # Increment turn counter
+        self.total_turns += 1
+        
+        # Update round tracking
+        if self.is_first_turn_of_round:
+            self.is_first_turn_of_round = False
+        else:
+            self.is_first_turn_of_round = True
+            self.current_round += 1
     
     def is_player1_turn(self):
         return self.current_player is self.player1
@@ -200,5 +121,5 @@ class GameState:
         return [
             self.player1.health, len(self.player1.hand), len(self.player1.army), 
             self.player2.health, len(self.player2.hand), len(self.player2.army),
-            self.round_count, self.turns
+            self.round_count, self.total_turns
         ]

@@ -85,7 +85,7 @@ class GameLogger:
         else:
             self.current_game.winner = "player1" if game_state.get_result().name == "PLAYER1_WIN" else "player2"
         
-        self.current_game.total_turns = game_state.turns
+        self.current_game.total_turns = game_state.total_turns
         
         # Store final gold/income values
         for player_id, player in [("player1", game_state.player1), ("player2", game_state.player2)]:

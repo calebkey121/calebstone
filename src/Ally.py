@@ -22,6 +22,7 @@ class Ally(Card):
         self.on_attack = Signal() # Signal for when this ally attacks
         self.on_damage_dealt = Signal()  # Signal for when this ally deals damage
         self.on_damage_taken = Signal()  # Signal for when this ally takes damage
+        self.on_heal = Signal() # Whenever healed (health goes up)
     
     # more for testing rather
     # def __eq__(self, other: 'Ally') -> bool:
@@ -42,9 +43,9 @@ class Ally(Card):
     @health.setter
     def health(self, new_amount):
         change_amount = new_amount - self.health
-        if change_amount >= 0:
+        if change_amount > 0:
             new_amount = min(new_amount, self._maxHealth)
-            pass # Could add healing signal here if needed
+            self.on_heal.emit(change_amount)
         else:
             if new_amount <= 0:
                 change_amount -= new_amount # even if they overkill, only register down to 0
@@ -70,8 +71,8 @@ class Ally(Card):
     # Attack
     def attack(self, target):
         # for now lets just do total damage dealt
-        self.on_attack.emit()
-        self.on_damage_dealt.emit(min(self._attack, target.health))
+        self.on_attack.emit(self)
+        self.on_damage_dealt.emit(min(self._attack, target.health)) # also need effect damange
         target.defend(self) # simple place to tell target to emit when its being attacked
         target.health -= self._attack
         self.health -= target._attack
@@ -79,7 +80,7 @@ class Ally(Card):
 
     
     def defend(self, attacker):
-        self.on_damage_dealt.emit(min(self._attack, attacker.health))
+        self.on_damage_dealt.emit(min(self._attack, attacker.health)) # also need effect damage
     
     def die(self):
         self.on_death.emit(self)

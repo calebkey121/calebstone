@@ -64,8 +64,8 @@ def run_scenario(test_case: GameTestCase,
     test_case.game_state.player2 = test_player2
     test_case.game_state.current_player = test_player1
     test_case.game_state.opponent_player = test_player2
-    test_case.game_state.turns = 1
-    test_case.game_state.rounds = 1
+    test_case.game_state.total_turns = 1
+    test_case.game_state.current_round = 1
     
     # Process all turns
     for turn_actions in actions:

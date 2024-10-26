@@ -10,7 +10,10 @@ class TimingWindow(Enum):
     ON_DEATH = "on_death"
     END_OF_TURN = "end_of_turn"
     START_OF_TURN = "start_of_turn"
-    ON_DAMAGE = "on_damage"
+    ON_ATTACK = "on_attack" # before attack is started
+    ON_DAMAGE_DEALT = "on_damage_dealt" # tougher, have to consider effects too
+    ON_DAMAGE_TAKEN = "on_damage_taken" # a lot easier, just on health dropping
+    AFTER_ATTACK = "after_attack" # after attack is resolved
     ON_HEAL = "on_heal"
     ALWAYS = "always"
 
