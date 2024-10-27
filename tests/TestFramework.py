@@ -88,7 +88,7 @@ class GameTestCase:
         
         # Set up any necessary signal connections
         for ally in player.army._army:
-            ally.signals.on_death.connect(player.army.toll_the_dead)
+            ally.signals.on_death.connect(player.army.remove_dead_allies)
             ally.ready_up()
         
         return player

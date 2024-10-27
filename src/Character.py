@@ -73,7 +73,6 @@ class Character:
     def damage(self, source, amount):
         raw_damage = amount # may mitigate in the future
         effective_damage = min(raw_damage, self.health)
-        effective_damage = min(raw_damage, self.health)
         extra_amount = max(0, raw_damage - self.health)
         self.health -= raw_damage
 

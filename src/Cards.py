@@ -11,7 +11,6 @@ SIEGE_ENGINEER = Ally(
     effect=HealAllAlliesEffect(
         amount=[15],
         timing=TimingWindow.ON_PLAY,
-        text="When played, heal all allies for 15 health"
     )
 )
 
@@ -23,7 +22,6 @@ ROYAL_FALCONER = Ally(
     effect=DamageEnemyHeroEffect(
         amount=[7],
         timing=TimingWindow.ON_DEATH,
-        text="When this dies, deal 7 damage to the enemy hero"
     )
 )
 
@@ -35,7 +33,6 @@ WANDERING_MINSTREL = Ally(
     effect=HealAllAlliesEffect(
         amount=[10],
         timing=TimingWindow.END_OF_TURN,
-        text="At end of turn, heal all allies for 10"
     )
 )
 
@@ -47,7 +44,6 @@ COURT_ALCHEMIST = Ally(
     effect=DamageAllEnemiesEffect(
         amount=[6],
         timing=TimingWindow.ON_PLAY,
-        text="When played, deal 6 damage to all enemies"
     )
 )
 
@@ -59,7 +55,6 @@ MERCENARY_CAPTAIN = Ally(
     effect=GainGoldEffect(
         amount=[3],
         timing=TimingWindow.ON_PLAY,
-        text="When played, gain 3 gold"
     )
 )
 
@@ -71,7 +66,6 @@ VILLAGE_BLACKSMITH = Ally(
     effect=GainIncomeEffect(
         amount=[2],
         timing=TimingWindow.ON_PLAY,
-        text="When played, gain 2 income"
     )
 )
 
@@ -83,7 +77,6 @@ JOUSTING_CHAMPION = Ally(
     effect=GainGoldEffect(
         amount=[3],
         timing=TimingWindow.END_OF_TURN,
-        text="At end of turn, gain 3 gold"
     )
 )
 
@@ -95,7 +88,6 @@ DIRE_WOLF = Ally(
     effect=DrawCardsEffect(
         amount=[2],
         timing=TimingWindow.ON_PLAY,
-        text="When played, draw 2 cards"
     )
 )
 
@@ -115,7 +107,6 @@ HIGHWAYMANS_AMBUSH = Ally(
     effect=DamageAllEnemiesEffect(
         amount=[5],
         timing=TimingWindow.ON_PLAY,
-        text="When played, deal 5 damage to all enemies"
     )
 )
 
@@ -127,7 +118,6 @@ BANDIT_OUTLAW = Ally(
     effect=GainGoldEffect(
         amount=[2],
         timing=TimingWindow.ON_DEATH,
-        text="When this dies, gain 2 gold"
     )
 )
 
@@ -139,7 +129,6 @@ UNDEAD_CREATURES = Ally(
     effect=DamageAllEnemiesEffect(
         amount=[8],
         timing=TimingWindow.END_OF_TURN,
-        text="At end of turn, deal 8 damage to all enemies"
     )
 )
 
@@ -151,7 +140,6 @@ HIGHLAND_SCOUT = Ally(
     effect=DrawCardsEffect(
         amount=[3],
         timing=TimingWindow.ON_PLAY,
-        text="When played, draw 3 cards"
     )
 )
 
@@ -163,7 +151,6 @@ BOW_MARSHAL = Ally(
     effect=DamageAllEnemiesEffect(
         amount=[10],
         timing=TimingWindow.ON_PLAY,
-        text="When played, deal 10 damage to all enemies"
     )
 )
 
@@ -175,7 +162,6 @@ FOREST_GUARDIAN = Ally(
     effect=HealAllAlliesEffect(
         amount=[50],
         timing=TimingWindow.ON_PLAY,
-        text="When played, heal all allies for 50 health"
     )
 )
 

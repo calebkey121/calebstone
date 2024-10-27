@@ -142,8 +142,8 @@ class GameManager:
         attacker.attack_enemy(defender, attackingPlayer=self._player2)
         if self._player2.health() <= 0 or self._player1.health() <= 0:
             return True # stops the turn
-        self._player2.call_to_arms().toll_the_dead()
-        self._player1.call_to_arms().toll_the_dead()
+        self._player2.call_to_arms().remove_dead_allies()
+        self._player1.call_to_arms().remove_dead_allies()
 # **************************************************************************************************************
 
 def main():

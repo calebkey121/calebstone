@@ -167,7 +167,9 @@ class GameLogger:
                 "hero_overhealing_received": 0,
                 "damage_extra_dealt_by_allies": 0,
                 "total_overhealing_received": 0,
-                "allied_attacks_endured": 0
+                "allied_attacks_endured": 0,
+                "ally_healing_received": 0,
+                "ally_overhealing_received": 0,
             },
             "player2": {  # Same initial structure as player1
                 "gold_spent": 0,
@@ -196,7 +198,9 @@ class GameLogger:
                 "hero_overhealing_received": 0,
                 "damage_extra_dealt_by_allies": 0,
                 "total_overhealing_received": 0,
-                "allied_attacks_endured": 0
+                "allied_attacks_endured": 0,
+                "ally_healing_received": 0,
+                "ally_overhealing_received": 0,
             }
         }
         

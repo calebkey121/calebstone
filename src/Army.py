@@ -45,19 +45,12 @@ class Army:
         for ally in allies:
             self.add_ally(ally)
     
-    def toll_the_dead(self, character=None):
-        if character and character is not self.hero:  # Don't remove hero
-                # signals are emitting characters, not Allies so we gotta remove who matches instead for now
-                for ally in self.allies:
-                    if ally._character is character:
-                        self._army.remove(ally)
-                        break
-        else:
-            # Remove all dead allies (not hero)
-            self._army = [self.hero] + [
-                ally for ally in self.allies 
-                if ally.health > 0
-            ]
+    def remove_dead_allies(self):
+        """Remove all dead allies from army"""
+        self._army = [self.hero] + [
+            ally for ally in self.allies 
+            if ally.health > 0
+        ]
     
     def get_character(self, index):
         return self._army[index]
@@ -136,7 +129,7 @@ class Army:
 #         self.set_army_size()
 
 #     #This clears your Army of dead Allies
-#     def toll_the_dead(self, ally=None):
+#     def remove_dead_allies(self, ally=None):
 #         if not ally: # clear all 
 #             for i in self._army:
 #                 if i._health <= 0:

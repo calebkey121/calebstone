@@ -36,7 +36,9 @@ class GameStatistics():
             "hero_overhealing_received": 0,
             "damage_extra_dealt_by_allies": 0,
             "total_overhealing_received": 0,
-            "allied_attacks_endured": 0
+            "allied_attacks_endured": 0,
+            "ally_healing_received": 0,
+            "ally_overhealing_received": 0,
         }
 
     def create_hero_stat_subscribers(self, player_id):
@@ -77,9 +79,9 @@ class GameStatistics():
             ],
             "on_heal_received": [
                 lambda data: (
-                    self.increment_stat(player_id, "hero_healing_received", data.effective_heal),
+                    self.increment_stat(player_id, "ally_healing_received", data.effective_heal),
                     self.increment_stat(player_id, "total_healing_received", data.effective_heal),
-                    self.increment_stat(player_id, "hero_overhealing_received", data.extra_heal),
+                    self.increment_stat(player_id, "ally_overhealing_received", data.extra_heal),
                     self.increment_stat(player_id, "total_overhealing_received", data.extra_heal),
                 )
             ],

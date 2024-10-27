@@ -36,7 +36,7 @@ class Player:
         self._ally_subscribers = ally_subscribers or {}
         if "on_death" not in self._ally_subscribers:
             self._ally_subscribers["on_death"] = []
-        self._ally_subscribers["on_death"].append(lambda x: self.army.toll_the_dead(x.source))
+        self._ally_subscribers["on_death"].append(lambda x: self.army.remove_dead_allies())
 
         # Connect player-level subscribers
         if player_subscribers:
@@ -210,7 +210,7 @@ class Player:
 #            "on_damage_dealt": [],
 #            "on_damage_taken": []
 #        }
-#        self._ally_subscribers["on_death"].append(lambda x: self._army.toll_the_dead(x))
+#        self._ally_subscribers["on_death"].append(lambda x: self._army.remove_dead_allies(x))
 
 #        # Connect player-level subscribers
 #        for signal_name, callbacks in (player_subscribers or {}).items():
