@@ -1,120 +1,68 @@
 from src.Card import Card
-from src.Signal import Signal
+from src.Character import Character
 
 class Ally(Card):
-    def __init__(self, orig=None, cost=-1, name=None, attack=-1, health=-1, effect=None):
+    def __init__(self, orig=None, cost=None, name=None, attack_value=None, health=None, effect=None):
         if orig:
-            super().__init__(orig._cost, orig._name, orig._effect, orig._text)
-            self._attack = orig._attack
-            self._maxHealth = orig._maxHealth
-            self._health = orig._health
-            self._ready = False
-            # Copy the effect if it exists
-            self._effect = orig._effect  # Effect objects are stateless, safe to share
+            super().__init__(orig.cost, orig.name, orig.effect, orig.text)
+            self._character = Character(
+                name=orig.name,
+                attack_value=orig.attack_value,
+                health=orig.health,
+                max_health=orig.max_health
+            )
         else:
             super().__init__(cost, name, effect)
-            self._attack = attack
-            self._maxHealth = health
-            self._health = health
-            self._ready = False
-        # Initialize Signals
-        self.on_death = Signal()  # Signal for when this ally dies
-        self.on_attack = Signal() # Signal for when this ally attacks
-        self.on_damage_dealt = Signal()  # Signal for when this ally deals damage
-        self.on_damage_taken = Signal()  # Signal for when this ally takes damage
-        self.on_heal = Signal() # Whenever healed (health goes up)
+            self._character = Character(name, attack_value, health)
+        
+        # For convenience, expose character's signals directly
+        self.signals = self._character.signals
     
-    # more for testing rather
-    # def __eq__(self, other: 'Ally') -> bool:
-    #     if not isinstance(other, Ally):
-    #         return NotImplemented
-    #     return (
-    #         super().__eq__(other) and
-    #         self._attack == other._attack and
-    #         self._health == other._health and
-    #         self._maxHealth == other._maxHealth and
-    #         self._ready == other._ready
-    #     )
+    def __repr__(self):
+        return f"({self.cost}) {self.name} | {self.attack_value}/{self.health}"
     
+    # Delegate all character properties/methods | Needed because its also a Card, not just character
     @property
     def health(self):
-        return self._health
-
-    @health.setter
-    def health(self, new_amount):
-        change_amount = new_amount - self.health
-        if change_amount > 0:
-            new_amount = min(new_amount, self._maxHealth)
-            self.on_heal.emit(change_amount)
-        else:
-            if new_amount <= 0:
-                change_amount -= new_amount # even if they overkill, only register down to 0
-                self.die()
-            self.on_damage_taken.emit(-change_amount) # want real value of hp lost
-        self._health = new_amount
+        return self._character.health
     
-    # READY
+    @health.setter
+    def health(self, value):
+        self._character.health = value
+    
+    @property
+    def attack_value(self):
+        return self._character._attack_value
+        
+    @attack_value.setter
+    def attack_value(self, value):
+        self._character._attack_value = value
+    
+    @property
+    def max_health(self):
+        return self._character._max_health
+        
+    @property
+    def ready(self):
+        return self._character._ready
+
     def ready_up(self):
-        if self._attack > 0:
-            self._ready = True
-
+        self._character.ready_up()
+    
     def ready_down(self):
-        self._ready = False
-
-    def is_ready(self):
-        return self._ready
+        self._character.ready_down()
     
     def can_attack(self):
-        return self._ready and self._attack > 0
-
-    # BATTLE
-    # Attack
-    def attack(self, target):
-        # for now lets just do total damage dealt
-        self.on_attack.emit(self)
-        self.on_damage_dealt.emit(min(self._attack, target.health)) # also need effect damange
-        target.defend(self) # simple place to tell target to emit when its being attacked
-        target.health -= self._attack
-        self.health -= target._attack
-        self.ready_down()
-
+        return self._character.can_attack()
     
-    def defend(self, attacker):
-        self.on_damage_dealt.emit(min(self._attack, attacker.health)) # also need effect damage
+    def attack(self, target):
+        self._character.attack(target)
     
     def die(self):
-        self.on_death.emit(self)
-
-    # Move this to health setter
-    # def heal_damage(self, heal):
-    #     if not isinstance(heal, int) or heal < 0:
-    #         raise ValueError(f"Heal amount must be a positive integer. Got: {heal}")
-    #     self._health += heal
-    #     if self._health  > self._maxHealth:
-    #         self._health = self._maxHealth
-
-    # Attack enemy target
-    # Parameters: 
-    #   Enemy -> Ally or Hero type
-    # Outcome:
-    #   Deal appropriate damage to self and enemy
-    # Return:
-    #   None if successful, string if something went wrong
-    # TODO: Move this out of card, to the game manager
-    # def attack_enemy(self, enemy, attackingPlayer):
-    #    # Type check, must be Ally or Hero
-    #    if type(enemy) != Ally and type(enemy) != Hero.Hero:
-    #        return f'Parameter is type {type(enemy)}, must be type Ally or Hero'
-    #
-    #    if self.is_ready():
-    #        if self.attack() >= 0:
-    #            enemy.lower_health(self.attack())
-    #        if enemy.attack() >= 0:
-    #            self.lower_health(enemy.attack())
-    #        if enemy.health() < 0:
-    #            enemy.health(0)
-    #            attackingPlayer.get_bounty(2)
-    #        self.ready_down()
-    #    else:
-    #        return f'{self.name()} is not ready!'
-    #    return None
+        self._character.die()
+    
+    def damage(self, source, amount):
+        self._character.damage(source, amount)
+    
+    def heal(self, source, amount):
+        self._character.heal(source, amount)

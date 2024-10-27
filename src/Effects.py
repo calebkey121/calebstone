@@ -57,7 +57,8 @@ class HealAllAlliesEffect(Effect):
         # Get current player's army
         current_player = game_state.current_player
         # Heal all friendly allies
-        current_player.heal_army(self.amount[0])
+        for ally in current_player.army.allies:
+            ally.heal(source=source, amount=self.amount[0])
         return game_state
 
 class DamageEnemyHeroEffect(Effect):
@@ -71,7 +72,8 @@ class DamageAllEnemiesEffect(Effect):
     def execute(self, game_state: 'GameState', source: 'Ally') -> 'GameState':
         # Get opponent
         opponent = game_state.opponent_player
-        opponent.damage_all(self.amount[0])
+        for character in opponent.army.get_all():
+            character.damage(source=source, amount=self.amount[0])
         return game_state
 
 class DrawCardsEffect(Effect):

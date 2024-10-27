@@ -18,8 +18,8 @@ class GameTestCase:
         
         # Check hero state
         if 'hero_health' in expected_values:
-            if player._hero.health != expected_values['hero_health']:
-                failures.append(f"Hero health: expected {expected_values['hero_health']}, got {player._hero.health}")
+            if player.hero.health != expected_values['hero_health']:
+                failures.append(f"Hero health: expected {expected_values['hero_health']}, got {player.hero.health}")
         
         # Check resources
         if 'gold' in expected_values:
@@ -46,7 +46,7 @@ class GameTestCase:
         # Check board state
         if 'board' in expected_values:
             board = expected_values['board']
-            army = player._army.get_army()
+            army = player.army.get_army()
             if len(army) != len(board):
                 failures.append(f"Board size: expected {len(board)}, got {len(army)}")
             else:
@@ -72,23 +72,23 @@ class GameTestCase:
                      deck_list: List = []) -> Player:
         """Creates a player with the specified state"""
         player = Player(
-            playerName=player_name,
-            heroName=hero_name,
-            deckList=deck_list,
+            player_name=player_name,
+            hero_name=hero_name,
+            deck_list=deck_list,
             player_subscribers=None,
             ally_subscribers=None,
             hero_subscribers=None
         )
-        player._hero._health = hero_health
+        player.hero._health = hero_health
         player._gold = gold
         player._income = income
         player._hand = hand or []
-        player._army._army = board or []
-        player._army.set_army_size()
+        if board:
+            player.army.add_allies(board)
         
         # Set up any necessary signal connections
-        for ally in player._army._army:
-            ally.on_death.connect(player._army.toll_the_dead)
+        for ally in player.army._army:
+            ally.signals.on_death.connect(player.army.toll_the_dead)
             ally.ready_up()
         
         return player

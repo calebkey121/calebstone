@@ -3,18 +3,6 @@ from enum import Enum, auto
 from src.GameLogic import GameLogic
 from src.GameStatistics import GameStatistics
 
-"""
-Purpose:
-    This class represents the current state of the game. It should hold everything you need to know about the game at a given point, including player states and the overall game flow (turns, rounds, etc.).
-Responsibilities:
-    Hold references to player states (self.player1, self.player2).
-    Track game metadata like the round count and current turn.
-    Provide helper methods to serialize the game state (e.g., converting it into a vector of integers for reinforcement learning or saving it).
-Notes:
-    Keep this class as a snapshot of the current game. It’s a container for the state but doesn’t control what happens (that’s the job of the GameManager).
-    Probably extend it later with more attributes and helper methods as needed.
-"""
-
 class GameResult(Enum):
     IN_PROGRESS = auto()
     TIE = auto()
@@ -28,18 +16,18 @@ class GameState:
 
         # Create both players with all subscriber types
         self.player1 = Player(
-            playerName="player1",
-            heroName=player1Hero,
-            deckList=player1Deck,
+            player_name="player1",
+            hero_name=player1Hero,
+            deck_list=player1Deck,
             ally_subscribers=self.stats.create_ally_stat_subscribers("player1"),
             player_subscribers=self.stats.create_player_stat_subscribers("player1"),
             hero_subscribers=self.stats.create_hero_stat_subscribers("player1")
         )
         
         self.player2 = Player(
-            playerName="player2",
-            heroName=player2Hero,
-            deckList=player2Deck,
+            player_name="player2",
+            hero_name=player2Hero,
+            deck_list=player2Deck,
             ally_subscribers=self.stats.create_ally_stat_subscribers("player2"),
             player_subscribers=self.stats.create_player_stat_subscribers("player2"),
             hero_subscribers=self.stats.create_hero_stat_subscribers("player2")
@@ -72,7 +60,7 @@ class GameState:
     
     # Possible Actions
     def possible_cards_to_play(self):
-        if self.current_player._army.is_full():
+        if self.current_player.army.is_full():
             return []
         actions = []
         playable_cards = self.current_player.playable_cards()

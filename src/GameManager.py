@@ -47,11 +47,17 @@ class GameManager:
             # Display or log the result of the action
             
             current_controller = self.player1_controller if self.game_state.is_player1_turn() else self.player2_controller
-
+            player = self.game_state.current_player
+            opponent = self.game_state.opponent_player
             while ( action := current_controller.get_action(self.game_state) ):
+                if action["type"] == "play_card":
+                    card = player._hand[action["card_index"]]
+                elif action["type"] == "attack":
+                    attacker = player.army.get_all()[action["attacker_index"]]
+                    target = opponent.army.get_all()[action["target_index"]]
                 self.output_handler.display_action(action, self.game_state)
                 GameLogic.process_turn(self.game_state, action)
-                if GameLogic.is_game_over(self.game_state) or action["type"] != "end_turn":
+                if GameLogic.is_game_over(self.game_state) or action["type"] == "end_turn":
                     break
 
         self.logger.end_game(self.game_state)

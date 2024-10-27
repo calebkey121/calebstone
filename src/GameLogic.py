@@ -17,11 +17,11 @@ class GameLogic():
         # Resolve action depending on its type
         if action['type'] == 'play_card':
             card_index = action['card_index']
-            if current_player.has_enough_gold(card_index):
-                card = current_player._hand[card_index]
-                current_player.play_ally(card)
-                # (potentially) subscribe effect that would be triggered later
-                GameLogic.subscribe_ally_effect(card, game_state)
+            # no real need to check if has enough gold, below will error if they don't, on them to give valid move
+            card = current_player._hand[card_index]
+            current_player.play_ally(card)
+            # (potentially) subscribe effect that would be triggered later
+            GameLogic.subscribe_ally_effect(card, game_state)
         
         elif action['type'] == 'attack':
             attacker = current_player.all_characters()[action['attacker_index']]
@@ -47,7 +47,8 @@ class GameLogic():
         if game_state.total_turns != 0 or game_state.current_player or game_state.opponent_player:
             raise ValueError("Tried starting the game on non turn zero")
 
-        if random.choice([True, False]): # Coin Flip
+        # if random.choice([True, False]): # Coin Flip
+        if True: # temporary to view player1 == playerwhowentfirst
             game_state.current_player = game_state.player1
             game_state.opponent_player = game_state.player2
         else:
@@ -73,25 +74,28 @@ class GameLogic():
     @staticmethod
     def end_turn(game_state):
         # Directly execute end turn effects - no signals needed
-        for ally in game_state.current_player._army.get_army():
+        player = game_state.current_player
+        for ally in player.army.allies:
             if (ally._effect and 
                 ally._effect.timing == TimingWindow.END_OF_TURN):
                 ally._effect.execute(game_state, ally)
         if (game_state.current_round % X_ROUNDS) == 0:
-            game_state.current_player.income += INCOME_PER_X_ROUNDS
+            player.income += INCOME_PER_X_ROUNDS
         game_state.switch_turn()
     
     @staticmethod
     def start_turn(game_state):
-        game_state.current_player.draw_card()
-        game_state.current_player.ready_up()
-        game_state.current_player.gold += game_state.current_player.income
+        player = game_state.current_player
+        player.draw_card()
+        # Ready up everyone in current player's army (and here)
+        player.army.ready_up()
+        player.gold += game_state.current_player.income
 
         # trigger each start of turn effect
-        for ally in game_state.current_player._army.get_army():
-            if (ally._effect and 
-                ally._effect.timing == TimingWindow.START_OF_TURN):
-                ally._effect.execute(game_state, ally)
+        for ally in player.army.allies:
+            if (ally.effect and 
+                ally.effect.timing == TimingWindow.START_OF_TURN):
+                ally.effect.execute(game_state, ally)
     
     @staticmethod
     def subscribe_ally_effect(card, game_state):

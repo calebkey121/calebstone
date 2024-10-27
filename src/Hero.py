@@ -1,86 +1,73 @@
-from config.GameSettings import *
-from src.Signal import Signal
-from dataclasses import dataclass, field
-
-@dataclass
-class HeroSignals:
-    """Signals owned by the hero"""
-    on_death: Signal = field(default_factory=Signal)
-    on_damage_taken: Signal = field(default_factory=Signal)
-    on_heal: Signal = field(default_factory=Signal)
-    on_attack: Signal = field(default_factory=Signal)
-    on_damage_dealt: Signal = field(default_factory=Signal)
+from config.GameSettings import HERO_STARTING_HEALTH, HERO_MAX_HEALTH
+from src.Character import Character
 
 class Hero:
-    def __init__(self, heroName, hero_subscribers: dict = None):
-        self._name = heroName
-        self._maxHealth = HERO_MAX_HEALTH
-        self._health = HERO_STARTING_HEALTH
-        self._attack = 0
-        self._ready = False
+    def __init__(self, hero_name, hero_subscribers: dict = None):
+        self._name = hero_name
+        self._character = Character(
+            name=hero_name,
+            attack_value=0,
+            health=HERO_STARTING_HEALTH,
+            max_health=HERO_MAX_HEALTH
+        )
+        self.signals = self._character.signals
         
-        # Initialize signals
-        self.signals = HeroSignals()
-        
-        # Connect hero-level subscribers if provided
+        # Connect subscribers
         if hero_subscribers:
             for signal_name, callbacks in hero_subscribers.items():
                 if hasattr(self.signals, signal_name):
                     signal = getattr(self.signals, signal_name)
                     signal.connect(callbacks)
     
-    def __eq__(self, other: 'Hero') -> bool:
-        if not isinstance(other, Hero):
-            return NotImplemented
-        return (
-            self._name == other._name and
-            self._health == other._health and
-            self._maxHealth == other._maxHealth and
-            self._attack == other._attack and
-            self._ready == other._ready
-        )
+    def __repr__(self):
+        return f"{self.name} | {self.attack_value}/{self.health}"
+    
+    # Delegate all character properties/methods
+    @property
+    def name(self):
+        return self._character._name
     
     @property
     def health(self):
-        return self._health
-        
+        return self._character.health
+    
     @health.setter
-    def health(self, new_amount):
-        change_amount = new_amount - self.health
-        if change_amount >= 0:
-            self.signals.on_heal.emit(change_amount)
-        else:
-            if new_amount <= 0:
-                change_amount -= new_amount  # even if they overkill, only register down to 0
-                self.signals.on_death.emit(self)
-            self.signals.on_damage_taken.emit(-change_amount)  # want real value of hp lost
-        self._health = max(0, new_amount)  # Prevent negative health
+    def health(self, value):
+        self._character.health = value
     
-    # Helpers
-    def can_attack(self):
-        return self._ready and self._attack > 0
+    @property
+    def attack_value(self):
+        return self._character._attack_value
+        
+    @attack_value.setter
+    def attack_value(self, value):
+        self._character._attack_value = value
     
+    @property
+    def max_health(self):
+        return self._character._max_health
+        
+    @property
+    def ready(self):
+        return self._character._ready
+
     def ready_up(self):
-        if self._attack > 0:
-            self._ready = True
+        self._character.ready_up()
     
     def ready_down(self):
-        self._ready = False
+        self._character.ready_down()
+    
+    def can_attack(self):
+        return self._character.can_attack()
     
     def attack(self, target):
-        if not self.can_attack():
-            raise ValueError("Hero cannot attack right now")
-            
-        self.signals.on_attack.emit()
-        damage_dealt = min(self._attack, target.health)
-        self.signals.on_damage_dealt.emit(damage_dealt)
-        
-        target.defend(self)
-        target.health -= self._attack
-        self.health -= target._attack  # Counterattack damage
-        self.ready_down()
+        self._character.attack(target)
     
-    def defend(self, attacker):
-        if self._attack > 0:  # Only emit damage dealt if hero can actually deal damage
-            damage_dealt = min(self._attack, attacker.health)
-            self.signals.on_damage_dealt.emit(damage_dealt)
+    def die(self):
+        self._character.die()
+    
+    def damage(self, source, amount):
+        self._character.damage(source, amount)
+    
+    def heal(self, source, amount):
+        self._character.heal(source, amount)
