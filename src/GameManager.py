@@ -3,9 +3,9 @@ from src.Controller import RandomController, TerminalController
 from src.OutputHandler import TerminalOutputHandler, NoOutputHandler
 from src.GameLogic import GameLogic
 from src.GameLogger import GameLogger
-import DeckLists.PlayerTwoList as p2d
-import DeckLists.PlayerOneList as p1d
+from src.Decklists import create_deck, DeckType
 from typing import Optional
+from pprint import pprint
 
 """
 Purpose:
@@ -20,7 +20,7 @@ Notes:
 """
 class GameManager:
     def __init__(self, logger: Optional[GameLogger] = None):
-        self.game_state = GameState(player1Hero="Caleb", player2Hero="Dio", player1Deck=p1d.create_deck(), player2Deck=p2d.create_deck())
+        self.game_state = GameState(player1Hero="Caleb", player2Hero="Dio", player1Deck=create_deck(DeckType.TEST), player2Deck=create_deck(DeckType.TEST))
         self.player1_controller = RandomController()
         self.player2_controller = RandomController()
         self.output_handler = NoOutputHandler()
@@ -59,7 +59,9 @@ class GameManager:
                 GameLogic.process_turn(self.game_state, action)
                 if GameLogic.is_game_over(self.game_state) or action["type"] == "end_turn":
                     break
-
+        self.end_game()
+    
+    def end_game(self):
         self.logger.end_game(self.game_state)
         
 def main():

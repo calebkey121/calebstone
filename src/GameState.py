@@ -1,7 +1,6 @@
 from src.Player import Player
 from enum import Enum, auto
 from src.GameLogic import GameLogic
-from src.GameStatistics import GameStatistics
 
 class GameResult(Enum):
     IN_PROGRESS = auto()
@@ -10,27 +9,18 @@ class GameResult(Enum):
     PLAYER2_WIN = auto()
 
 class GameState:
-    def __init__(self, player1Hero, player1Deck, player2Hero, player2Deck, statistics=None):
-        # Initialize base stats dictionary with hero-specific stats
-        self.stats = statistics or GameStatistics()
-
+    def __init__(self, player1Hero, player1Deck, player2Hero, player2Deck):
         # Create both players with all subscriber types
         self.player1 = Player(
             player_name="player1",
             hero_name=player1Hero,
             deck_list=player1Deck,
-            ally_subscribers=self.stats.create_ally_stat_subscribers("player1"),
-            player_subscribers=self.stats.create_player_stat_subscribers("player1"),
-            hero_subscribers=self.stats.create_hero_stat_subscribers("player1")
         )
         
         self.player2 = Player(
             player_name="player2",
             hero_name=player2Hero,
             deck_list=player2Deck,
-            ally_subscribers=self.stats.create_ally_stat_subscribers("player2"),
-            player_subscribers=self.stats.create_player_stat_subscribers("player2"),
-            hero_subscribers=self.stats.create_hero_stat_subscribers("player2")
         )
 
         self.current_player = None

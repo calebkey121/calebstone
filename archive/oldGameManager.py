@@ -7,7 +7,7 @@ import pygame
 import settings
 import os
 import Card
-import DeckLists.PlayerOneList as p1
+import src.Decklists as p1
 import DeckLists.PlayerTwoList as p2
 #import DeckLists.SpiderDeckList as Spider
 

@@ -2,7 +2,7 @@ from config.GameSettings import HERO_STARTING_HEALTH, HERO_MAX_HEALTH
 from src.Character import Character
 
 class Hero:
-    def __init__(self, hero_name, hero_subscribers: dict = None):
+    def __init__(self, hero_name):
         self._name = hero_name
         self._character = Character(
             name=hero_name,
@@ -11,13 +11,6 @@ class Hero:
             max_health=HERO_MAX_HEALTH
         )
         self.signals = self._character.signals
-        
-        # Connect subscribers
-        if hero_subscribers:
-            for signal_name, callbacks in hero_subscribers.items():
-                if hasattr(self.signals, signal_name):
-                    signal = getattr(self.signals, signal_name)
-                    signal.connect(callbacks)
     
     def __repr__(self):
         return f"{self.name} | {self.attack_value}/{self.health}"

@@ -18,11 +18,11 @@ class PlayerSignals:
    on_income_lost: Signal = field(default_factory=Signal)
 
 class Player:
-    def __init__(self, player_name, hero_name, deck_list, player_subscribers=None, ally_subscribers=None, hero_subscribers=None):
+    def __init__(self, player_name, hero_name, deck_list):
         # Initialize core components
         self._name = player_name
         self._deck = Deck(deck_list)
-        self._army = Army(Hero(hero_name, hero_subscribers=hero_subscribers))
+        self._army = Army(Hero(hero_name))
         self._hand = []
         self._max_hand_size = PLAYER_MAX_HAND_SIZE
         self._gold = 0
@@ -32,18 +32,10 @@ class Player:
         # Initialize signals
         self.signals = PlayerSignals()
         
-        # Store ally death subscriber for army cleanup
-        self._ally_subscribers = ally_subscribers or {}
-        if "on_death" not in self._ally_subscribers:
-            self._ally_subscribers["on_death"] = []
-        self._ally_subscribers["on_death"].append(lambda x: self.army.remove_dead_allies())
-
-        # Connect player-level subscribers
-        if player_subscribers:
-            for signal_name, callbacks in player_subscribers.items():
-                if hasattr(self.signals, signal_name):
-                    signal = getattr(self.signals, signal_name)
-                    signal.connect(callbacks)
+        # Store ally subscribers that should be added on play
+        self._ally_subscribers = {
+            "on_death" : lambda x: self.army.remove_dead_allies()
+        }
 
     def __repr__(self):
         return self._name
@@ -106,7 +98,7 @@ class Player:
         if self._deck.out_of_cards():
             fatigue_damage = self._deck.take_fatigue()
             self.hero.health -= fatigue_damage
-            self.signals.on_fatigue.emit(FatigueEventData(source=self, fatigue_damage=fatigue_damage))
+            self.signals.on_fatigue.emit(FatigueEventData(source=self, damage=fatigue_damage))
             return
             
         if not self.hand_is_full():
