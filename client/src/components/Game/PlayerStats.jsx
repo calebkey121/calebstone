@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Stack } from "@mui/material";
+import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
 
 const PlayerStats = ({ player, isOpponent = false }) => (
   <Stack direction="row" spacing={2} alignItems="center">

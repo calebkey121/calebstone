@@ -1,20 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { useGame } from "../../hooks/useGame";
 
 const GameCard = ({ card, index, isOpponent = false, type = "hand" }) => {
-  const [showEffect, setShowEffect] = useState(false);
   const { selectedAttacker, selectAttacker, attack, playCard, gameState } =
     useGame();
 
   const handleClick = () => {
     if (type === "hand") {
-      if (card.cost <= gameState?.current_player?.gold) {
+      if (card.cost <= gameState.current_player.gold) {
         playCard(index);
       }
       return;
     }
 
-    // Board card logic
     if (isOpponent && selectedAttacker !== null) {
       attack(selectedAttacker, index);
       return;
@@ -26,7 +24,7 @@ const GameCard = ({ card, index, isOpponent = false, type = "hand" }) => {
 
   const isPlayable =
     type === "hand"
-      ? card.cost <= gameState?.current_player?.gold
+      ? card.cost <= gameState.current_player.gold
       : card.can_attack || (selectedAttacker !== null && isOpponent);
 
   const isSelected = type === "board" && selectedAttacker === index;
@@ -51,31 +49,23 @@ const GameCard = ({ card, index, isOpponent = false, type = "hand" }) => {
         group
       `}
       onClick={handleClick}
-      onMouseEnter={() => setShowEffect(true)}
-      onMouseLeave={() => setShowEffect(false)}
     >
       <div className="space-y-2">
         <div className="flex justify-between items-start">
           <h3 className="text-white text-sm font-medium truncate">
             {card.name}
           </h3>
-          {type === "hand" && (
-            <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 text-xs text-white bg-white/20 rounded">
-              {card.cost}
-            </span>
-          )}
+          <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 text-xs text-white bg-white/20 rounded">
+            {card.cost}
+          </span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-red-400 text-xs">
-            ⚔️ {type === "hand" ? card.attack : card.attack}
-          </span>
-          <span className="text-green-400 text-xs">
-            ❤️ {type === "hand" ? card.health : card.health}
-          </span>
+          <span className="text-red-400 text-xs">⚔️ {card.attack}</span>
+          <span className="text-green-400 text-xs">❤️ {card.health}</span>
         </div>
 
-        {type === "hand" && card.text && (
+        {card.text && (
           <div
             className={`
               absolute left-0 right-0 bottom-full mb-2 p-2 

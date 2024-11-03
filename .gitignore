@@ -4,7 +4,7 @@ __pycache__
 .DS_Store
 calebstone
 art/archive
-claude/
+context_files/
 *.jsonl
 *.txt
 *venv
