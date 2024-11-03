@@ -16,7 +16,7 @@ import {
   SyncAlt as EndTurnIcon,
   Cancel as CancelIcon,
 } from "@mui/icons-material";
-import AllyCard from "./AllyCard";
+import GameCard from "./GameCard";
 import PlayerStats from "./PlayerStats";
 
 const GameBoard = () => {
@@ -93,7 +93,7 @@ const GameBoard = () => {
         <Grid2 container spacing={1}>
           {opponent_player.army.map((ally, index) => (
             <Grid2 item xs={1.5} key={index}>
-              <AllyCard ally={ally} index={index} isOpponent />
+              <GameCard card={ally} index={index} type="board" />
             </Grid2>
           ))}
         </Grid2>
@@ -104,7 +104,7 @@ const GameBoard = () => {
         <Grid2 container spacing={1} mb={2}>
           {current_player.army.map((ally, index) => (
             <Grid2 item xs={1.5} key={index}>
-              <AllyCard ally={ally} index={index} />
+              <GameCard card={ally} index={index} type="board" />
             </Grid2>
           ))}
         </Grid2>
@@ -142,59 +142,7 @@ const GameBoard = () => {
         <Grid2 container spacing={1}>
           {current_player.hand.map((card, index) => (
             <Grid2 item xs={1.5} key={index}>
-              <Card
-                sx={{
-                  bgcolor: "rgba(255, 255, 255, 0.1)",
-                  backdropFilter: "blur(10px)",
-                  cursor:
-                    card.cost <= current_player.gold ? "pointer" : "default",
-                  opacity: card.cost <= current_player.gold ? 1 : 0.5,
-                  "&:hover": {
-                    borderColor: "#66bb6a",
-                    bgcolor: "rgba(255, 255, 255, 0.15)",
-                  },
-                }}
-                onClick={() =>
-                  card.cost <= current_player.gold && playCard(index)
-                }
-              >
-                <CardContent sx={{ p: 1, "&:last-child": { pb: 1 } }}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="start"
-                    mb={1}
-                  >
-                    <Typography variant="subtitle2" color="white" noWrap>
-                      {card.name}
-                    </Typography>
-                    <Chip
-                      label={card.cost}
-                      size="small"
-                      sx={{
-                        bgcolor: "rgba(255,255,255,0.2)",
-                        color: "white",
-                        height: "20px",
-                      }}
-                    />
-                  </Box>
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography color="#ef5350" variant="caption">
-                      ⚔️ {card.attack}
-                    </Typography>
-                    <Typography color="#66bb6a" variant="caption">
-                      ❤️ {card.health}
-                    </Typography>
-                  </Stack>
-                  <Typography
-                    color="lightblue"
-                    variant="caption"
-                    sx={{ mt: 0.5, display: "block" }}
-                  >
-                    {card.text}
-                  </Typography>
-                </CardContent>
-              </Card>
+              <GameCard card={card} index={index} type="hand" />
             </Grid2>
           ))}
         </Grid2>
