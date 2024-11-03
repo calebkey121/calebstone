@@ -52,9 +52,9 @@ const MainMenu = () => {
 
       {/* Footer */}
       <div className="mt-12 text-center text-blue-200">
-        <p className="text-sm mb-2">Version 1.0.0</p>
+        <p className="text-sm mb-2">Version 0.0.1</p>
         <a
-          href="https://github.com"
+          href="https://github.com/calebkey121/Calebstone"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center space-x-2 text-sm hover:text-white transition-colors"
