@@ -1,4 +1,3 @@
-// src/context/GameContext.jsx
 import React, { createContext, useState, useCallback } from "react";
 import gameService from "../services/gameService";
 
@@ -10,7 +9,8 @@ export const GameProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const startNewGame = useCallback(async () => {
+  const startNewGame = useCallback(async (e) => {
+    if (e) e.preventDefault();
     try {
       setIsLoading(true);
       const { session_id } = await gameService.startNewGame();
@@ -31,9 +31,8 @@ export const GameProvider = ({ children }) => {
 
       try {
         setIsLoading(true);
-        await gameService.sendAction(sessionId, action);
-        const newState = await gameService.getGameState(sessionId);
-        setGameState(newState);
+        const { game_state } = await gameService.sendAction(sessionId, action);
+        setGameState(game_state); // Update state directly from response
         setError(null);
       } catch (err) {
         setError("Failed to process action");

@@ -10,34 +10,11 @@ import Hand from "./Hand";
 import Army from "./Army";
 
 const PlayerBoard = ({ player }) => {
-  const { endTurn, selectedAttacker, cancelAttack } = useGame();
   return (
     <Box>
       <Army player={player} />
       <PlayerStats player={player} isOpponent={false} />
       <Hand current_player={player} />
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Stack direction="row" spacing={1}>
-          {selectedAttacker !== null && (
-            <Button
-              variant="contained"
-              color="error"
-              startIcon={<CancelIcon />}
-              onClick={cancelAttack}
-            >
-              Cancel Attack
-            </Button>
-          )}
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<EndTurnIcon />}
-            onClick={endTurn}
-          >
-            End Turn
-          </Button>
-        </Stack>
-      </Box>
     </Box>
   );
 };

@@ -5,14 +5,26 @@ import {
   Button,
   Typography,
   CircularProgress,
-  Container,
+  Stack,
 } from "@mui/material";
-
-import PlayerBoard from "./PlayerBoard";
-import OpponentBoard from "./OpponentBoard";
+import {
+  SyncAlt as EndTurnIcon,
+  Cancel as CancelIcon,
+} from "@mui/icons-material";
+import CardGrid from "./CardGrid";
+import PlayerStats from "./PlayerStats";
+import BoardContainer from "./BoardContainer";
 
 const GameBoard = () => {
-  const { gameState, isLoading, error, startNewGame } = useGame();
+  const {
+    gameState,
+    isLoading,
+    error,
+    startNewGame,
+    selectedAttacker,
+    cancelAttack,
+    endTurn,
+  } = useGame();
 
   React.useEffect(() => {
     if (!gameState) {
@@ -22,28 +34,16 @@ const GameBoard = () => {
 
   if (isLoading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
-        <CircularProgress sx={{ color: "white" }} />
+      <Box className="flex justify-center items-center min-h-screen">
+        <CircularProgress className="text-white" />
       </Box>
     );
   }
 
   if (error) {
     return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minHeight="100vh"
-        gap={2}
-      >
-        <Typography color="error">{error}</Typography>
+      <Box className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <Typography className="text-red-500">{error}</Typography>
         <Button variant="contained" onClick={startNewGame}>
           Try Again
         </Button>
@@ -56,13 +56,49 @@ const GameBoard = () => {
   const { current_player, opponent_player } = gameState;
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      {/* Opponent's Side */}
-      <OpponentBoard player={opponent_player} />
+    <div className="container mx-auto px-4 py-8 space-y-6">
+      <Stack direction="row" spacing={2}>
+        <Box sx={{ flex: 1 }}>
+          <Stack direction="column" spacing={2}>
+            <Box sx={{ flex: 3 }}>
+              <PlayerStats player={opponent_player} isOpponent={true} />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<EndTurnIcon />}
+                onClick={endTurn}
+                fullWidth
+              >
+                End Turn
+              </Button>
+            </Box>
+            <Box sx={{ flex: 3 }}>
+              <PlayerStats player={current_player} />
+            </Box>
+          </Stack>
+        </Box>
+        <Box sx={{ flex: 6 }}>
+          <Stack direction="column" spacing={2}>
+            <BoardContainer title="Opponent's Board">
+              <CardGrid
+                cards={opponent_player.army}
+                type="board"
+                isOpponent={true}
+              />
+            </BoardContainer>
+            <BoardContainer title="Your Board">
+              <CardGrid cards={current_player.army} type="board" />
+            </BoardContainer>
+          </Stack>
+        </Box>
+      </Stack>
 
-      {/* Player's Side */}
-      <PlayerBoard player={current_player} />
-    </Container>
+      <BoardContainer title="Your Hand">
+        <CardGrid cards={current_player.hand} type="hand" />
+      </BoardContainer>
+    </div>
   );
 };
 
