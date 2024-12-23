@@ -1,5 +1,14 @@
 import React from "react";
 import { useGame } from "../../hooks/useGame";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Stack,
+  Tooltip,
+  Zoom,
+} from "@mui/material";
 
 const GameCard = ({ card, index, isOpponent = false, type = "hand" }) => {
   const { selectedAttacker, selectAttacker, attack, playCard, gameState } =
@@ -12,7 +21,6 @@ const GameCard = ({ card, index, isOpponent = false, type = "hand" }) => {
       }
       return;
     }
-
     if (isOpponent && selectedAttacker !== null) {
       attack(selectedAttacker, index);
       return;
@@ -30,57 +38,99 @@ const GameCard = ({ card, index, isOpponent = false, type = "hand" }) => {
   const isSelected = type === "board" && selectedAttacker === index;
 
   return (
-    <div
-      className={`
-        relative rounded-lg p-4
-        ${
-          isPlayable
-            ? "cursor-pointer opacity-100"
-            : "cursor-default opacity-70"
-        }
-        ${isSelected ? "border-2 border-blue-400" : "border border-white/20"}
-        bg-white/10 backdrop-blur-md
-        hover:bg-white/15
-        ${
-          isOpponent && selectedAttacker !== null
-            ? "hover:border-red-500"
-            : "hover:border-blue-400"
-        }
-        group
-      `}
-      onClick={handleClick}
+    <Tooltip
+      title={card.text || ""}
+      placement="top"
+      TransitionComponent={Zoom}
+      enterDelay={200}
+      sx={{
+        "& .MuiTooltip-tooltip": {
+          bgcolor: "rgba(17, 24, 39, 0.95)",
+          color: "rgb(125, 211, 252)",
+          fontSize: "0.75rem",
+          maxWidth: "none",
+        },
+      }}
     >
-      <div className="space-y-2">
-        <div className="flex justify-between items-start">
-          <h3 className="text-white text-sm font-medium truncate">
-            {card.name}
-          </h3>
-          <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 text-xs text-white bg-white/20 rounded">
-            {card.cost}
-          </span>
-        </div>
+      <Card
+        onClick={handleClick}
+        sx={{
+          position: "relative",
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(12px)",
+          border: isSelected
+            ? "2px solid rgb(96, 165, 250)"
+            : "1px solid rgba(255, 255, 255, 0.2)",
+          cursor: isPlayable ? "pointer" : "default",
+          opacity: isPlayable ? 1 : 0.7,
+          transition: "all 0.2s",
+          "&:hover": {
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            borderColor:
+              isOpponent && selectedAttacker !== null
+                ? "rgb(239, 68, 68)"
+                : "rgb(96, 165, 250)",
+          },
+        }}
+      >
+        <CardContent>
+          <Stack sx={{ justifyContent: "space-between", height: "100%" }}>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                color: "white",
+                fontWeight: 500,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                textAlign: "center",
+              }}
+            >
+              {card.name}
+            </Typography>
 
-        <div className="flex justify-between items-center">
-          <span className="text-red-400 text-xs">⚔️ {card.attack}</span>
-          <span className="text-green-400 text-xs">❤️ {card.health}</span>
-        </div>
-
-        {card.text && (
-          <div
-            className={`
-              absolute left-0 right-0 bottom-full mb-2 p-2 
-              bg-gray-900/95 rounded-lg text-sky-300 text-xs
-              transform opacity-0 scale-95
-              group-hover:opacity-100 group-hover:scale-100
-              transition-all duration-200
-              z-10 mx-2
-            `}
-          >
-            {card.text}
-          </div>
-        )}
-      </div>
-    </div>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "rgb(248, 113, 113)",
+                  flex: 1,
+                  textAlign: "center",
+                }}
+              >
+                ⚔️ {card.attack}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "rgb(234, 179, 8)",
+                  flex: 1,
+                  textAlign: "center",
+                }}
+              >
+                💰 {card.cost}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "rgb(74, 222, 128)",
+                  flex: 1,
+                  textAlign: "center",
+                }}
+              >
+                ❤️ {card.health}
+              </Typography>
+            </Box>
+          </Stack>
+        </CardContent>
+      </Card>
+    </Tooltip>
   );
 };
 

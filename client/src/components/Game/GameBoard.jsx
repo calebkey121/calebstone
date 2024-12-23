@@ -59,7 +59,12 @@ const GameBoard = () => {
     <div className="container mx-auto px-4 py-8 space-y-6">
       <Stack direction="row" spacing={2}>
         <Box sx={{ flex: 1 }}>
-          <Stack direction="column" spacing={2}>
+          <Stack
+            direction="column"
+            //justifyContent="flex-start"
+            spacing={3}
+            height="100%"
+          >
             <Box sx={{ flex: 3 }}>
               <PlayerStats player={opponent_player} isOpponent={true} />
             </Box>
