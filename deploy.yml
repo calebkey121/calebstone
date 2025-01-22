@@ -1,0 +1,35 @@
+name: Deploy API Service
+
+on:
+  push:
+    branches:
+      - main  # Specify the branch you want to trigger this workflow
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'  # Match the version you are using
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      # Step 4: Start the API Service
+      - name: Start API Service
+        run: |
+          nohup python game_server/run.py &
+        env:
+          FLASK_APP: run.py
+          FLASK_ENV: production
