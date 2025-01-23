@@ -5,7 +5,6 @@ __pycache__
 calebstone
 context_files/
 *.jsonl
-*.txt
 *venv
 node_modules
 archive/
