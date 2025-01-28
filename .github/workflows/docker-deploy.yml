@@ -1,13 +1,13 @@
-name: Build and Deploy Docker Image
+name: Build and Deploy with Docker Compose
 
 on:
   push:
     branches:
-      - dockerize
+      - dockerize # Trigger only on pushes to the 'dockerize' branch
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: self-hosted
 
     steps:
       # Checkout the repository
@@ -22,12 +22,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Build the Docker image
-      - name: Build Docker Image
+      # Build and Push the Docker Image
+      - name: Build and Push Docker Image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/game-server:latest .
-
-      # Push the Docker image to GitHub Container Registry
-      - name: Push Docker Image
-        run: |
+          docker compose build api
+          docker tag game-server:latest ghcr.io/${{ github.repository_owner }}/game-server:latest
           docker push ghcr.io/${{ github.repository_owner }}/game-server:latest
+
+      # Pull and Restart Docker Compose Services
+      - name: Restart Services with Docker Compose
+        run: |
+          docker-compose pull api
+          docker-compose down
+          docker-compose up -d

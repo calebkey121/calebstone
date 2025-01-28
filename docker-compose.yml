@@ -1,11 +1,12 @@
-version: '3.8'
+version: "3.8"
 services:
   api:
     build:
       context: .
       dockerfile: Dockerfile
+    image: game-server:latest
     ports:
-      - "5001:5000"  # Maps container port 5000 to host port 5000
+      - "5001:5000" # Maps container port 5000 to host port 5000
     environment:
       - FLASK_ENV=production
       - FLASK_APP=run.py
