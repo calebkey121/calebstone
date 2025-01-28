@@ -25,7 +25,7 @@ jobs:
       # Build and Push the Docker Image
       - name: Build and Push Docker Image
         run: |
-          docker compose build api
+          docker compose build --no-cache api
           docker tag game-server:latest ghcr.io/${{ github.repository_owner }}/game-server:latest
           docker push ghcr.io/${{ github.repository_owner }}/game-server:latest
 
