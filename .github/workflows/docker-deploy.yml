@@ -32,6 +32,6 @@ jobs:
       # Pull and Restart Docker Compose Services
       - name: Restart Services with Docker Compose
         run: |
-          docker-compose pull api
-          docker-compose down
-          docker-compose up -d
+          docker compose pull api
+          docker compose down
+          docker compose up -d
