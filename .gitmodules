@@ -1,3 +1,0 @@
-[submodule "game_engine"]
-	path = game_engine
-	url = git@github.com:calebkey121/calebstone-core.git
