@@ -1,0 +1,3 @@
+[submodule "calebstone-core"]
+	path = calebstone-core
+	url = git@github.com:calebkey121/calebstone-core.git
