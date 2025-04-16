@@ -1,0 +1,37 @@
+name: Build and Deploy with Docker Compose
+
+on:
+  push:
+    branches:
+      - dockerize # Trigger only on pushes to the 'dockerize' branch
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Log in to the GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build and Push the Docker Image
+      - name: Build and Push Docker Image
+        run: |
+          docker compose build --no-cache api
+          docker tag ghcr.io/calebkey121/game-server:latest ghcr.io/${{ github.repository_owner }}/game-server:latest
+          docker push ghcr.io/${{ github.repository_owner }}/game-server:latest
+
+      # Pull and Restart Docker Compose Services
+      - name: Restart Services with Docker Compose
+        run: |
+          docker compose pull api
+          docker compose down
+          docker compose up -d

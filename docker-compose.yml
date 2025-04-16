@@ -1,0 +1,11 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/calebkey121/game-server:latest
+    ports:
+      - "5001:5000" # Maps container port 5000 to host port 5000
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=run.py
