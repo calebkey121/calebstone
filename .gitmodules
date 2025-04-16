@@ -4,3 +4,6 @@
 [submodule "calebstone-server"]
 	path = calebstone-server
 	url = git@github.com:calebkey121/calebstone-server.git
+[submodule "calebstone-godot"]
+	path = calebstone-godot
+	url = git@github.com:calebkey121/calebstone-godot.git
