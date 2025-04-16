@@ -1,3 +1,6 @@
 [submodule "calebstone-core"]
 	path = calebstone-core
 	url = git@github.com:calebkey121/calebstone-core.git
+[submodule "calebstone-server"]
+	path = calebstone-server
+	url = git@github.com:calebkey121/calebstone-server.git
