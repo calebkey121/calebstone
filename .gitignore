@@ -8,3 +8,4 @@ context_files/
 *venv
 node_modules
 archive/
+repomix-output.txt
