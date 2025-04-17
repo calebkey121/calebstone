@@ -1,9 +1,12 @@
-[submodule "calebstone-core"]
-	path = calebstone-core
-	url = git@github.com:calebkey121/calebstone-core.git
-[submodule "calebstone-server"]
-	path = calebstone-server
-	url = git@github.com:calebkey121/calebstone-server.git
-[submodule "calebstone-godot"]
-	path = calebstone-godot
-	url = git@github.com:calebkey121/calebstone-godot.git
+[submodule "calebstone_engine"]
+	path = calebstone_engine
+	url = git@github.com:calebkey121/calebstone_engine.git
+	branch = master
+[submodule "calebstone_server"]
+	path = calebstone_server
+	url = git@github.com:calebkey121/calebstone_server.git
+	branch = master
+[submodule "calebstone_godot"]
+	path = calebstone_godot
+	url = git@github.com:calebkey121/calebstone_godot.git
+	branch = master
